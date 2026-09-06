@@ -12,7 +12,7 @@ export const dhad = {
   "meta": {
     "name": "Dhad",
     "namespace": "dhad",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "defaultTheme": "host",
     "direction": "locale"
   },

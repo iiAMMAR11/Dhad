@@ -1,5 +1,5 @@
 interface:
   display_name: "Dhad"
-  short_description: "تجربة وايت ليبل بعربية وRTL متفوّقة"
+  short_description: "عمل أوضح وأسهل، مع عربية واتجاه صحيحين"
   brand_color: "#0068D7"
-  default_prompt: "استخدم $dhad لتحسين تجربة هذا المشروع مع الحفاظ على هويته وجعل العربية وRTL جزءًا أصيلًا منه."
+  default_prompt: "استخدم $dhad لتبسيط هذا العمل وتحسين العربية والمسافات والاتجاه، مع الحفاظ على هويته."

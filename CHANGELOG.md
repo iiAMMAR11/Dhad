@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.0.1
+
+- Added safe space between text and framed edges.
+- Increased Arabic line height to protect diacritics and hamzas.
+- Rewrote the showcase and README in plain language with PDF, image, ad, presentation, site, and app examples.
+
 ## 3.0.0
 
 - Reframed Dhad as a white-label UX skill for products, sites, SaaS, apps, presentations, designs, and documents.

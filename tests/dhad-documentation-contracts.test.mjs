@@ -29,28 +29,28 @@ test("operational files contain no study attribution or imposed identity", async
   const files = await textFiles(skillRoot);
   const combined = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");
   assert.doesNotMatch(combined, /only typeface|single typeface|الخط الوحيد|dark is the default|الوضع الداكن هو الافتراضي/i);
-  assert.match(combined, /هوية المشروع وعرف المنصة تتقدم/);
-  assert.match(combined, /لا تفرض خطًا أو لونًا أو وضعًا/);
+  assert.match(combined, /اختيار المستخدم وهوية المشروع أولًا/);
+  assert.match(combined, /لا تفرض خطًا أو لونًا أو شكلًا أو أداة/);
 });
 
 test("approved patterns and output adapters are present", async () => {
   const patterns = await readFile(path.join(skillRoot, "references/patterns.md"), "utf8");
   for (const value of [
-    "حزمة المطابقة", "مدقّق RTL", "دليل المكوّن", "مسار التبنّي", "فهرس ضاد",
-    "وصفة المقال", "بيانات المنطقة", "محوّلات سلوكية", "توكنز قابلة للنقل", "بوابة الاستقرار",
+    "قائمة فحص", "فحص اتجاه العربية", "شرح كل عنصر", "تطبيق بالتدريج", "دليل سريع",
+    "صفحة مقال واضحة", "البلد والتاريخ", "شكل مناسب لكل نتيجة", "أسلوب قابل للنقل", "فحص قبل التسليم",
     "entity-lifecycle", "entity-hub", "typed-search", "return-context", "experience-mode",
     "availability-gate", "live-data-trust", "cross-device-handoff", "concealed-value", "series-following"
   ]) assert.match(patterns, new RegExp(value));
 
   const outputs = await readFile(path.join(skillRoot, "references/outputs.md"), "utf8");
-  for (const value of ["الويب وSaaS", "تطبيقات الجوال", "العروض التقديمية", "المستندات وPDF", "التصاميم الثابتة"]) {
+  for (const value of ["المواقع والأنظمة", "تطبيقات الجوال", "العروض التقديمية", "المستندات وPDF", "الصور والإعلانات والتصاميم"]) {
     assert.match(outputs, new RegExp(value));
   }
 });
 
 test("search normalization is never reused as record identity", async () => {
   const arabic = await readFile(path.join(skillRoot, "references/arabic.md"), "utf8");
-  assert.match(arabic, /البحث ليس الهوية/);
+  assert.match(arabic, /البحث وحفظ الأسماء/);
   assert.match(arabic, /مطابقة `ة` مع `ه` توسعة بحث اختيارية/);
   assert.match(arabic, /لا تدمج سجلين/);
 });
@@ -75,16 +75,25 @@ test("package names, versions, tokens and exports stay synchronized", async () =
   }
 });
 
-test("discovery metadata remains portable and Arabic-capable", async () => {
+test("discovery metadata stays plain, portable, and broad enough for everyday work", async () => {
   const skill = await readFile(path.join(skillRoot, "SKILL.md"), "utf8");
   const plugin = JSON.parse(await readFile(path.join(repository, "platforms/chatgpt/dhad/.codex-plugin/plugin.json"), "utf8"));
   const description = skill.match(/^description:\s*(.+)$/m)?.[1] ?? "";
   assert.ok(description.length > 0 && description.length <= 200);
-  for (const capability of ["Arabic", "RTL", "plurals", "sorting", "search", "Hijri", "week"]) {
+  for (const capability of ["Arabic", "RTL", "spacing", "PDFs", "images", "ads", "search"]) {
     assert.ok(description.includes(capability), capability);
     assert.ok(plugin.description.includes(capability), capability);
   }
-  assert.match(plugin.interface.longDescription, /المواقع والتطبيقات والعروض والمستندات/);
+  assert.match(plugin.interface.longDescription, /المواقع والتطبيقات والعروض وملفات PDF والصور والإعلانات/);
+});
+
+test("Arabic text keeps breathing room around frames, lines, and diacritics", async () => {
+  const foundation = await readFile(path.join(skillRoot, "references/foundation.md"), "utf8");
+  assert.match(foundation, /لا تضع النص ملاصقًا لإطار أو حافة/);
+  assert.match(foundation, /طبّق المسافة نفسها على العربية والإنجليزية/);
+  assert.match(foundation, /مُحَمَّد/);
+  assert.match(foundation, /الْعَرَبِيَّةُ/);
+  assert.match(foundation, /لا تستخدم `letter-spacing` مع العربية/);
 });
 
 test("optional offline font profile remains complete and opt-in", async () => {

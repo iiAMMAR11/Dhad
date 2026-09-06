@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 type Theme = 'light' | 'dark';
-type OutputKey = 'site' | 'saas' | 'app' | 'slides' | 'document';
+type OutputKey = 'site' | 'saas' | 'app' | 'slides' | 'document' | 'image' | 'ad';
 type RegionKey = 'sa' | 'ae';
 type Pattern = { id: string; title: string; summary: string; example: string };
 type PatternGroup = { id: string; label: string; description: string; patterns: Pattern[] };
@@ -11,38 +11,52 @@ type PatternGroup = { id: string; label: string; description: string; patterns: 
 const outputs: Record<OutputKey, { label: string; title: string; proof: string; adapts: string; sample: string }> = {
   site: {
     label: 'موقع',
-    title: 'قراءة واضحة ومسار لا يضيّع الزائر',
-    proof: 'بنية دلالية، تنقّل مفهوم، محتوى عربي مريح، ورابط ثابت لكل صفحة مهمة.',
-    adapts: 'هوية الموقع، صوته، خطه، ألوانه، ونظام مكوّناته.',
-    sample: 'مقال يربط الكاتب والسلسلة والمصادر والمحتوى التالي بدل اقتراحات عشوائية.',
+    title: 'موقع عربي سهل القراءة والتصفح',
+    proof: 'يعرف الزائر أين هو، وماذا يقرأ، وأين يذهب بعد ذلك.',
+    adapts: 'ألوان موقعك وخطه وطريقته في الكلام.',
+    sample: 'بعد قراءة مقال عن السفر، يظهر المقال التالي من السلسلة نفسها.',
   },
   saas: {
-    label: 'SaaS',
-    title: 'مهمة مباشرة وحالات لا تخفي ما يجري',
-    proof: 'بحث مصنّف، عودة تحفظ السياق، صلاحيات مفهومة، وحفظ وفشل قابلان للتعافي.',
-    adapts: 'كثافة البيانات، نموذج المجال، صلاحيات الفريق، وتدفّق المنتج.',
-    sample: 'يفتح المستخدم فاتورة من نتائج مفلترة، ثم يعود إلى المرشح والموضع نفسيهما.',
+    label: 'نظام',
+    title: 'نظام يفهم المهمة ولا يضيّع خطواتك',
+    proof: 'يوضح ما تم حفظه، ويحفظ بحثك إذا فتحت صفحة ثم رجعت.',
+    adapts: 'طريقة عمل الفريق، والصلاحيات، وكمية المعلومات.',
+    sample: 'تبحث عن فاتورة غير مدفوعة، تفتحها، ثم ترجع إلى النتائج نفسها.',
   },
   app: {
     label: 'تطبيق',
-    title: 'سلوك عربي يحترم عرف الجهاز',
-    proof: 'RTL حقيقي، مناطق آمنة، لمس مريح، خطوط ديناميكية، وتسليم بين الأجهزة عند الحاجة.',
-    adapts: 'مكوّنات iOS أو Android والتنقّل والحركة الأصلية لكل منصة.',
-    sample: 'قرار قصير يظهر كلوحة سفلية على الهاتف وكحوار على سطح المكتب.',
+    title: 'تطبيق عربي مريح على كل جهاز',
+    proof: 'الأزرار واضحة، والاتجاه صحيح، والنص بعيد عن الحواف.',
+    adapts: 'طريقة استخدام الجوال أو الجهاز اللوحي أو الكمبيوتر.',
+    sample: 'اختيار بسيط يظهر من أسفل الجوال، وفي نافذة صغيرة على الكمبيوتر.',
   },
   slides: {
     label: 'عرض',
-    title: 'فكرة واحدة في كل شريحة',
-    proof: 'اتجاه صحيح، عناوين قصيرة، دليل بصري مقروء، وأرقام لا تنقلب داخل العربية.',
-    adapts: 'هوية الجهة، نسبة الشرائح، الجمهور، ومسافة المشاهدة.',
-    sample: 'شريحة مقارنة تحافظ على محاذاة العناوين والأرقام والخلاصة رغم اختلاف طول النص.',
+    title: 'عرض تقديمي يُفهم من أول نظرة',
+    proof: 'كل شريحة تحمل فكرة واحدة، والنص واضح حتى من مسافة.',
+    adapts: 'هوية الجهة، ومقاس الشاشة، ومن سيشاهد العرض.',
+    sample: 'شريحة تقارن خيارين، وتضع الفرق المهم في سطر واضح.',
   },
   document: {
-    label: 'مستند',
-    title: 'عربية سليمة من المصدر إلى PDF',
-    proof: 'أنماط عناوين حقيقية، جداول مستقرة، روابط معزولة، وتشكيل لا يتكسّر عند التصدير.',
-    adapts: 'قالب المؤسسة، نظام المراجع، مقاس الصفحة، ومحرك التصدير.',
-    sample: 'مرجع لاتيني يبقى LTR داخل فقرة عربية من دون قلب السطر أو فصل الحروف.',
+    label: 'PDF وملف',
+    title: 'ملف عربي يبقى مرتبًا بعد الحفظ والطباعة',
+    proof: 'العناوين والجداول والروابط تبقى سليمة عند تحويل الملف إلى PDF.',
+    adapts: 'قالب الجهة، ومقاس الورق، وطريقة الطباعة.',
+    sample: 'رابط إنجليزي داخل فقرة عربية يبقى مقروءًا وفي اتجاهه الصحيح.',
+  },
+  image: {
+    label: 'صورة',
+    title: 'صورة تقول فكرتها بوضوح',
+    proof: 'العنوان مقروء، والعناصر متوازنة، ولا يلامس النص الحواف.',
+    adapts: 'مقاس الصورة، وألوان الهوية، ومكان نشرها.',
+    sample: 'منشور لمقهى يوضح العرض والسعر ووقت انتهائه من أول نظرة.',
+  },
+  ad: {
+    label: 'إعلان',
+    title: 'إعلان يعرف المشاهد ماذا يفعل',
+    proof: 'رسالة قصيرة، وصورة مناسبة، وخطوة تالية واضحة.',
+    adapts: 'الجمهور، والمنصة، ومقاس الإعلان، وطريقة التواصل.',
+    sample: 'إعلان دورة يوضح موضوعها وموعدها ورابط التسجيل من دون زحام.',
   },
 };
 
@@ -51,43 +65,43 @@ const outputOrder = Object.keys(outputs) as OutputKey[];
 const patternGroups: PatternGroup[] = [
   {
     id: 'adopt',
-    label: 'اعتماد',
-    description: 'تحوّل الجودة من رأي إلى نتيجة قابلة للفحص.',
+    label: 'تجهيز العمل',
+    description: 'خطوات بسيطة تساعدك على التأكد من النتيجة قبل تسليمها.',
     patterns: [
-      { id: 'conformance', title: 'حزمة المطابقة', summary: 'نتيجة واضحة لكل بند: نجح، يحتاج إصلاحًا، أو غير منطبق.', example: 'RTL نجح 14 من 16. بقي اتجاه التقدم ورسالة الخطأ.' },
-      { id: 'rtl-audit', title: 'مدقّق RTL', summary: 'يرصد الاتجاه الفيزيائي والجزر المختلطة ومخاطر القص قبل المراجعة البصرية.', example: 'يستبدل margin-left بدور منطقي حين يكون المعنى اتجاهيًا.' },
-      { id: 'component', title: 'دليل المكوّن', summary: 'الغرض والبنية والحالات والإدخال والخرج والوصول في عقد قصير.', example: 'البحث: اسم ظاهر، مسح، تحميل، لا نتائج، خطأ، ولوحة مفاتيح.' },
-      { id: 'adoption', title: 'مسار التبنّي', summary: 'تدقيق ثم شاشة ممثلة ثم تعميم ثم بوابة جودة.', example: 'ابدأ بنتائج البحث قبل تغيير لوحة SaaS كلها.' },
-      { id: 'index', title: 'فهرس ضاد', summary: 'الوصول للقواعد بحسب المهمة، لا بحسب أسماء الملفات.', example: 'أرقام وتواريخ تفتح قواعد المنطقة فورًا.' },
-      { id: 'tokens', title: 'توكنز قابلة للنقل', summary: 'أدوار DTCG مستقرة تتحول إلى نظام المنصة من دون فرض لوحة.', example: 'selection.background يبقى اختيارًا في CSS وThemeData.' },
-      { id: 'stability', title: 'بوابة الاستقرار', summary: 'لا يصبح الأصل مستقرًا قبل اكتمال الوصول والحالات والاختبار.', example: 'مكوّن بلا تنقل بلوحة المفاتيح يبقى تجريبيًا.' },
+      { id: 'conformance', title: 'قائمة فحص', summary: 'توضح ما هو سليم، وما يحتاج إلى تعديل، وما لا ينطبق على العمل.', example: 'في إعلان عربي: العنوان واضح، والشعار غير مقصوص، ورقم التواصل مقروء.' },
+      { id: 'rtl-audit', title: 'فحص اتجاه العربية', summary: 'يتأكد أن العربية تبدأ من اليمين، وأن الأرقام والروابط لا تنقلب.', example: 'في ملف PDF يبقى رقم الهاتف من اليسار من دون أن يقلب بقية السطر.' },
+      { id: 'component', title: 'شرح كل عنصر', summary: 'يوضح وظيفة كل زر أو حقل، وما الذي يظهر عند النجاح أو التعذر.', example: 'زر التحميل يوضح أن الملف يُجهّز، ثم يخبرك عندما يصبح جاهزًا.' },
+      { id: 'adoption', title: 'تطبيق بالتدريج', summary: 'ابدأ بجزء واحد، تأكد منه، ثم طبّق الأسلوب على بقية العمل.', example: 'حسّن صفحة واحدة من الكتيب، ثم طبّقها على باقي الصفحات.' },
+      { id: 'index', title: 'دليل سريع', summary: 'يوصلك إلى القاعدة التي تحتاجها من دون قراءة كل شيء.', example: 'تحتاج تاريخًا هجريًا؟ تذهب مباشرة إلى قسم التاريخ.' },
+      { id: 'tokens', title: 'أسلوب قابل للنقل', summary: 'يحفظ ألوان مشروعك وخطه ومسافاته عند الانتقال بين الأدوات.', example: 'لون زر الحفظ يبقى من هوية مشروعك في الموقع والتطبيق.' },
+      { id: 'stability', title: 'فحص قبل التسليم', summary: 'لا نعتمد النتيجة حتى تكون واضحة وسهلة وتعمل كما ينبغي.', example: 'قبل تسليم العرض، نختبره على شاشة كبيرة ومن هاتف صغير.' },
     ],
   },
   {
     id: 'content',
-    label: 'محتوى ومنطقة',
-    description: 'تجعل النص والزمن والسلوك جزءًا من التصميم.',
+    label: 'نص ومكان',
+    description: 'تجعل الكلام والتاريخ والأرقام مناسبة للقارئ وبلده.',
     patterns: [
-      { id: 'article', title: 'وصفة المقال', summary: 'تربط الكاتب والسلسلة والتاريخ والمصادر والمحتوى التالي.', example: 'بعد المقال يظهر التالي من السلسلة، لا بطاقة عشوائية.' },
-      { id: 'locale', title: 'بيانات المنطقة', summary: 'ملف واحد للأرقام والتقويم والأسبوع والعطلة والعملة والمنطقة الزمنية.', example: 'السعودية: الأحد بداية الأسبوع والجمعة والسبت عطلة.' },
-      { id: 'adapter', title: 'محوّلات سلوكية', summary: 'المعنى ثابت، لكن المكوّن يتبع عرف المخرج.', example: 'قرار واحد يصبح sheet على الهاتف وdialog على سطح المكتب.' },
+      { id: 'article', title: 'صفحة مقال واضحة', summary: 'ترتب العنوان والكاتب والتاريخ والمصادر وما تقرؤه بعد ذلك.', example: 'بعد وصفة الخبز تظهر الوصفة التالية من السلسلة، لا موضوع عشوائي.' },
+      { id: 'locale', title: 'البلد والتاريخ', summary: 'تضبط الأرقام والتقويم وبداية الأسبوع والعملة حسب البلد.', example: 'في السعودية يبدأ الأسبوع يوم الأحد، وتظهر المواعيد بتوقيت الرياض.' },
+      { id: 'adapter', title: 'شكل مناسب لكل مخرج', summary: 'تقدم الفكرة نفسها بالطريقة الأنسب للموقع أو الجوال أو الملف.', example: 'التنبيه نفسه يظهر كرسالة قصيرة في الجوال وملاحظة واضحة في PDF.' },
     ],
   },
   {
     id: 'journeys',
-    label: 'كيانات ورحلات',
-    description: 'أنماط تربط الحالة والسياق والثقة عبر المنتج.',
+    label: 'تجربة الاستخدام',
+    description: 'أفكار تمنع الضياع، وتحفظ مكان المستخدم، وتوضح ما يحدث.',
     patterns: [
-      { id: 'lifecycle', title: 'دورة حياة الكيان', summary: 'واجهة مختلفة قبل الحدث وأثناءه وبعده.', example: 'موعد قادم يعرض التذكير، والجاري الحالة، والمنتهي السجل.' },
-      { id: 'hub', title: 'مركز الكيان', summary: 'عنوان ثابت يجمع الهوية والحالة والعلاقات والأفعال.', example: 'صفحة عميل واحدة تصل إليها من البحث والفاتورة والتنبيه.' },
-      { id: 'typed-search', title: 'البحث المصنّف', summary: 'نتائج مفصولة حسب النوع عندما تختلف نية المستخدم.', example: 'الهلال يظهر تحت عملاء ومشاريع وملفات ومقالات.' },
-      { id: 'return', title: 'حفظ سياق العودة', summary: 'الاستعلام والمرشح والموضع تبقى بعد فتح التفاصيل.', example: 'العودة إلى غير مدفوع والربع الثالث في الموضع نفسه.' },
-      { id: 'mode', title: 'وضع التجربة', summary: 'العرض يتغير لحاجة حقيقية من دون نسخة منفصلة للمنتج.', example: 'وضع الاجتماع يكبّر المحتوى ويخفي أدوات التحرير.' },
-      { id: 'gate', title: 'بوابة الإتاحة', summary: 'تفحص المنطقة والاشتراك والجهاز والصلاحية قبل الفعل.', example: 'اطلب صلاحية المدير ثم عد إلى التقرير نفسه.' },
-      { id: 'live', title: 'ثقة البيانات الحية', summary: 'تفرق بين مباشر ومتأخر وتقديري ومتوقف.', example: 'آخر تحديث 10:42، متأخر دقيقتين.' },
-      { id: 'handoff', title: 'التسليم بين الأجهزة', summary: 'تنقل المهمة إلى جهاز أنسب مع حفظ الحالة.', example: 'يؤكد المستخدم الدخول من الهاتف ويكمل على التلفاز.' },
-      { id: 'concealed', title: 'القيمة المحجوبة', summary: 'تخفي قيمة حساسة أو مفسدة للتجربة بكشف متعمد قابل للعكس.', example: 'إخفاء الرصيد أثناء مشاركة الشاشة.' },
-      { id: 'series', title: 'متابعة السلسلة', summary: 'تربط العناصر المتتابعة وتحفظ التقدم وتقدم التالي.', example: 'بعد الدرس الثالث يظهر تابع الدرس الرابع.' },
+      { id: 'lifecycle', title: 'قبل وأثناء وبعد', summary: 'تتغير المعلومات المعروضة حسب وقت الحدث.', example: 'قبل الموعد يظهر التذكير، وأثناءه زر الانضمام، وبعده الملخص.' },
+      { id: 'hub', title: 'صفحة تجمع كل شيء', summary: 'تضع معلومات الموضوع وأفعاله المهمة في مكان واحد.', example: 'صفحة طلب واحدة تجمع حالته وفاتورته ورسائل التحديث.' },
+      { id: 'typed-search', title: 'نتائج مرتبة', summary: 'تقسم نتائج البحث إلى مجموعات يسهل فهمها.', example: 'بحث «الرياض» يعرض المدن والملفات والمقالات كلًّا في قسمه.' },
+      { id: 'return', title: 'العودة للمكان نفسه', summary: 'تحفظ البحث والاختيارات ومكان التمرير عند الرجوع.', example: 'تفتح صورة من المعرض، ثم تعود إلى الصف نفسه بدل البداية.' },
+      { id: 'mode', title: 'وضع مناسب للموقف', summary: 'تُظهر ما يحتاجه المستخدم الآن، وتخفي ما يشتته.', example: 'أثناء العرض تكبر الشرائح وتختفي أدوات التعديل.' },
+      { id: 'gate', title: 'من يستطيع فتحه؟', summary: 'توضح سبب منع الفتح وما الذي يمكن فعله بعد ذلك.', example: 'إذا كان الملف خاصًا، تظهر طريقة طلب الإذن بدل صفحة مغلقة.' },
+      { id: 'live', title: 'هل المعلومة حديثة؟', summary: 'توضح هل الرقم مباشر أم متأخر أم تقريبي.', example: 'السعر آخر تحديث له قبل دقيقتين، فيظهر ذلك بجانبه.' },
+      { id: 'handoff', title: 'أكمل على جهاز آخر', summary: 'تنقل المهمة إلى جهاز أنسب من دون أن تبدأ من جديد.', example: 'تبدأ تعبئة الطلب من الجوال، ثم تكمله على الكمبيوتر.' },
+      { id: 'concealed', title: 'إخفاء معلومة خاصة', summary: 'تخفي رقمًا أو معلومة حساسة، وتكشفها فقط عندما تختار.', example: 'إخفاء الرصيد أثناء مشاركة الشاشة.' },
+      { id: 'series', title: 'تابع من حيث توقفت', summary: 'تحفظ تقدمك وتعرض الخطوة التالية بوضوح.', example: 'بعد الدرس الثالث يظهر زر واضح للانتقال إلى الدرس الرابع.' },
     ],
   },
 ];
@@ -239,8 +253,8 @@ export default function ShowcaseClient() {
         <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark /><span>ضاد</span></a>
         <nav className="main-nav" aria-label="أقسام الموقع">
           <a href="#lab">جرّب</a>
-          <a href="#patterns">الأنماط</a>
-          <a href="#install">التثبيت</a>
+          <a href="#patterns">الأفكار</a>
+          <a href="#install">التحميل</a>
         </nav>
         <div className="header-actions">
           <a href="https://github.com/iiAMMAR11/Dhad" target="_blank" rel="noreferrer">GitHub</a>
@@ -253,12 +267,12 @@ export default function ShowcaseClient() {
       <main id="main">
         <section className="opening" aria-labelledby="opening-title">
           <div className="opening-copy">
-            <p>مهارة وايت ليبل لتجربة أفضل</p>
-            <p>العربية جزء أصيل، وهوية مشروعك هي الأصل.</p>
+            <p>مهارة تجعل أي عمل أوضح وأسهل</p>
+            <p>تهتم بالعربية وتحافظ على هوية مشروعك.</p>
           </div>
           <h1 id="opening-title" className="wordmark" aria-label="ضاد">ضاد</h1>
           <div className="output-lab">
-            <div className="output-tabs" role="tablist" aria-label="اختر نوع المخرج">
+            <div className="output-tabs" role="tablist" aria-label="اختر نوع العمل">
               {outputOrder.map((key, index) => (
                 <button
                   key={key}
@@ -277,8 +291,8 @@ export default function ShowcaseClient() {
             <section className="output-panel" id={`panel-${output}`} role="tabpanel" aria-labelledby={`tab-${output}`} tabIndex={0}>
               <div><span className="section-number" aria-hidden="true">01</span><h2>{currentOutput.title}</h2></div>
               <dl>
-                <div><dt>يثبت</dt><dd>{currentOutput.proof}</dd></div>
-                <div><dt>يتكيّف</dt><dd>{currentOutput.adapts}</dd></div>
+                <div><dt>النتيجة</dt><dd>{currentOutput.proof}</dd></div>
+                <div><dt>يحافظ على</dt><dd>{currentOutput.adapts}</dd></div>
                 <div><dt>مثال</dt><dd>{currentOutput.sample}</dd></div>
               </dl>
             </section>
@@ -287,24 +301,24 @@ export default function ShowcaseClient() {
 
         <section className="principle" aria-labelledby="principle-title">
           <span className="section-number" aria-hidden="true">02</span>
-          <h2 id="principle-title">ضاد لا تلبّس المشاريع شكلًا واحدًا.</h2>
+          <h2 id="principle-title">ضاد يحسّن عملك، ولا يغيّر هويته.</h2>
           <div className="principle-ledger">
-            <article><h3>ما يثبت</h3><p>وضوح المهمة، الوصول، الثقة، صحة العربية، وجودة التسليم.</p></article>
-            <article><h3>ما يتبع مشروعك</h3><p>الهوية، الخط، اللون، الكثافة، التقنية، المجال، وعرف المنصة.</p></article>
+            <article><h3>ما يحسّنه ضاد</h3><p>وضوح الفكرة، وسهولة الاستخدام، وصحة العربية، وجودة النتيجة.</p></article>
+            <article><h3>ما يبقى لك</h3><p>الهوية، والخط، والألوان، وطريقة العرض، وطبيعة مشروعك.</p></article>
           </div>
-          <p className="principle-note">تبدأ من هدف المستخدم، ثم تضيف العربية والمنطقة والمخرج والوصفة التي يحتاجها العمل فقط.</p>
+          <p className="principle-note">نبدأ بما تريد من الناس أن يفهموه أو يفعلوه، ثم نضيف ما يحتاجه العمل فقط.</p>
         </section>
 
         <section className="arabic-lab" id="lab" aria-labelledby="lab-title">
           <header className="section-intro">
             <span className="section-number" aria-hidden="true">03</span>
-            <h2 id="lab-title">جرّب السلوك العربي</h2>
-            <p>غيّر القيم. النتيجة ليست صورة ثابتة.</p>
+            <h2 id="lab-title">جرّب العربية بنفسك</h2>
+            <p>غيّر الرقم أو الاسم أو البلد، وشاهد الفرق مباشرة.</p>
           </header>
 
           <div className="lab-grid">
             <section className="lab-cell plural-cell" aria-labelledby="plural-title">
-              <div className="lab-cell__head"><span>جمع</span><h3 id="plural-title">ست حالات</h3></div>
+              <div className="lab-cell__head"><span>العدد</span><h3 id="plural-title">الكلمة تتغيّر مع الرقم</h3></div>
               <output htmlFor="task-count" aria-live="polite">{taskLabel(count)}</output>
               <label htmlFor="task-count">العدد: {numberArabic.format(count)}</label>
               <input id="task-count" type="range" min="0" max="103" value={count} onChange={(event) => setCount(Number(event.target.value))} />
@@ -316,15 +330,16 @@ export default function ShowcaseClient() {
             </section>
 
             <section className="lab-cell search-cell" aria-labelledby="search-title">
-              <div className="lab-cell__head"><span>بحث</span><h3 id="search-title">متسامح، لا يدمج السجلات</h3></div>
+              <div className="lab-cell__head"><span>البحث</span><h3 id="search-title">يعمل حتى لو نسيت الهمزة</h3></div>
               <label htmlFor="arabic-search">ابحث عن اسم</label>
               <input id="arabic-search" value={query} onChange={(event) => setQuery(event.target.value)} />
               <p className="search-result" aria-live="polite"><span>النتيجة</span><strong>{matches.length ? matches.join('، ') : 'لا توجد نتيجة'}</strong></p>
-              <p className="micro-note">«احمد» يجد «أحمد». التطبيع للعثور فقط، وليس لدمج شخصين.</p>
+              <p className="micro-note">اكتب «احمد» وسيجد «أحمد»، مع بقاء الاسم الأصلي كما هو.</p>
+              <p className="diacritic-sample">مُحَمَّدٌ يَقْرَأُ الْعَرَبِيَّةَ بِوُضُوحٍ.</p>
             </section>
 
             <section className="lab-cell region-cell" aria-labelledby="region-title">
-              <div className="lab-cell__head"><span>منطقة</span><h3 id="region-title">الوقت يتبع الناس</h3></div>
+              <div className="lab-cell__head"><span>البلد</span><h3 id="region-title">التاريخ والأسبوع حسب مكانك</h3></div>
               <div className="region-switch" role="radiogroup" aria-label="اختر المنطقة">
                 <button ref={(node) => { regionRefs.current.sa = node; }} type="button" role="radio" aria-checked={region === 'sa'} tabIndex={region === 'sa' ? 0 : -1} onKeyDown={(event) => moveRegion(event, 0)} onClick={() => setRegion('sa')}>السعودية</button>
                 <button ref={(node) => { regionRefs.current.ae = node; }} type="button" role="radio" aria-checked={region === 'ae'} tabIndex={region === 'ae' ? 0 : -1} onKeyDown={(event) => moveRegion(event, 1)} onClick={() => setRegion('ae')}>الإمارات</button>
@@ -350,11 +365,11 @@ export default function ShowcaseClient() {
         <section className="pattern-browser" id="patterns" aria-labelledby="patterns-title">
           <header className="section-intro">
             <span className="section-number" aria-hidden="true">04</span>
-            <h2 id="patterns-title">عشرون إضافة، في مكانها الصحيح</h2>
-            <p>اختر المجموعة ثم النمط. لن تُحمّل كلها على كل مشروع.</p>
+            <h2 id="patterns-title">اختر ما يحتاجه عملك</h2>
+            <p>هذه أفكار عملية. استخدم المناسب منها واترك الباقي.</p>
           </header>
 
-          <div className="pattern-groups" role="tablist" aria-label="مجموعات الأنماط">
+          <div className="pattern-groups" role="tablist" aria-label="مجموعات الأفكار">
             {patternGroups.map((group, index) => (
               <button
                 key={group.id}
@@ -369,13 +384,13 @@ export default function ShowcaseClient() {
                 onClick={() => chooseGroup(group.id)}
               >
                 <strong>{group.label}</strong>
-                <span>{group.patterns.length} أنماط</span>
+                <span>{group.patterns.length} أفكار</span>
               </button>
             ))}
           </div>
 
           <div className="pattern-stage" id="pattern-panel" role="tabpanel" aria-labelledby={`pattern-tab-${currentGroup.id}`} tabIndex={0}>
-            <div className="pattern-index" aria-label={`أنماط ${currentGroup.label}`}>
+            <div className="pattern-index" aria-label={`أفكار ${currentGroup.label}`}>
               <p>{currentGroup.description}</p>
               <ol>
                 {currentGroup.patterns.map((pattern, index) => (
@@ -400,26 +415,26 @@ export default function ShowcaseClient() {
         <section className="quality" aria-labelledby="quality-title">
           <div>
             <span className="section-number" aria-hidden="true">05</span>
-            <h2 id="quality-title">لا يكفي أن تبدو صحيحة.</h2>
+            <h2 id="quality-title">قبل التسليم، نتأكد من خمس أشياء.</h2>
           </div>
           <ol>
-            <li><span>1</span><strong>المهمة</strong><p>المسار الأقصر واضح.</p></li>
-            <li><span>2</span><strong>العربية</strong><p>اتجاه وجمع وبحث ومنطقة.</p></li>
-            <li><span>3</span><strong>الوصول</strong><p>لوحة مفاتيح ولمس وقارئ شاشة.</p></li>
-            <li><span>4</span><strong>الحالات</strong><p>تحميل وفراغ وخطأ وتعافٍ.</p></li>
-            <li><span>5</span><strong>المخرج</strong><p>اختبار في المتصفح أو الجهاز أو PDF.</p></li>
+            <li><span>1</span><strong>الفكرة</strong><p>تُفهم بسرعة ومن دون شرح طويل.</p></li>
+            <li><span>2</span><strong>العربية</strong><p>اتجاه صحيح، وتشكيل لا يُقص، وأرقام واضحة.</p></li>
+            <li><span>3</span><strong>الاستخدام</strong><p>الأزرار والروابط سهلة باللمس ولوحة المفاتيح.</p></li>
+            <li><span>4</span><strong>كل الاحتمالات</strong><p>نعرف ما يظهر أثناء الانتظار أو عند حدوث مشكلة.</p></li>
+            <li><span>5</span><strong>النتيجة</strong><p>نجرب الموقع أو التطبيق أو PDF أو الصورة فعليًا.</p></li>
           </ol>
         </section>
 
         <section className="install" id="install" aria-labelledby="install-title">
           <header>
             <span className="section-number" aria-hidden="true">06</span>
-            <h2 id="install-title">ضاد 3.0</h2>
-            <p>مصدر واحد وحزمتان متطابقتان.</p>
+            <h2 id="install-title">حمّل ضاد</h2>
+            <p>اختر الملف المناسب للأداة التي تستخدمها.</p>
           </header>
           <div className="install-row">
-            <div><strong>ChatGPT + Codex</strong><code dir="ltr">Dhad-openai-plugin.zip</code></div>
-            <div><strong>Claude Chat + Claude Code</strong><code dir="ltr">Dhad-agent-skill.zip</code></div>
+            <div><strong><bdi dir="ltr">ChatGPT + Codex</bdi></strong><code dir="ltr">Dhad-openai-plugin.zip</code></div>
+            <div><strong><bdi dir="ltr">Claude Chat + Claude Code</bdi></strong><code dir="ltr">Dhad-agent-skill.zip</code></div>
           </div>
           <div className="install-command">
             <code dir="rtl"><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">https://github.com/iiAMMAR11/Dhad</bdi></code>
@@ -431,13 +446,13 @@ export default function ShowcaseClient() {
 
       <footer className="site-footer">
         <section aria-labelledby="owner-title">
-          <p>صاحب ضاد ومطوّرها</p>
+          <p>صاحبها ومطوّرها</p>
           <h2 id="owner-title">عمَّار</h2>
-          <p>عمل مستقل تطوّر عبر أسابيع من الدراسة والتجريب والتدريب والتحسين.</p>
+          <p>عمل مستقل طوّره عمَّار بعد أسابيع من الدراسة والتجربة والتحسين.</p>
         </section>
         <section aria-labelledby="thanks-title">
           <h2 id="thanks-title">شكر</h2>
-          <p>شكرًا لمرصاد، وثمانية، ورياضة ثمانية، وللمهارات والمنتجات العربية التي وسّعت زاوية الدراسة. هذا الشكر لا يعني نقلًا أو اشتقاقًا أو شراكة أو ملكية مشتركة في ضاد.</p>
+          <p>شكرًا لمرصاد، وثمانية، ورياضة ثمانية، وللمهارات والمنتجات العربية التي وسّعت الدراسة. هذا تقدير فقط؛ ضاد عمل مستقل، وليس نسخة من هذه الأعمال ولا مشروعًا مشتركًا معها.</p>
         </section>
         <nav aria-label="روابط عمّار وضاد">
           <a href="https://github.com/iiAMMAR11" target="_blank" rel="noreferrer">GitHub</a>

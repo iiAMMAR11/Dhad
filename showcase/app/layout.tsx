@@ -4,8 +4,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dhad.iiammar.com'),
-  title: 'ضاد | تجربة وايت ليبل بعربية متفوّقة',
-  description: 'ضاد مهارة تحسّن تجربة المنتجات والمواقع والتطبيقات والعروض والمستندات، وتجعل العربية وRTL جزءًا أصيلًا منها.',
+  title: 'ضاد | عمل أوضح وعربية أفضل',
+  description: 'ضاد تساعدك على تحسين المواقع والتطبيقات والعروض وملفات PDF والصور والإعلانات، مع عربية واضحة واتجاه صحيح.',
   alternates: { canonical: '/' },
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
@@ -17,12 +17,12 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'Dhad',
     title: 'Dhad',
-    description: 'تجربة أفضل لكل مخرج، وعربية وRTL من الدرجة الأولى.',
+    description: 'مواقع وملفات وصور أوضح، مع عربية مريحة واتجاه صحيح.',
   },
   twitter: {
     card: 'summary',
     title: 'Dhad',
-    description: 'تجربة أفضل لكل مخرج، وعربية وRTL من الدرجة الأولى.',
+    description: 'مواقع وملفات وصور أوضح، مع عربية مريحة واتجاه صحيح.',
     creator: '@iiAMMAR11',
   },
 };

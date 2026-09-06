@@ -1,37 +1,55 @@
 # Dhad
 
-Dhad is a white-label skill that improves UX across products, designs, presentations, websites, SaaS, apps, and documents. It gives Arabic and RTL first-class treatment without imposing a visual identity or technology.
+Dhad is a skill that makes work clearer and easier while taking proper care of Arabic from the start. It works with your project without forcing one font, color, or visual style.
 
-[Showcase](https://dhad.iiammar.com) · [العربية](README.md) · [License](LICENSE)
+[See Dhad](https://dhad.iiammar.com) · [العربية](README.md) · [License](LICENSE)
 
-## What it adds
+## What can it help with?
 
-- A universal UX foundation that preserves the host product's identity.
-- Correct Arabic behavior for direction, plurals, sorting, search, numerals, Hijri dates, and regional rules.
-- Patterns for entities, search, content, live data, and cross-device handoff.
-- Output adapters for web, apps, presentations, and documents.
-- An RTL audit, conformance pack, and stability gate.
+- Word and PDF files.
+- Images, ads, social posts, and other designs.
+- Presentations.
+- Websites, shops, and apps.
+- Tools used by you or your team.
 
-## Use
+## What does it do?
+
+- Gives text comfortable space from edges and between lines.
+- Handles Arabic direction, numbers, links, and dates correctly.
+- Makes steps, buttons, and messages easier to understand.
+- Keeps your project's identity instead of replacing it.
+- Checks the real result at the right size and in the final file.
+
+## Simple examples
 
 ```text
-$dhad Review this project, improve its UX, and make Arabic and RTL first-class.
+$dhad Organize this document and keep the Arabic clear when it becomes a PDF.
+$dhad Review this ad, move the text away from the edges, and clarify its message.
+$dhad Make this presentation easy to read on a large screen.
+$dhad Review my website and make it comfortable in Arabic and English.
 ```
 
-Build and verify the installation packages:
+<details>
+<summary>For developers</summary>
+
+Build and check both installation packages:
 
 ```bash
 python3 scripts/build_releases.py
 python3 scripts/verify_public_release.py
 ```
 
+Dhad can be installed from this repository in Codex or packaged for ChatGPT, Codex, and Claude.
+
+</details>
+
 ## Ownership and thanks
 
-Dhad is owned and developed by **Ammar**. It is independent work shaped through weeks of study, experimentation, training, and refinement.
+Dhad is owned and developed by **Ammar**. It is independent work developed by Ammar through weeks of study, testing, and improvement.
 
-Thanks to Mersad, Thmanyah, Riyadha Thmanyah, and the Arabic skills and products that broadened the study. This optional acknowledgment does not imply copied work, derivation, partnership, or shared ownership of Dhad.
+Thanks to Mersad, Thmanyah, Riyadha Thmanyah, and the Arabic skills and products that broadened the study. This is appreciation only. Dhad is independent work, not a copy or a shared project.
 
-IBM Plex Sans Arabic is included as an optional offline OFL-1.1 profile, never as a required brand font. The host project owns its identity and font choice.
+IBM Plex Sans Arabic is included as a free offline option. It is optional, and every project can keep its own font and identity.
 
 ## Contact
 

@@ -108,7 +108,7 @@ def validate_source() -> None:
         json.loads(path.read_text(encoding="utf-8"))
     skill_description = validate_skill((ROOT / "src" / SKILL_NAME / "SKILL.md").read_text(encoding="utf-8"), "source skill")
     manifest = json.loads((ROOT / "platforms" / "chatgpt" / SKILL_NAME / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8"))
-    for capability in ("Arabic", "RTL", "plurals", "sorting", "search", "Hijri", "week"):
+    for capability in ("Arabic", "RTL", "spacing", "PDFs", "images", "ads", "search"):
         if capability not in skill_description:
             fail(f"Source skill description lost the {capability} capability")
         if capability not in manifest.get("description", ""):

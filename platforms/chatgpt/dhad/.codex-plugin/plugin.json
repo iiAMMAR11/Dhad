@@ -1,7 +1,7 @@
 {
   "name": "dhad",
-  "version": "3.0.0",
-  "description": "White-label UX for Arabic and multilingual products, including RTL, accessibility, plurals, sorting, search, numerals, Hijri dates, and regional week rules.",
+  "version": "3.0.1",
+  "description": "Make websites, apps, PDFs, presentations, images, ads, and other work clearer and easier, with correct Arabic, RTL, spacing, numbers, search, and regional behavior.",
   "author": {
     "name": "Ammar",
     "email": "Hello@iiammar.com",
@@ -14,8 +14,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Dhad",
-    "shortDescription": "تجربة وايت ليبل بعربية وRTL متفوّقة.",
-    "longDescription": "حسّن تجربة المنتجات والمواقع والتطبيقات والعروض والمستندات، واجعل العربية وRTL جزءًا أصيلًا من دون فرض هوية.",
+    "shortDescription": "عمل أوضح وأسهل، مع عربية واتجاه صحيحين.",
+    "longDescription": "حسّن المواقع والتطبيقات والعروض وملفات PDF والصور والإعلانات، مع عربية واضحة ومن دون تغيير هوية المشروع.",
     "developerName": "Ammar",
     "category": "Developer Tools",
     "capabilities": ["Read", "Write"],
@@ -23,9 +23,9 @@
     "privacyPolicyURL": "https://github.com/iiAMMAR11/Dhad/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/iiAMMAR11/Dhad/blob/main/TERMS.md",
     "defaultPrompt": [
-      "طبّق Dhad على هذا المشروع مع الحفاظ على هويته.",
-      "حسّن هذه التجربة واجعل العربية وRTL جزءًا أصيلًا منها.",
-      "راجع هذا المخرج مقابل Dhad واقترح التحسينات اللازمة."
+      "استخدم Dhad لتبسيط هذا العمل مع الحفاظ على هويته.",
+      "حسّن العربية والمسافات والاتجاه في هذا الملف.",
+      "راجع هذه النتيجة واجعلها أوضح وأسهل."
     ],
     "brandColor": "#0068D7",
     "composerIcon": "./assets/composer-icon.svg",
