@@ -96,6 +96,20 @@ test("Arabic text keeps breathing room around frames, lines, and diacritics", as
   assert.match(foundation, /لا تستخدم `letter-spacing` مع العربية/);
 });
 
+test("semantic color stays meaningful, vivid, and portable", async () => {
+  const foundation = await readFile(path.join(skillRoot, "references/foundation.md"), "utf8");
+  const quality = await readFile(path.join(skillRoot, "references/quality.md"), "utf8");
+  const tokens = JSON.parse(await readFile(path.join(skillRoot, "assets/tokens/dhad.tokens.json"), "utf8"));
+
+  assert.match(foundation, /اللون جزء من المعنى والحياة البصرية/);
+  assert.match(foundation, /حافظ على التشبع/);
+  assert.match(quality, /الألوان الدلالية مميزة ومفهومة/);
+  for (const role of ["action", "success", "danger", "warning", "assistive", "timecode"]) {
+    assert.ok(tokens.semantic.color.light[role], `missing light semantic role: ${role}`);
+    assert.ok(tokens.semantic.color.dark[role], `missing dark semantic role: ${role}`);
+  }
+});
+
 test("optional offline font profile remains complete and opt-in", async () => {
   const starterRoot = path.join(skillRoot, "assets/starter");
   const weights = ["Thin", "ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold", "Bold"];

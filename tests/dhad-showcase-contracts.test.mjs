@@ -76,6 +76,21 @@ test('visual system avoids generic slop defaults and keeps content visible', asy
   assert.match(css, /@media \(forced-colors: active\)/);
 });
 
+test('semantic colors and living control states are visible in the showcase', async () => {
+  const [component, css] = await Promise.all([
+    readFile(componentUrl, 'utf8'),
+    readFile(cssUrl, 'utf8')
+  ]);
+
+  for (const role of ['action', 'success', 'warning', 'danger', 'assistive', 'info']) {
+    assert.match(css, new RegExp(`--${role}:\\s*#`));
+  }
+  assert.match(component, /معاني الألوان في ضاد/);
+  assert.match(css, /\.output-tab--document:hover[^}]+var\(--success\)/s);
+  assert.match(css, /\.toast--danger[^}]+var\(--danger/s);
+  assert.match(css, /transition:\s*background-color/);
+});
+
 test('ownership wording and source acknowledgments are confined to the footer', async () => {
   const component = await readFile(componentUrl, 'utf8');
   const footerAt = component.indexOf('<footer');
@@ -89,14 +104,14 @@ test('ownership wording and source acknowledgments are confined to the footer', 
   assert.doesNotMatch(body, /شكرًا ل/);
 });
 
-test('metadata, release number, and install archives match Dhad 3.0.1', async () => {
+test('metadata, release number, and install archives match Dhad 3.0.2', async () => {
   const [layout, component, pkg] = await Promise.all([
     readFile(layoutUrl, 'utf8'),
     readFile(componentUrl, 'utf8'),
     readFile(packageUrl, 'utf8')
   ]);
 
-  assert.equal(JSON.parse(pkg).version, '3.0.1');
+  assert.equal(JSON.parse(pkg).version, '3.0.2');
   assert.match(layout, /lang="ar" dir="rtl"/);
   assert.match(layout, /عمل أوضح وعربية أفضل/);
   assert.match(component, />حمّل ضاد</);

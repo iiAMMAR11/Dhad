@@ -1545,7 +1545,7 @@
   }
 
   const api = Object.freeze({
-    version: "3.0.1",
+    version: "3.0.2",
     setTheme,
     toggleTheme,
     configureSymbols,

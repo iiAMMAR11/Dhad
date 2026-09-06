@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.0.2
+
+- Restored semantic color as a core part of Dhad: blue for action, green for success, gold for warning, red for problems, violet for assistance, and cyan for information.
+- Added visible hover, press, and selected states so controls feel alive without decorative motion.
+- Updated the showcase to demonstrate saturated, meaning-led color in real interactions.
+
 ## 3.0.1
 
 - Added safe space between text and framed edges.

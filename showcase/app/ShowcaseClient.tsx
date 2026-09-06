@@ -137,8 +137,8 @@ function taskLabel(count: number) {
 function DhadMark() {
   return (
     <svg className="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M10 29h24c10 0 17 7 17 16v8H22c-8 0-12-5-12-13V29Z" />
-      <circle cx="39" cy="16" r="5" />
+      <path className="brand-mark__body" d="M10 29h24c10 0 17 7 17 16v8H22c-8 0-12-5-12-13V29Z" />
+      <circle className="brand-mark__dot" cx="39" cy="16" r="5" />
     </svg>
   );
 }
@@ -270,12 +270,13 @@ export default function ShowcaseClient() {
             <p>مهارة تجعل أي عمل أوضح وأسهل</p>
             <p>تهتم بالعربية وتحافظ على هوية مشروعك.</p>
           </div>
-          <h1 id="opening-title" className="wordmark" aria-label="ضاد">ضاد</h1>
+          <h1 id="opening-title" className={`wordmark wordmark--${output}`} aria-label="ضاد">ضاد</h1>
           <div className="output-lab">
             <div className="output-tabs" role="tablist" aria-label="اختر نوع العمل">
               {outputOrder.map((key, index) => (
                 <button
                   key={key}
+                  className={`output-tab output-tab--${key}`}
                   ref={(node) => { outputRefs.current[key] = node; }}
                   type="button"
                   role="tab"
@@ -307,6 +308,13 @@ export default function ShowcaseClient() {
             <article><h3>ما يبقى لك</h3><p>الهوية، والخط، والألوان، وطريقة العرض، وطبيعة مشروعك.</p></article>
           </div>
           <p className="principle-note">نبدأ بما تريد من الناس أن يفهموه أو يفعلوه، ثم نضيف ما يحتاجه العمل فقط.</p>
+          <ul className="semantic-key" aria-label="معاني الألوان في ضاد">
+            <li className="semantic-key__action"><strong>افعل</strong><span>زر أو خطوة</span></li>
+            <li className="semantic-key__success"><strong>تم</strong><span>نجاح واكتمال</span></li>
+            <li className="semantic-key__warning"><strong>انتبه</strong><span>تنبيه يحتاج نظرًا</span></li>
+            <li className="semantic-key__danger"><strong>مشكلة</strong><span>خطأ يحتاج إصلاحًا</span></li>
+            <li className="semantic-key__assistive"><strong>مساعدة</strong><span>اقتراح أو دعم</span></li>
+          </ul>
         </section>
 
         <section className="arabic-lab" id="lab" aria-labelledby="lab-title">
@@ -373,6 +381,7 @@ export default function ShowcaseClient() {
             {patternGroups.map((group, index) => (
               <button
                 key={group.id}
+                className={`pattern-group pattern-group--${group.id}`}
                 ref={(node) => { groupRefs.current[group.id] = node; }}
                 type="button"
                 role="tab"
@@ -389,7 +398,7 @@ export default function ShowcaseClient() {
             ))}
           </div>
 
-          <div className="pattern-stage" id="pattern-panel" role="tabpanel" aria-labelledby={`pattern-tab-${currentGroup.id}`} tabIndex={0}>
+          <div className={`pattern-stage pattern-stage--${currentGroup.id}`} id="pattern-panel" role="tabpanel" aria-labelledby={`pattern-tab-${currentGroup.id}`} tabIndex={0}>
             <div className="pattern-index" aria-label={`أفكار ${currentGroup.label}`}>
               <p>{currentGroup.description}</p>
               <ol>
@@ -462,7 +471,7 @@ export default function ShowcaseClient() {
         </nav>
       </footer>
 
-      {toast && <div className="toast" role="status" aria-live="polite">{toast}<button type="button" onClick={() => setToast('')}>إغلاق</button></div>}
+      {toast && <div className={`toast ${toast.startsWith('تعذّر') ? 'toast--danger' : 'toast--success'}`} role="status" aria-live="polite">{toast}<button type="button" onClick={() => setToast('')}>إغلاق</button></div>}
     </>
   );
 }

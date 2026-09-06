@@ -15,6 +15,7 @@ Dhad is a skill that makes work clearer and easier while taking proper care of A
 ## What does it do?
 
 - Gives text comfortable space from edges and between lines.
+- Uses color with clear meaning and keeps the project's intended visual energy.
 - Handles Arabic direction, numbers, links, and dates correctly.
 - Makes steps, buttons, and messages easier to understand.
 - Keeps your project's identity instead of replacing it.
