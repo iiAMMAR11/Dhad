@@ -1,13 +1,13 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "$description": "Canonical Dhad tokens. Public packages include the licensed IBM Plex Sans Arabic webfont files used by the starter.",
+  "$description": "Portable Dhad starter tokens. Host products map the semantic roles to their own identity.",
   "$extensions": {
     "com.dhad": {
       "name": "Dhad",
       "namespace": "dhad",
-      "version": "2.0.0",
-      "defaultTheme": "dark",
-      "direction": "rtl"
+      "version": "3.0.0",
+      "defaultTheme": "host",
+      "direction": "locale"
     }
   },
   "primitive": {
@@ -70,14 +70,6 @@
         "700": { "$type": "color", "$value": "#005b8c" },
         "800": { "$type": "color", "$value": "#00496f" }
       },
-      "workflow": {
-        "writingDark": { "$type": "color", "$value": "#90adff" },
-        "writingLight": { "$type": "color", "$value": "#465fc0" },
-        "readyDark": { "$type": "color", "$value": "#ffc15a" },
-        "readyLight": { "$type": "color", "$value": "#8a5200" },
-        "editingDark": { "$type": "color", "$value": "#d8a7f0" },
-        "editingLight": { "$type": "color", "$value": "#6d359e" }
-      },
       "tint": {
         "dark": {
           "action": { "$type": "color", "$value": "#25394f" },
@@ -109,11 +101,11 @@
       "family": {
         "sans": {
           "$type": "fontFamily",
-          "$value": ["IBM Plex Sans Arabic", "-apple-system", "BlinkMacSystemFont", "Geeza Pro", "Arabic UI Text", "Traditional Arabic", "Al Nile", "Helvetica Neue", "Arial", "sans-serif"]
+          "$value": ["system-ui", "-apple-system", "BlinkMacSystemFont", "Geeza Pro", "Arabic UI Text", "Traditional Arabic", "Al Nile", "Arial", "sans-serif"]
         },
         "display": {
           "$type": "fontFamily",
-          "$value": ["IBM Plex Sans Arabic", "Geeza Pro", "Arial", "sans-serif"]
+          "$value": ["system-ui", "-apple-system", "Geeza Pro", "Arabic UI Text", "Arial", "sans-serif"]
         },
         "mono": {
           "$type": "fontFamily",
@@ -139,8 +131,7 @@
         "900": { "$type": "dimension", "$value": "28px" },
         "1000": { "$type": "dimension", "$value": "30px" },
         "amount": { "$type": "dimension", "$value": "28px" },
-        "metric": { "$type": "dimension", "$value": "30px" },
-        "teleprompter": { "$type": "dimension", "$value": "52px" }
+        "metric": { "$type": "dimension", "$value": "30px" }
       },
       "lineHeight": {
         "tight": { "$type": "number", "$value": 1.15 },
@@ -442,10 +433,6 @@
       "timecode": {
         "$type": "typography",
         "$value": { "fontFamily": "{primitive.font.family.mono}", "fontSize": "{primitive.font.size.800}", "fontWeight": "{primitive.font.weight.medium}", "lineHeight": "{primitive.font.lineHeight.tight}" }
-      },
-      "teleprompter": {
-        "$type": "typography",
-        "$value": { "fontFamily": "{primitive.font.family.sans}", "fontSize": "{primitive.font.size.teleprompter}", "fontWeight": "{primitive.font.weight.medium}", "lineHeight": "{primitive.font.lineHeight.reading}" }
       }
     },
     "space": {
@@ -537,28 +524,6 @@
       "light": {
         "raised": { "$type": "shadow", "$value": "{primitive.shadow.lightRaised}" },
         "overlay": { "$type": "shadow", "$value": "{primitive.shadow.lightOverlay}" }
-      }
-    }
-  },
-  "recipe": {
-    "production": {
-      "color": {
-        "dark": {
-          "workflow": {
-            "writing": { "$type": "color", "$value": "{primitive.color.workflow.writingDark}" },
-            "ready": { "$type": "color", "$value": "{primitive.color.workflow.readyDark}" },
-            "editing": { "$type": "color", "$value": "{primitive.color.workflow.editingDark}" },
-            "done": { "$type": "color", "$value": "{semantic.color.dark.success.foreground}" }
-          }
-        },
-        "light": {
-          "workflow": {
-            "writing": { "$type": "color", "$value": "{primitive.color.workflow.writingLight}" },
-            "ready": { "$type": "color", "$value": "{primitive.color.workflow.readyLight}" },
-            "editing": { "$type": "color", "$value": "{primitive.color.workflow.editingLight}" },
-            "done": { "$type": "color", "$value": "{semantic.color.light.success.foreground}" }
-          }
-        }
       }
     }
   },

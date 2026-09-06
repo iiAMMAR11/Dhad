@@ -1,5 +1,5 @@
 // Generated from dhad.tokens.json. Do not edit directly.
-// IBM Plex Sans Arabic (OFL-1.1) is the Dhad typeface; bundle it from assets/starter/fonts.
+// Host typography takes precedence; map these roles to the product font.
 package com.dhad.design
 
 import androidx.compose.ui.graphics.Color
@@ -48,10 +48,6 @@ data class DhadColorTokens(
     val timecode: Color,
     val onTimecode: Color,
     val timecodeSoft: Color,
-    val productionWorkflowWriting: Color,
-    val productionWorkflowReady: Color,
-    val productionWorkflowEditing: Color,
-    val productionWorkflowDone: Color,
     val buttonPrimaryBackground: Color,
     val buttonPrimaryForeground: Color,
     val buttonDangerBackground: Color,
@@ -108,10 +104,6 @@ object DhadThemes {
         timecode = Color(0xFF005B8C),
         onTimecode = Color(0xFFFFFFFF),
         timecodeSoft = Color(0xFF203A45),
-        productionWorkflowWriting = Color(0xFF90ADFF),
-        productionWorkflowReady = Color(0xFFFFC15A),
-        productionWorkflowEditing = Color(0xFFD8A7F0),
-        productionWorkflowDone = Color(0xFF57D976),
         buttonPrimaryBackground = Color(0xFF0068D7),
         buttonPrimaryForeground = Color(0xFFFFFFFF),
         buttonDangerBackground = Color(0xFFC93631),
@@ -166,10 +158,6 @@ object DhadThemes {
         timecode = Color(0xFF005B8C),
         onTimecode = Color(0xFFFFFFFF),
         timecodeSoft = Color(0xFFE5F6FD),
-        productionWorkflowWriting = Color(0xFF465FC0),
-        productionWorkflowReady = Color(0xFF8A5200),
-        productionWorkflowEditing = Color(0xFF6D359E),
-        productionWorkflowDone = Color(0xFF146B34),
         buttonPrimaryBackground = Color(0xFF0068D7),
         buttonPrimaryForeground = Color(0xFFFFFFFF),
         buttonDangerBackground = Color(0xFFC93631),
@@ -239,9 +227,9 @@ object DhadFocus {
 }
 
 object DhadTypography {
-    const val Sans = "IBM Plex Sans Arabic"
-    const val Display = "IBM Plex Sans Arabic"
-    const val Fallback = "IBM Plex Sans Arabic"
+    const val Sans = "system-ui"
+    const val Display = "system-ui"
+    const val Fallback = "system"
     const val Mono = "SF Mono"
     const val Light = 300
     const val Regular = 400
@@ -258,7 +246,6 @@ object DhadTypography {
     val Size800 = 22.sp
     val Size900 = 28.sp
     val Size1000 = 30.sp
-    val SizeTeleprompter = 52.sp
     const val LineTight = 1.15f
     const val LineHeading = 1.4f
     const val LineBody = 1.55f

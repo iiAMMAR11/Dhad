@@ -85,7 +85,7 @@ def validate_source() -> None:
         ROOT / "PRIVACY.md",
         ROOT / "TERMS.md",
         ROOT / "src" / SKILL_NAME / "SKILL.md",
-        ROOT / "src" / SKILL_NAME / "references" / "platforms.md",
+        ROOT / "src" / SKILL_NAME / "references" / "outputs.md",
         ROOT / "src" / SKILL_NAME / "assets" / "tokens" / "dhad.tokens.json",
         ROOT / "platforms" / "chatgpt" / SKILL_NAME / ".codex-plugin" / "plugin.json",
     ]

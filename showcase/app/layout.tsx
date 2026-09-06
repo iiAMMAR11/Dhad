@@ -4,8 +4,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dhad.iiammar.com'),
-  title: 'Dhad | تصميم عربي وصحة عربية',
-  description: 'ضاد سكيل للواجهات العربية يجمع تصميم RTL مع الجمع والبحث والترتيب والأرقام والتقويم المحلي.',
+  title: 'ضاد | تجربة وايت ليبل بعربية متفوّقة',
+  description: 'ضاد مهارة تحسّن تجربة المنتجات والمواقع والتطبيقات والعروض والمستندات، وتجعل العربية وRTL جزءًا أصيلًا منها.',
   alternates: { canonical: '/' },
   icons: {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
@@ -17,12 +17,12 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'Dhad',
     title: 'Dhad',
-    description: 'ضاد يجعل الواجهة تبدو عربية وتتصرف بالعربية.',
+    description: 'تجربة أفضل لكل مخرج، وعربية وRTL من الدرجة الأولى.',
   },
   twitter: {
     card: 'summary',
     title: 'Dhad',
-    description: 'ضاد يجعل الواجهة تبدو عربية وتتصرف بالعربية.',
+    description: 'تجربة أفضل لكل مخرج، وعربية وRTL من الدرجة الأولى.',
     creator: '@iiAMMAR11',
   },
 };
@@ -39,8 +39,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ar" dir="rtl" data-dhad-theme="dark" suppressHydrationWarning>
-      <body className="dhad-app">{children}</body>
+    <html lang="ar" dir="rtl" data-theme="light" suppressHydrationWarning>
+      <body>{children}</body>
     </html>
   );
 }

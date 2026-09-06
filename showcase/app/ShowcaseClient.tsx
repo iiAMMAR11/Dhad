@@ -1,657 +1,453 @@
 'use client';
 
-import type { CSSProperties } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-type Theme = 'dark' | 'light';
-type View = 'cards' | 'table' | 'board';
-type SymbolContext = 'operations' | 'commerce' | 'learning' | 'none';
-type SyncState = 'saving' | 'synced' | 'offline' | 'failed';
-type Toast = { message: string; tone: 'success' | 'danger' | 'neutral' };
+type Theme = 'light' | 'dark';
+type OutputKey = 'site' | 'saas' | 'app' | 'slides' | 'document';
+type RegionKey = 'sa' | 'ae';
+type Pattern = { id: string; title: string; summary: string; example: string };
+type PatternGroup = { id: string; label: string; description: string; patterns: Pattern[] };
 
-const symbolSets = {
-  operations: {
-    label: 'إدارة عمل',
-    workspace: '🧭',
-    collection: '🗂️',
-    item: '📄',
-    complete: '✅',
+const outputs: Record<OutputKey, { label: string; title: string; proof: string; adapts: string; sample: string }> = {
+  site: {
+    label: 'موقع',
+    title: 'قراءة واضحة ومسار لا يضيّع الزائر',
+    proof: 'بنية دلالية، تنقّل مفهوم، محتوى عربي مريح، ورابط ثابت لكل صفحة مهمة.',
+    adapts: 'هوية الموقع، صوته، خطه، ألوانه، ونظام مكوّناته.',
+    sample: 'مقال يربط الكاتب والسلسلة والمصادر والمحتوى التالي بدل اقتراحات عشوائية.',
   },
-  commerce: {
-    label: 'متجر',
-    workspace: '🛍️',
-    collection: '📦',
-    item: '🧾',
-    complete: '✅',
+  saas: {
+    label: 'SaaS',
+    title: 'مهمة مباشرة وحالات لا تخفي ما يجري',
+    proof: 'بحث مصنّف، عودة تحفظ السياق، صلاحيات مفهومة، وحفظ وفشل قابلان للتعافي.',
+    adapts: 'كثافة البيانات، نموذج المجال، صلاحيات الفريق، وتدفّق المنتج.',
+    sample: 'يفتح المستخدم فاتورة من نتائج مفلترة، ثم يعود إلى المرشح والموضع نفسيهما.',
   },
-  learning: {
-    label: 'تعليم',
-    workspace: '🎓',
-    collection: '📚',
-    item: '📝',
-    complete: '✅',
+  app: {
+    label: 'تطبيق',
+    title: 'سلوك عربي يحترم عرف الجهاز',
+    proof: 'RTL حقيقي، مناطق آمنة، لمس مريح، خطوط ديناميكية، وتسليم بين الأجهزة عند الحاجة.',
+    adapts: 'مكوّنات iOS أو Android والتنقّل والحركة الأصلية لكل منصة.',
+    sample: 'قرار قصير يظهر كلوحة سفلية على الهاتف وكحوار على سطح المكتب.',
   },
-  none: {
-    label: 'بدون إيموجي',
-    workspace: '',
-    collection: '',
-    item: '',
-    complete: '',
+  slides: {
+    label: 'عرض',
+    title: 'فكرة واحدة في كل شريحة',
+    proof: 'اتجاه صحيح، عناوين قصيرة، دليل بصري مقروء، وأرقام لا تنقلب داخل العربية.',
+    adapts: 'هوية الجهة، نسبة الشرائح، الجمهور، ومسافة المشاهدة.',
+    sample: 'شريحة مقارنة تحافظ على محاذاة العناوين والأرقام والخلاصة رغم اختلاف طول النص.',
   },
-} satisfies Record<SymbolContext, Record<string, string>>;
-
-const projectSets: Record<SymbolContext, { name: string; meta: string; state: string }[]> = {
-  operations: [
-    { name: 'إطلاق بوابة العملاء', meta: '17 / 25', state: 'قيد التنفيذ' },
-    { name: 'تحسين رحلة التسجيل', meta: '8 / 8', state: 'مكتمل' },
-    { name: 'تحديث مركز المساعدة', meta: '4 / 12', state: 'مراجعة' },
-  ],
-  commerce: [
-    { name: 'إطلاق متجر الشتاء', meta: '17 / 25', state: 'قيد التنفيذ' },
-    { name: 'طلبات هذا الأسبوع', meta: '8 / 8', state: 'مكتمل' },
-    { name: 'مراجعة المخزون', meta: '4 / 12', state: 'مراجعة' },
-  ],
-  learning: [
-    { name: 'إطلاق مساق العربية', meta: '17 / 25', state: 'قيد التنفيذ' },
-    { name: 'تقييم الوحدة الثانية', meta: '8 / 8', state: 'مكتمل' },
-    { name: 'مراجعة بنك الأسئلة', meta: '4 / 12', state: 'مراجعة' },
-  ],
-  none: [
-    { name: 'إعداد بوابة الدعم', meta: '17 / 25', state: 'قيد التنفيذ' },
-    { name: 'توحيد ملفات العملاء', meta: '8 / 8', state: 'مكتمل' },
-    { name: 'مراجعة خطة الإطلاق', meta: '4 / 12', state: 'مراجعة' },
-  ],
+  document: {
+    label: 'مستند',
+    title: 'عربية سليمة من المصدر إلى PDF',
+    proof: 'أنماط عناوين حقيقية، جداول مستقرة، روابط معزولة، وتشكيل لا يتكسّر عند التصدير.',
+    adapts: 'قالب المؤسسة، نظام المراجع، مقاس الصفحة، ومحرك التصدير.',
+    sample: 'مرجع لاتيني يبقى LTR داخل فقرة عربية من دون قلب السطر أو فصل الحروف.',
+  },
 };
 
-const installers = [
+const outputOrder = Object.keys(outputs) as OutputKey[];
+
+const patternGroups: PatternGroup[] = [
   {
-    name: 'OpenAI Plugin',
-    archive: 'Dhad-openai-plugin.zip',
-    platforms: 'ChatGPT + Codex',
-    context: 'ملف واحد يعمل مع ChatGPT وCodex.',
-    targets: [
-      { platform: 'ChatGPT', invoke: '@dhad', copyable: true },
-      { platform: 'Codex', invoke: '$dhad', copyable: true },
+    id: 'adopt',
+    label: 'اعتماد',
+    description: 'تحوّل الجودة من رأي إلى نتيجة قابلة للفحص.',
+    patterns: [
+      { id: 'conformance', title: 'حزمة المطابقة', summary: 'نتيجة واضحة لكل بند: نجح، يحتاج إصلاحًا، أو غير منطبق.', example: 'RTL نجح 14 من 16. بقي اتجاه التقدم ورسالة الخطأ.' },
+      { id: 'rtl-audit', title: 'مدقّق RTL', summary: 'يرصد الاتجاه الفيزيائي والجزر المختلطة ومخاطر القص قبل المراجعة البصرية.', example: 'يستبدل margin-left بدور منطقي حين يكون المعنى اتجاهيًا.' },
+      { id: 'component', title: 'دليل المكوّن', summary: 'الغرض والبنية والحالات والإدخال والخرج والوصول في عقد قصير.', example: 'البحث: اسم ظاهر، مسح، تحميل، لا نتائج، خطأ، ولوحة مفاتيح.' },
+      { id: 'adoption', title: 'مسار التبنّي', summary: 'تدقيق ثم شاشة ممثلة ثم تعميم ثم بوابة جودة.', example: 'ابدأ بنتائج البحث قبل تغيير لوحة SaaS كلها.' },
+      { id: 'index', title: 'فهرس ضاد', summary: 'الوصول للقواعد بحسب المهمة، لا بحسب أسماء الملفات.', example: 'أرقام وتواريخ تفتح قواعد المنطقة فورًا.' },
+      { id: 'tokens', title: 'توكنز قابلة للنقل', summary: 'أدوار DTCG مستقرة تتحول إلى نظام المنصة من دون فرض لوحة.', example: 'selection.background يبقى اختيارًا في CSS وThemeData.' },
+      { id: 'stability', title: 'بوابة الاستقرار', summary: 'لا يصبح الأصل مستقرًا قبل اكتمال الوصول والحالات والاختبار.', example: 'مكوّن بلا تنقل بلوحة المفاتيح يبقى تجريبيًا.' },
     ],
   },
   {
-    name: 'Agent Skill',
-    archive: 'Dhad-agent-skill.zip',
-    platforms: 'Claude Chat + Claude Code',
-    context: 'ارفع الملف في Claude Chat أو ثبّته في Claude Code.',
-    targets: [
-      { platform: 'Claude Chat', invoke: 'يعمل بعد رفع الملف', copyable: false },
-      { platform: 'Claude Code', invoke: '/dhad', copyable: true },
+    id: 'content',
+    label: 'محتوى ومنطقة',
+    description: 'تجعل النص والزمن والسلوك جزءًا من التصميم.',
+    patterns: [
+      { id: 'article', title: 'وصفة المقال', summary: 'تربط الكاتب والسلسلة والتاريخ والمصادر والمحتوى التالي.', example: 'بعد المقال يظهر التالي من السلسلة، لا بطاقة عشوائية.' },
+      { id: 'locale', title: 'بيانات المنطقة', summary: 'ملف واحد للأرقام والتقويم والأسبوع والعطلة والعملة والمنطقة الزمنية.', example: 'السعودية: الأحد بداية الأسبوع والجمعة والسبت عطلة.' },
+      { id: 'adapter', title: 'محوّلات سلوكية', summary: 'المعنى ثابت، لكن المكوّن يتبع عرف المخرج.', example: 'قرار واحد يصبح sheet على الهاتف وdialog على سطح المكتب.' },
     ],
   },
-] as const;
+  {
+    id: 'journeys',
+    label: 'كيانات ورحلات',
+    description: 'أنماط تربط الحالة والسياق والثقة عبر المنتج.',
+    patterns: [
+      { id: 'lifecycle', title: 'دورة حياة الكيان', summary: 'واجهة مختلفة قبل الحدث وأثناءه وبعده.', example: 'موعد قادم يعرض التذكير، والجاري الحالة، والمنتهي السجل.' },
+      { id: 'hub', title: 'مركز الكيان', summary: 'عنوان ثابت يجمع الهوية والحالة والعلاقات والأفعال.', example: 'صفحة عميل واحدة تصل إليها من البحث والفاتورة والتنبيه.' },
+      { id: 'typed-search', title: 'البحث المصنّف', summary: 'نتائج مفصولة حسب النوع عندما تختلف نية المستخدم.', example: 'الهلال يظهر تحت عملاء ومشاريع وملفات ومقالات.' },
+      { id: 'return', title: 'حفظ سياق العودة', summary: 'الاستعلام والمرشح والموضع تبقى بعد فتح التفاصيل.', example: 'العودة إلى غير مدفوع والربع الثالث في الموضع نفسه.' },
+      { id: 'mode', title: 'وضع التجربة', summary: 'العرض يتغير لحاجة حقيقية من دون نسخة منفصلة للمنتج.', example: 'وضع الاجتماع يكبّر المحتوى ويخفي أدوات التحرير.' },
+      { id: 'gate', title: 'بوابة الإتاحة', summary: 'تفحص المنطقة والاشتراك والجهاز والصلاحية قبل الفعل.', example: 'اطلب صلاحية المدير ثم عد إلى التقرير نفسه.' },
+      { id: 'live', title: 'ثقة البيانات الحية', summary: 'تفرق بين مباشر ومتأخر وتقديري ومتوقف.', example: 'آخر تحديث 10:42، متأخر دقيقتين.' },
+      { id: 'handoff', title: 'التسليم بين الأجهزة', summary: 'تنقل المهمة إلى جهاز أنسب مع حفظ الحالة.', example: 'يؤكد المستخدم الدخول من الهاتف ويكمل على التلفاز.' },
+      { id: 'concealed', title: 'القيمة المحجوبة', summary: 'تخفي قيمة حساسة أو مفسدة للتجربة بكشف متعمد قابل للعكس.', example: 'إخفاء الرصيد أثناء مشاركة الشاشة.' },
+      { id: 'series', title: 'متابعة السلسلة', summary: 'تربط العناصر المتتابعة وتحفظ التقدم وتقدم التالي.', example: 'بعد الدرس الثالث يظهر تابع الدرس الرابع.' },
+    ],
+  },
+];
 
-const syncLabels: Record<SyncState, string> = {
-  saving: 'جارٍ الحفظ',
-  synced: 'تم الحفظ',
-  offline: 'بدون إنترنت',
-  failed: 'تعذّر الحفظ',
-};
+const arabicNames = ['أحمد', 'إبراهيم', 'آمنة', 'يحيى', 'فاطمة'];
+const collator = new Intl.Collator('ar', { numeric: true, sensitivity: 'base' });
+const plural = new Intl.PluralRules('ar');
+const numberArabic = new Intl.NumberFormat('ar-SA-u-nu-arab');
 
-const arabicNames = ['أحمد', 'إبراهيم', 'آدم', 'يوسف'];
-const arabicNumber = new Intl.NumberFormat('ar-SA-u-nu-arab');
-const arabicPlural = new Intl.PluralRules('ar');
-const arabicCollator = new Intl.Collator('ar', { numeric: true, sensitivity: 'base' });
-
-function normalizeArabic(value: string) {
+function normalizeArabicSearch(value: string) {
   return value
+    .normalize('NFKC')
     .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
     .replace(/[إأآٱ]/g, 'ا')
     .replace(/ى/g, 'ي')
-    .replace(/ة/g, 'ه')
-    .trim();
+    .trim()
+    .toLocaleLowerCase('ar');
 }
 
-function formatTasks(count: number) {
-  const formatted = arabicNumber.format(count);
+function taskLabel(count: number) {
+  const value = numberArabic.format(count);
   const forms: Record<Intl.LDMLPluralRule, string> = {
     zero: 'لا توجد مهام',
     one: 'مهمة واحدة',
     two: 'مهمتان',
-    few: `${formatted} مهام`,
-    many: `${formatted} مهمة`,
-    other: `${formatted} مهمة`,
+    few: `${value} مهام`,
+    many: `${value} مهمة`,
+    other: `${value} مهمة`,
   };
-  return forms[arabicPlural.select(count)];
+  return forms[plural.select(count)];
 }
 
-function ArabicCorrectnessLab() {
-  const [count, setCount] = useState(11);
-  const [query, setQuery] = useState('احمد');
-  const matches = useMemo(() => {
-    const normalizedQuery = normalizeArabic(query);
-    return arabicNames
-      .filter((name) => normalizeArabic(name).includes(normalizedQuery))
-      .sort(arabicCollator.compare);
-  }, [query]);
-  const sortedNames = useMemo(() => [...arabicNames].sort(arabicCollator.compare), []);
-
+function DhadMark() {
   return (
-    <div className="arabic-lab" aria-labelledby="arabic-lab-title">
-      <header className="arabic-lab__intro">
-        <h3 id="arabic-lab-title">جرّب السلوك العربي، لا شكله فقط</h3>
-        <p>هذه أمثلة حقيقية من طبقة الصحة العربية في ضاد. غيّر العدد أو عبارة البحث وشاهد القرار يتبدّل.</p>
-      </header>
-
-      <section className="arabic-lab__row" aria-labelledby="plural-title">
-        <div className="arabic-lab__explain">
-          <span>جمع</span>
-          <h4 id="plural-title">ست حالات بدل مفرد وجمع</h4>
-          <p>صفر، واحد، اثنان، قليل، كثير، وبقية الأعداد.</p>
-        </div>
-        <div className="arabic-lab__demo plural-demo">
-          <output htmlFor="task-count" aria-live="polite">{formatTasks(count)}</output>
-          <label htmlFor="task-count"><span>العدد: {arabicNumber.format(count)}</span></label>
-          <input id="task-count" type="range" min="0" max="102" value={count} onChange={(event) => setCount(Number(event.target.value))} />
-          <div className="plural-demo__samples" aria-label="أمثلة سريعة">
-            {[0, 1, 2, 3, 11, 102].map((value) => <button key={value} type="button" aria-pressed={count === value} onClick={() => setCount(value)}>{arabicNumber.format(value)}</button>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="arabic-lab__row" aria-labelledby="search-title">
-        <div className="arabic-lab__explain">
-          <span>بحث وترتيب</span>
-          <h4 id="search-title">«احمد» يجد «أحمد»</h4>
-          <p>تطبيع مدروس للبحث، مع ترتيب عربي عبر Intl.Collator.</p>
-        </div>
-        <div className="arabic-lab__demo search-demo">
-          <label className="dhad-field" htmlFor="arabic-search">
-            <span className="dhad-label">ابحث عن اسم</span>
-            <input id="arabic-search" className="dhad-input" value={query} onChange={(event) => setQuery(event.target.value)} />
-          </label>
-          <p className="search-demo__result" aria-live="polite">
-            <span>النتيجة</span>
-            <strong>{matches.length ? matches.join('، ') : 'لا توجد نتيجة'}</strong>
-          </p>
-          <p className="search-demo__sort"><span>الترتيب العربي</span><bdi>{sortedNames.join(' ← ')}</bdi></p>
-        </div>
-      </section>
-
-      <section className="arabic-lab__row" aria-labelledby="time-title">
-        <div className="arabic-lab__explain">
-          <span>وقت ومنطقة</span>
-          <h4 id="time-title">التاريخ نفسه، عرضان صحيحان</h4>
-          <p>تُحفظ القيمة الميلادية، ويُعرض الهجري عند الحاجة مع أسبوع المنطقة.</p>
-        </div>
-        <div className="arabic-lab__demo time-demo">
-          <div><span>ميلادي</span><time dateTime="2026-08-31">٣١ أغسطس ٢٠٢٦</time></div>
-          <div><span>هجري</span><time dateTime="2026-08-31">١٨ ربيع الأول ١٤٤٨ هـ</time></div>
-          <ol aria-label="أيام الأسبوع في السعودية">
-            <li>الأحد</li><li>الاثنين</li><li>الثلاثاء</li><li>الأربعاء</li><li>الخميس</li><li data-weekend>الجمعة</li><li data-weekend>السبت</li>
-          </ol>
-          <p>بداية الأسبوع: الأحد · العطلة: الجمعة والسبت</p>
-        </div>
-      </section>
-    </div>
+    <svg className="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M10 29h24c10 0 17 7 17 16v8H22c-8 0-12-5-12-13V29Z" />
+      <circle cx="39" cy="16" r="5" />
+    </svg>
   );
-}
-
-function DecorativeSymbol({ value }: { value: string }) {
-  if (!value) return null;
-  return <span className="symbol" aria-hidden="true">{value}</span>;
-}
-
-function useDialog(open: boolean, onClose: () => void) {
-  const dialogRef = useRef<HTMLElement>(null);
-  const restoreFocus = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    restoreFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const dialog = dialogRef.current;
-    const shell = document.querySelector<HTMLElement>('[data-site-shell]');
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    if (shell) shell.inert = true;
-
-    const focusable = () => Array.from(dialog?.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    ) ?? []);
-    window.setTimeout(() => focusable()[0]?.focus(), 0);
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-      if (event.key !== 'Tab') return;
-      const items = focusable();
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = previousOverflow;
-      if (shell) shell.inert = false;
-      restoreFocus.current?.focus();
-    };
-  }, [open, onClose]);
-
-  return dialogRef;
 }
 
 export default function ShowcaseClient() {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [view, setView] = useState<View>('cards');
-  const [symbols, setSymbols] = useState<SymbolContext>('operations');
-  const [sync, setSync] = useState<SyncState>('synced');
-  const [toast, setToast] = useState<Toast | null>(null);
-  const [toastPaused, setToastPaused] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [showFieldError, setShowFieldError] = useState(false);
-  const [publicUrl, setPublicUrl] = useState('https://example.com');
-  const [saving, setSaving] = useState(false);
-  const closeDialog = useCallback(() => setDialogOpen(false), []);
-  const dialogRef = useDialog(dialogOpen, closeDialog);
-  const symbolMap = symbolSets[symbols];
+  const [theme, setTheme] = useState<Theme>('light');
+  const [output, setOutput] = useState<OutputKey>('site');
+  const [groupId, setGroupId] = useState(patternGroups[0].id);
+  const [patternId, setPatternId] = useState(patternGroups[0].patterns[0].id);
+  const [count, setCount] = useState(11);
+  const [query, setQuery] = useState('احمد');
+  const [region, setRegion] = useState<RegionKey>('sa');
+  const [balanceVisible, setBalanceVisible] = useState(false);
+  const [toast, setToast] = useState('');
+  const outputRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const groupRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const regionRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
-    let timer: number | undefined;
-    try {
-      const stored = window.localStorage.getItem('dhad-showcase-theme');
-      if (stored === 'light' || stored === 'dark') {
-        timer = window.setTimeout(() => setTheme(stored), 0);
-      }
-    } catch {
-      // The theme still works when storage is unavailable.
-    }
-    return () => {
-      if (timer !== undefined) window.clearTimeout(timer);
-    };
+    const saved = window.localStorage.getItem('dhad-showcase-theme');
+    const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const frame = window.requestAnimationFrame(() => {
+      setTheme(saved === 'dark' || saved === 'light' ? saved : preferred);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.dhadTheme = theme;
-    try {
-      window.localStorage.setItem('dhad-showcase-theme', theme);
-    } catch {
-      // Storage is optional.
-    }
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem('dhad-showcase-theme', theme);
   }, [theme]);
 
   useEffect(() => {
-    if (!toast || toastPaused) return;
-    const timer = window.setTimeout(() => setToast(null), 5000);
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(''), 3200);
     return () => window.clearTimeout(timer);
-  }, [toast, toastPaused]);
+  }, [toast]);
 
-  const projects = useMemo(() => projectSets[symbols], [symbols]);
+  const currentOutput = outputs[output];
+  const currentGroup = patternGroups.find((item) => item.id === groupId) ?? patternGroups[0];
+  const currentPattern = currentGroup.patterns.find((item) => item.id === patternId) ?? currentGroup.patterns[0];
+  const matches = useMemo(() => {
+    const normalized = normalizeArabicSearch(query);
+    return [...arabicNames]
+      .filter((name) => normalizeArabicSearch(name).includes(normalized))
+      .sort(collator.compare);
+  }, [query]);
+  const date = new Date('2026-09-06T09:00:00+03:00');
+  const regionData = region === 'sa'
+    ? { label: 'السعودية', week: 'الأحد', weekend: 'الجمعة والسبت', locale: 'ar-SA-u-ca-islamic-umalqura' }
+    : { label: 'الإمارات', week: 'الاثنين', weekend: 'السبت والأحد', locale: 'ar-AE-u-nu-arab' };
+  const formattedDate = new Intl.DateTimeFormat(regionData.locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 
-  const notify = (message: string, tone: Toast['tone'] = 'neutral') => setToast({ message, tone });
+  function moveOutputTab(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const rtlStep = event.key === 'ArrowRight' ? -1 : 1;
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? outputOrder.length - 1
+        : (index + rtlStep + outputOrder.length) % outputOrder.length;
+    const next = outputOrder[nextIndex];
+    setOutput(next);
+    outputRefs.current[next]?.focus();
+  }
 
-  const saveExample = () => {
-    setSaving(true);
-    setSync('saving');
-    window.setTimeout(() => {
-      setSaving(false);
-      setSync('synced');
-      notify('تم حفظ التغييرات ومزامنتها.', 'success');
-    }, 800);
-  };
+  function chooseGroup(nextId: string) {
+    const next = patternGroups.find((item) => item.id === nextId) ?? patternGroups[0];
+    setGroupId(next.id);
+    setPatternId(next.patterns[0].id);
+  }
 
-  const copyCommand = async (command: string) => {
+  function moveGroupTab(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const rtlStep = event.key === 'ArrowRight' ? -1 : 1;
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? patternGroups.length - 1
+        : (index + rtlStep + patternGroups.length) % patternGroups.length;
+    const next = patternGroups[nextIndex];
+    chooseGroup(next.id);
+    groupRefs.current[next.id]?.focus();
+  }
+
+  function moveRegion(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (!['ArrowRight', 'ArrowLeft'].includes(event.key)) return;
+    event.preventDefault();
+    const order: RegionKey[] = ['sa', 'ae'];
+    const rtlStep = event.key === 'ArrowRight' ? -1 : 1;
+    const next = order[(index + rtlStep + order.length) % order.length];
+    setRegion(next);
+    regionRefs.current[next]?.focus();
+  }
+
+  async function copyInstall() {
+    const command = '$skill-installer ثبّت dhad من https://github.com/iiAMMAR11/Dhad';
     try {
       await navigator.clipboard.writeText(command);
-      notify('تم نسخ الأمر.', 'success');
+      setToast('نُسخ أمر التثبيت');
     } catch {
-      notify('تعذّر النسخ. انسخ الأمر يدويًا.', 'danger');
+      setToast('تعذّر النسخ. انسخ الأمر يدويًا');
     }
-  };
+  }
 
   return (
     <>
-      <div data-site-shell>
-        <a className="dhad-skip-link" href="#main">تخطَّ إلى المحتوى</a>
-        <header className="site-nav">
-          <a className="site-brand" href="#main" aria-label="Dhad، البداية">
-            <svg className="site-brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M6.5 14.5h11.2c4.6 0 7.8 3.1 7.8 7.1V25H12c-3.5 0-5.5-2-5.5-5.3v-5.2Z" />
-              <circle className="site-brand__mark-accent" cx="19.5" cy="8.5" r="2.4" />
-            </svg>
-            <span>ضاد</span>
-          </a>
-          <nav className="site-nav__links" aria-label="أقسام الموقع">
-            <a href="#concept">فكرة ضاد</a>
-            <a href="#foundation">الألوان والخطوط</a>
-            <a href="#components">الأزرار والحقول</a>
-            <a href="#patterns">طريقة الاستخدام</a>
-            <a href="#install">التثبيت</a>
-            <a href="#creator">عن مطوّر الـ Skill</a>
-          </nav>
-          <button className="dhad-btn dhad-btn--secondary site-theme" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            {theme === 'dark' ? 'عرض فاتح' : 'عرض داكن'}
+      <a className="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+      <header className="site-header">
+        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark /><span>ضاد</span></a>
+        <nav className="main-nav" aria-label="أقسام الموقع">
+          <a href="#lab">جرّب</a>
+          <a href="#patterns">الأنماط</a>
+          <a href="#install">التثبيت</a>
+        </nav>
+        <div className="header-actions">
+          <a href="https://github.com/iiAMMAR11/Dhad" target="_blank" rel="noreferrer">GitHub</a>
+          <button type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+            {theme === 'light' ? 'مظهر داكن' : 'مظهر فاتح'}
           </button>
-        </header>
+        </div>
+      </header>
 
-        <main id="main">
-          <section className="hero" aria-labelledby="hero-title">
-            <div className="hero__title-row">
-              <p>سكيل عربي بطبقتين</p>
-              <span>تصميم RTL · صحة عربية · أربع منصات</span>
-            </div>
-            <h1 id="hero-title" dir="ltr">Dhad</h1>
-            <div className="hero__lower">
-              <div className="hero__statement">العربية ليست اتجاهًا فقط.</div>
-              <p>ضاد يجعل الواجهة تبدو عربية وتتصرف بالعربية: من توزيع العناصر وحالاتها إلى الجمع والبحث والترتيب والتقويم.</p>
-            </div>
-
-            <div className="control-rail" aria-label="خيارات الاستعراض">
-              <label>
-                <span>نوع المشروع</span>
-                <select value={symbols} onChange={(event) => setSymbols(event.target.value as SymbolContext)}>
-                  {Object.entries(symbolSets).map(([value, set]) => <option key={value} value={value}>{set.label}</option>)}
-                </select>
-              </label>
-              <button type="button" className="control-rail__status" data-state={sync} onClick={() => setSync(sync === 'synced' ? 'offline' : sync === 'offline' ? 'failed' : 'synced')}>
-                <span aria-hidden="true" />
-                <span aria-live="polite">{syncLabels[sync]}</span>
-              </button>
-            </div>
-
-            <WorkspaceSpecimen
-              symbolMap={symbolMap}
-              projects={projects}
-              view={view}
-              onViewChange={setView}
-              onNotify={notify}
-            />
-          </section>
-
-          <section className="concept-section" id="concept" aria-labelledby="concept-title">
-            <div className="concept-section__opening">
-              <h2 id="concept-title">واجهة عربية كاملة = تصميم عربي + صحة عربية</h2>
-              <p>معظم الأدوات تقلب الاتجاه وتنتهي. ضاد يجمع بين نظام واجهات RTL قابل للتنفيذ وقواعد اللغة والبيانات والزمن التي تجعل المنتج مفهومًا للمستخدم العربي.</p>
-            </div>
-            <div className="concept-equation" aria-label="طبقتا ضاد تنتجان منتجًا عربيًا كاملًا">
-              <p><strong>تصميم عربي</strong><span>تخطيط منطقي، حالات واضحة، وصول، وخط مضمّن</span></p>
-              <b aria-hidden="true">+</b>
-              <p><strong>صحة عربية</strong><span>جمع، بحث، ترتيب، أرقام، تقويم، وأسبوع محلي</span></p>
-              <b aria-hidden="true">=</b>
-              <p><strong>منتج عربي كامل</strong><span>لا يبدو مترجمًا ولا يتصرف كنسخة أجنبية</span></p>
-            </div>
-            <ArabicCorrectnessLab />
-          </section>
-
-          <section className="principles" aria-label="مبادئ النظام">
-            <p><strong>RTL أصيل</strong><span>التخطيط يبدأ من العربية</span></p>
-            <p><strong>جمع صحيح</strong><span>ست حالات، لا حالتان فقط</span></p>
-            <p><strong>بحث مرن</strong><span>احمد يجد أحمد</span></p>
-            <p><strong>وقت محلي</strong><span>هجري وميلادي وأسبوع المنطقة</span></p>
-          </section>
-
-          <section className="catalog-section" id="foundation">
-            <header className="section-heading section-heading--split">
-              <h2>نظام واحد لكل المنصات</h2>
-              <p>الألوان والخطوط والمسافات نفسها تعمل في المواقع والتطبيقات، ليبقى شكل المنتج متناسقًا في كل مكان.</p>
-            </header>
-            <div className="token-board" aria-label="الألوان الدلالية">
-              <TokenSwatch name="الخلفية" token="--dhad-color-bg" className="token--canvas" />
-              <TokenSwatch name="السطح" token="--dhad-color-surface-1" className="token--surface" />
-              <TokenSwatch name="الإجراء" token="--dhad-color-accent" className="token--action" />
-              <TokenSwatch name="النجاح" token="--dhad-color-success-fill" className="token--success" />
-              <TokenSwatch name="الخطر" token="--dhad-color-danger-fill" className="token--danger" />
-              <TokenSwatch name="التنبيه" token="--dhad-color-warning-fill" className="token--warning" />
-            </div>
-            <div className="type-board">
-              <div className="type-board__display">
-                <span>خط واحد مضمّن: IBM Plex Sans Arabic بأوزانه الثمانية</span>
-                <strong>نص واضح وسهل القراءة</strong>
-              </div>
-              <dl>
-                <div><dt>عنوان كبير</dt><dd>30 / 700</dd><span>للعناوين الرئيسية</span></div>
-                <div><dt>عنوان</dt><dd>22 / 700</dd><span>لعناوين الأقسام</span></div>
-                <div><dt>نص</dt><dd>15 / 400</dd><span>للقراءة اليومية</span></div>
-                <div><dt>رمز تقني</dt><dd dir="ltr">Dhad-2048</dd><span>للأكواد والأرقام</span></div>
-              </dl>
-            </div>
-            <aside className="font-policy" aria-labelledby="font-policy-title">
-              <div>
-                <span>الخطوط</span>
-                <h3 id="font-policy-title">IBM Plex Sans Arabic — خط ضاد الثابت</h3>
-              </div>
-              <div>
-                <p><strong>الخط مضمّن مع السكِل بأوزانه الثمانية</strong> تحت رخصة SIL Open Font License 1.1 المفتوحة، ويعمل بلا اتصال ولا CDN ولا أي فحص ترخيص.</p>
-                <p>التسلسل الهرمي يأتي من الوزن والحجم واللون: النص الجاري 450، عناصر الواجهة 500، العناوين 600–700 — لا حاجة لعائلة ثانية أبدًا.</p>
-                <a href="https://github.com/IBM/plex" target="_blank" rel="noreferrer">IBM Plex على GitHub — مفتوح المصدر OFL-1.1</a>
-              </div>
-            </aside>
-          </section>
-
-          <section className="catalog-section" id="components">
-            <header className="section-heading">
-              <h2>كل عنصر جاهز لمختلف الحالات</h2>
-              <p>الأزرار والحقول توضّح للمستخدم عند الحفظ أو الخطأ أو التعطيل أو انقطاع الاتصال.</p>
-            </header>
-            <div className="component-lab">
-              <section className="component-row" aria-labelledby="actions-title">
-                <div><h3 id="actions-title">الأزرار</h3><p>أزرار واضحة للحفظ وتبديل العرض والحذف.</p></div>
-                <div className="component-row__stage">
-                  <button className="dhad-btn dhad-btn--primary" type="button" onClick={saveExample} aria-busy={saving}>{saving ? 'جارٍ الحفظ' : 'حفظ التغييرات'}</button>
-                  <button className="dhad-btn dhad-btn--secondary" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? 'عرض فاتح' : 'عرض داكن'}</button>
-                  <button className="dhad-btn dhad-btn--danger" type="button" onClick={() => setDialogOpen(true)}>حذف عنصر</button>
-                  <button className="dhad-btn dhad-btn--primary" type="button" disabled>غير متاح</button>
-                </div>
-              </section>
-
-              <section className="component-row" aria-labelledby="fields-title">
-                <div><h3 id="fields-title">الحقول</h3><p>لكل حقل اسم واضح ورسالة مفيدة عند الخطأ.</p></div>
-                <div className="field-grid">
-                  <label className="dhad-field"><span className="dhad-label">اسم مساحة العمل</span><input className="dhad-input" defaultValue="بوابة العملاء" aria-describedby="project-help" /><small id="project-help">يظهر هذا الاسم للفريق.</small></label>
-                  <label className="dhad-field" data-invalid={showFieldError || undefined}><span className="dhad-label">الرابط العام</span><input className="dhad-input" dir="ltr" value={publicUrl} onChange={(event) => setPublicUrl(event.target.value)} aria-invalid={showFieldError} aria-describedby="url-feedback" /><small id="url-feedback">{showFieldError ? 'أدخل رابطًا كاملًا يبدأ بـ https://' : 'يظهر الرابط من اليسار إلى اليمين ليسهل قراءته.'}</small></label>
-                  <button className="dhad-btn dhad-btn--secondary" type="button" onClick={() => { const next = !showFieldError; setShowFieldError(next); setPublicUrl(next ? 'example' : 'https://example.com'); }}>{showFieldError ? 'إصلاح المثال' : 'عرض الخطأ'}</button>
-                </div>
-              </section>
-
-              <section className="component-row" aria-labelledby="feedback-title">
-                <div><h3 id="feedback-title">الحالة والتقدم</h3><p>كل حالة مكتوبة بوضوح ولا تعتمد على اللون وحده.</p></div>
-                <div className="component-row__stage component-row__stage--vertical">
-                  <div className="status-line">
-                    {(['saving', 'synced', 'offline', 'failed'] as SyncState[]).map((state) => <button key={state} type="button" className="dhad-sync-status" data-state={state} aria-pressed={sync === state} onClick={() => setSync(state)}><span aria-hidden="true" />{syncLabels[state]}</button>)}
-                  </div>
-                  <div className="dhad-progress" style={{ '--dhad-progress': 0.68 } as CSSProperties} role="progressbar" aria-label="تقدم المهام" aria-valuemin={0} aria-valuemax={25} aria-valuenow={17} aria-valuetext="17 من 25">
-                    <div className="dhad-progress__meta"><span>المهام</span><strong>17 / 25</strong></div>
-                    <div className="dhad-progress__track"><span className="dhad-progress__fill" /></div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </section>
-
-          <section className="catalog-section" id="patterns">
-            <header className="section-heading section-heading--split">
-              <h2>يناسب مشروعك بدل أن يفرض شكلًا واحدًا</h2>
-              <p>القواعد الأساسية ثابتة، لكن الأسماء والرموز والأمثلة تتغير حسب نوع مشروعك.</p>
-            </header>
-            <div className="pattern-comparison">
-              <article>
-                <span>الأساس</span>
-                <h3>واجهة تناسب مشاريع مختلفة</h3>
-                <ul><li>تنقّل واضح وتغيير طريقة العرض</li><li>حالات التحميل والفراغ والخطأ</li><li>جداول ولوحات تدعم لوحة المفاتيح</li><li>نوافذ تناسب الكمبيوتر والجوال</li></ul>
-              </article>
-              <article className="adaptation-card">
-                <span>أمثلة</span>
-                <h3>الأسماء تتغير حسب المشروع</h3>
-                <dl className="adaptation-map">
-                  <div><dt dir="rtl">SaaS</dt><dd>مساحة · مشروع · مهمة</dd></div>
-                  <div><dt>تجارة</dt><dd>متجر · مجموعة · طلب</dd></div>
-                  <div><dt>تعليم</dt><dd>أكاديمية · مساق · درس</dd></div>
-                </dl>
-              </article>
-            </div>
-          </section>
-
-          <section className="catalog-section symbols-section" id="symbols">
-            <header className="section-heading">
-              <h2>الإيموجي اختياري ويتغير حسب المشروع</h2>
-              <p>إذا كان مشروعك يستخدم الإيموجي، يختار السكيل رموزًا مناسبة له. ويمكنك إيقافها تمامًا.</p>
-            </header>
-            <div className="symbol-switcher" role="group" aria-label="اختيار نوع المشروع">
-              {(Object.entries(symbolSets) as [SymbolContext, typeof symbolSets[SymbolContext]][]).map(([key, set]) => <button key={key} type="button" aria-pressed={symbols === key} onClick={() => setSymbols(key)}>{set.label}</button>)}
-            </div>
-            <div className="symbol-demo">
-              <p><DecorativeSymbol value={symbolMap.workspace} /><strong>مساحة العمل</strong><span>رمز المشروع</span></p>
-              <p><DecorativeSymbol value={symbolMap.collection} /><strong>مجموعة</strong><span>تضم عدة عناصر</span></p>
-              <p><DecorativeSymbol value={symbolMap.item} /><strong>عنصر</strong><span>العنصر الأساسي</span></p>
-              <p><DecorativeSymbol value={symbolMap.complete} /><strong>مكتمل</strong><span>النص يوضح المعنى</span></p>
-            </div>
-          </section>
-
-          <section className="catalog-section install-section" id="install">
-            <header className="section-heading section-heading--split">
-              <h2>ملفان لأربع منصات</h2>
-              <p>حمّل الملف المناسب: ملف لـChatGPT وCodex، وملف لـClaude Chat وClaude Code.</p>
-            </header>
-            <div className="installer-list">
-              {installers.map((installer, index) => (
-                <article key={installer.name}>
-                  <span dir="ltr">0{index + 1}</span>
-                  <div className="installer-list__identity">
-                    <p dir="ltr">{installer.platforms}</p>
-                    <h3 dir="ltr">{installer.name}</h3>
-                    <p>{installer.context}</p>
-                    <code dir="ltr">{installer.archive}</code>
-                  </div>
-                  <dl className="installer-list__targets">
-                    {installer.targets.map((target) => (
-                      <div key={target.platform}>
-                        <dt dir="ltr">{target.platform}</dt>
-                        <dd>
-                          <code dir={target.copyable ? 'ltr' : 'rtl'}>{target.invoke}</code>
-                          {target.copyable && (
-                            <button type="button" aria-label={`نسخ استدعاء ${target.platform}`} onClick={() => copyCommand(target.invoke)}>نسخ</button>
-                          )}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                </article>
+      <main id="main">
+        <section className="opening" aria-labelledby="opening-title">
+          <div className="opening-copy">
+            <p>مهارة وايت ليبل لتجربة أفضل</p>
+            <p>العربية جزء أصيل، وهوية مشروعك هي الأصل.</p>
+          </div>
+          <h1 id="opening-title" className="wordmark" aria-label="ضاد">ضاد</h1>
+          <div className="output-lab">
+            <div className="output-tabs" role="tablist" aria-label="اختر نوع المخرج">
+              {outputOrder.map((key, index) => (
+                <button
+                  key={key}
+                  ref={(node) => { outputRefs.current[key] = node; }}
+                  type="button"
+                  role="tab"
+                  id={`tab-${key}`}
+                  aria-selected={output === key}
+                  aria-controls={`panel-${key}`}
+                  tabIndex={output === key ? 0 : -1}
+                  onKeyDown={(event) => moveOutputTab(event, index)}
+                  onClick={() => setOutput(key)}
+                >{outputs[key].label}</button>
               ))}
             </div>
-            <p className="release-note">نفس نظام التصميم يعمل على المنصات الأربع.</p>
-          </section>
-
-          <section className="platform-matrix" aria-labelledby="platform-title">
-            <div><h2 id="platform-title">ما الذي يعمل الآن؟</h2><p>نسخة الويب جاهزة، أما ملفات التطبيقات فهي نقطة بداية تحتاج إلى تطوير داخل مشروعك.</p></div>
-            <dl>
-              <div><dt>مواقع الويب</dt><dd>جاهز للاستخدام</dd></div>
-              <div><dt>مشاريع React</dt><dd>أمثلة موثقة</dd></div>
-              <div><dt>تطبيقات الجوال وسطح المكتب</dt><dd>ملفات بداية تجريبية</dd></div>
-              <div><dt>أمثلة متخصصة</dt><dd>اختيارية</dd></div>
-            </dl>
-          </section>
-
-        </main>
-
-        <footer className="site-footer">
-          <section className="creator-section" id="creator" aria-labelledby="creator-title">
-            <div className="creator-section__heading">
-              <p>ضاد، مشروع مستقل</p>
-              <h2 id="creator-title">عمَّار</h2>
-            </div>
-            <div className="creator-section__body">
-              <p>طوّرت ضاد ليجمع تصميم الواجهات العربية مع صحة اللغة والبيانات والزمن في سكيل واحد.</p>
-              <a className="creator-project-link" href="https://github.com/iiAMMAR11/Dhad" target="_blank" rel="noreferrer">مستودع Dhad المستقل على GitHub</a>
-              <nav className="creator-links" aria-label="وسائل التواصل مع عمّار">
-                <a href="https://github.com/iiAMMAR11" target="_blank" rel="noreferrer"><span dir="rtl">GitHub</span><strong dir="ltr">iiAMMAR11</strong></a>
-                <a href="https://x.com/iiAMMAR11" target="_blank" rel="noreferrer"><span>X (تويتر)</span><strong dir="ltr">@iiAMMAR11</strong></a>
-                <a href="mailto:Hello@iiammar.com"><span>البريد</span><strong dir="ltr">Hello@iiammar.com</strong></a>
-                <a href="https://iiammar.com" target="_blank" rel="noreferrer"><span>الموقع</span><strong dir="ltr">iiammar.com</strong></a>
-              </nav>
-            </div>
-          </section>
-          <div className="site-footer__policy">
-            <nav aria-label="الترخيص والإشعارات">
-              <a href="https://github.com/iiAMMAR11/Dhad/blob/main/NOTICE.md" target="_blank" rel="noreferrer">الإشعارات وحقوق المصادر</a>
-              <a href="https://github.com/IBM/plex" target="_blank" rel="noreferrer">ترخيص IBM Plex Sans Arabic</a>
-            </nav>
-            <span>ضاد مفتوح المصدر تحت MIT، وخطه العربي مضمّن بأوزانه الثمانية تحت OFL-1.1 ويعمل بلا اتصال.</span>
+            <section className="output-panel" id={`panel-${output}`} role="tabpanel" aria-labelledby={`tab-${output}`} tabIndex={0}>
+              <div><span className="section-number" aria-hidden="true">01</span><h2>{currentOutput.title}</h2></div>
+              <dl>
+                <div><dt>يثبت</dt><dd>{currentOutput.proof}</dd></div>
+                <div><dt>يتكيّف</dt><dd>{currentOutput.adapts}</dd></div>
+                <div><dt>مثال</dt><dd>{currentOutput.sample}</dd></div>
+              </dl>
+            </section>
           </div>
-        </footer>
-      </div>
+        </section>
 
-      {toast && (
-        <div className="dhad-toast-stack">
-          <div className="dhad-toast" data-tone={toast.tone} role={toast.tone === 'danger' ? 'alert' : 'status'} aria-atomic="true" onMouseEnter={() => setToastPaused(true)} onMouseLeave={() => setToastPaused(false)} onFocus={() => setToastPaused(true)} onBlur={() => setToastPaused(false)} tabIndex={0}>
-            <span>{toast.message}</span><button type="button" onClick={() => setToast(null)} aria-label="إغلاق الرسالة">إغلاق</button>
+        <section className="principle" aria-labelledby="principle-title">
+          <span className="section-number" aria-hidden="true">02</span>
+          <h2 id="principle-title">ضاد لا تلبّس المشاريع شكلًا واحدًا.</h2>
+          <div className="principle-ledger">
+            <article><h3>ما يثبت</h3><p>وضوح المهمة، الوصول، الثقة، صحة العربية، وجودة التسليم.</p></article>
+            <article><h3>ما يتبع مشروعك</h3><p>الهوية، الخط، اللون، الكثافة، التقنية، المجال، وعرف المنصة.</p></article>
           </div>
-        </div>
-      )}
+          <p className="principle-note">تبدأ من هدف المستخدم، ثم تضيف العربية والمنطقة والمخرج والوصفة التي يحتاجها العمل فقط.</p>
+        </section>
 
-      {dialogOpen && (
-        <div className="dhad-dialog-backdrop" onMouseDown={(event) => { if (event.currentTarget === event.target) closeDialog(); }}>
-          <section className="dhad-dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="delete-title" aria-describedby="delete-description">
-            <h2 id="delete-title">نقل العنصر إلى المحذوفات؟</h2>
-            <p id="delete-description">لن يُحذف نهائيًا، ويمكن استعادته لاحقًا.</p>
-            <div className="dhad-dialog__actions">
-              <button className="dhad-btn dhad-btn--secondary" type="button" onClick={closeDialog}>إلغاء</button>
-              <button className="dhad-btn dhad-btn--danger" type="button" onClick={() => { closeDialog(); notify('نُقل العنصر إلى المحذوفات', 'success'); }}>نقل إلى المحذوفات</button>
+        <section className="arabic-lab" id="lab" aria-labelledby="lab-title">
+          <header className="section-intro">
+            <span className="section-number" aria-hidden="true">03</span>
+            <h2 id="lab-title">جرّب السلوك العربي</h2>
+            <p>غيّر القيم. النتيجة ليست صورة ثابتة.</p>
+          </header>
+
+          <div className="lab-grid">
+            <section className="lab-cell plural-cell" aria-labelledby="plural-title">
+              <div className="lab-cell__head"><span>جمع</span><h3 id="plural-title">ست حالات</h3></div>
+              <output htmlFor="task-count" aria-live="polite">{taskLabel(count)}</output>
+              <label htmlFor="task-count">العدد: {numberArabic.format(count)}</label>
+              <input id="task-count" type="range" min="0" max="103" value={count} onChange={(event) => setCount(Number(event.target.value))} />
+              <div className="number-choices" aria-label="أمثلة سريعة">
+                {[0, 1, 2, 5, 11, 100, 103].map((value) => (
+                  <button key={value} type="button" aria-pressed={count === value} onClick={() => setCount(value)}>{numberArabic.format(value)}</button>
+                ))}
+              </div>
+            </section>
+
+            <section className="lab-cell search-cell" aria-labelledby="search-title">
+              <div className="lab-cell__head"><span>بحث</span><h3 id="search-title">متسامح، لا يدمج السجلات</h3></div>
+              <label htmlFor="arabic-search">ابحث عن اسم</label>
+              <input id="arabic-search" value={query} onChange={(event) => setQuery(event.target.value)} />
+              <p className="search-result" aria-live="polite"><span>النتيجة</span><strong>{matches.length ? matches.join('، ') : 'لا توجد نتيجة'}</strong></p>
+              <p className="micro-note">«احمد» يجد «أحمد». التطبيع للعثور فقط، وليس لدمج شخصين.</p>
+            </section>
+
+            <section className="lab-cell region-cell" aria-labelledby="region-title">
+              <div className="lab-cell__head"><span>منطقة</span><h3 id="region-title">الوقت يتبع الناس</h3></div>
+              <div className="region-switch" role="radiogroup" aria-label="اختر المنطقة">
+                <button ref={(node) => { regionRefs.current.sa = node; }} type="button" role="radio" aria-checked={region === 'sa'} tabIndex={region === 'sa' ? 0 : -1} onKeyDown={(event) => moveRegion(event, 0)} onClick={() => setRegion('sa')}>السعودية</button>
+                <button ref={(node) => { regionRefs.current.ae = node; }} type="button" role="radio" aria-checked={region === 'ae'} tabIndex={region === 'ae' ? 0 : -1} onKeyDown={(event) => moveRegion(event, 1)} onClick={() => setRegion('ae')}>الإمارات</button>
+              </div>
+              <dl>
+                <div><dt>التاريخ</dt><dd>{formattedDate}</dd></div>
+                <div><dt>بداية الأسبوع</dt><dd>{regionData.week}</dd></div>
+                <div><dt>العطلة</dt><dd>{regionData.weekend}</dd></div>
+              </dl>
+            </section>
+
+            <section className="lab-cell conceal-cell" aria-labelledby="conceal-title">
+              <div className="lab-cell__head"><span>خصوصية</span><h3 id="conceal-title">قيمة محجوبة عند الحاجة</h3></div>
+              <p className="balance" aria-live="polite" dir="ltr">{balanceVisible ? 'SAR 24,680.00' : '••••••••'}</p>
+              <button type="button" aria-pressed={balanceVisible} onClick={() => setBalanceVisible((value) => !value)}>
+                {balanceVisible ? 'إخفاء الرصيد' : 'إظهار الرصيد'}
+              </button>
+              <p className="micro-note">مفيد عند مشاركة الشاشة، ويظل القرار بيد المستخدم.</p>
+            </section>
+          </div>
+        </section>
+
+        <section className="pattern-browser" id="patterns" aria-labelledby="patterns-title">
+          <header className="section-intro">
+            <span className="section-number" aria-hidden="true">04</span>
+            <h2 id="patterns-title">عشرون إضافة، في مكانها الصحيح</h2>
+            <p>اختر المجموعة ثم النمط. لن تُحمّل كلها على كل مشروع.</p>
+          </header>
+
+          <div className="pattern-groups" role="tablist" aria-label="مجموعات الأنماط">
+            {patternGroups.map((group, index) => (
+              <button
+                key={group.id}
+                ref={(node) => { groupRefs.current[group.id] = node; }}
+                type="button"
+                role="tab"
+                id={`pattern-tab-${group.id}`}
+                aria-selected={currentGroup.id === group.id}
+                aria-controls="pattern-panel"
+                tabIndex={currentGroup.id === group.id ? 0 : -1}
+                onKeyDown={(event) => moveGroupTab(event, index)}
+                onClick={() => chooseGroup(group.id)}
+              >
+                <strong>{group.label}</strong>
+                <span>{group.patterns.length} أنماط</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="pattern-stage" id="pattern-panel" role="tabpanel" aria-labelledby={`pattern-tab-${currentGroup.id}`} tabIndex={0}>
+            <div className="pattern-index" aria-label={`أنماط ${currentGroup.label}`}>
+              <p>{currentGroup.description}</p>
+              <ol>
+                {currentGroup.patterns.map((pattern, index) => (
+                  <li key={pattern.id}>
+                    <button type="button" aria-pressed={currentPattern.id === pattern.id} onClick={() => setPatternId(pattern.id)}>
+                      <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                      <strong>{pattern.title}</strong>
+                    </button>
+                  </li>
+                ))}
+              </ol>
             </div>
-          </section>
-        </div>
-      )}
+            <article className="pattern-detail" aria-live="polite">
+              <p className="pattern-detail__group">{currentGroup.label}</p>
+              <h3>{currentPattern.title}</h3>
+              <p>{currentPattern.summary}</p>
+              <div><span>مثال</span><strong>{currentPattern.example}</strong></div>
+            </article>
+          </div>
+        </section>
+
+        <section className="quality" aria-labelledby="quality-title">
+          <div>
+            <span className="section-number" aria-hidden="true">05</span>
+            <h2 id="quality-title">لا يكفي أن تبدو صحيحة.</h2>
+          </div>
+          <ol>
+            <li><span>1</span><strong>المهمة</strong><p>المسار الأقصر واضح.</p></li>
+            <li><span>2</span><strong>العربية</strong><p>اتجاه وجمع وبحث ومنطقة.</p></li>
+            <li><span>3</span><strong>الوصول</strong><p>لوحة مفاتيح ولمس وقارئ شاشة.</p></li>
+            <li><span>4</span><strong>الحالات</strong><p>تحميل وفراغ وخطأ وتعافٍ.</p></li>
+            <li><span>5</span><strong>المخرج</strong><p>اختبار في المتصفح أو الجهاز أو PDF.</p></li>
+          </ol>
+        </section>
+
+        <section className="install" id="install" aria-labelledby="install-title">
+          <header>
+            <span className="section-number" aria-hidden="true">06</span>
+            <h2 id="install-title">ضاد 3.0</h2>
+            <p>مصدر واحد وحزمتان متطابقتان.</p>
+          </header>
+          <div className="install-row">
+            <div><strong>ChatGPT + Codex</strong><code dir="ltr">Dhad-openai-plugin.zip</code></div>
+            <div><strong>Claude Chat + Claude Code</strong><code dir="ltr">Dhad-agent-skill.zip</code></div>
+          </div>
+          <div className="install-command">
+            <code dir="rtl"><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">https://github.com/iiAMMAR11/Dhad</bdi></code>
+            <button type="button" onClick={copyInstall}>نسخ أمر التثبيت</button>
+          </div>
+          <a className="repository-link" href="https://github.com/iiAMMAR11/Dhad" target="_blank" rel="noreferrer">افتح المستودع على GitHub</a>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <section aria-labelledby="owner-title">
+          <p>صاحب ضاد ومطوّرها</p>
+          <h2 id="owner-title">عمَّار</h2>
+          <p>عمل مستقل تطوّر عبر أسابيع من الدراسة والتجريب والتدريب والتحسين.</p>
+        </section>
+        <section aria-labelledby="thanks-title">
+          <h2 id="thanks-title">شكر</h2>
+          <p>شكرًا لمرصاد، وثمانية، ورياضة ثمانية، وللمهارات والمنتجات العربية التي وسّعت زاوية الدراسة. هذا الشكر لا يعني نقلًا أو اشتقاقًا أو شراكة أو ملكية مشتركة في ضاد.</p>
+        </section>
+        <nav aria-label="روابط عمّار وضاد">
+          <a href="https://github.com/iiAMMAR11" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://x.com/iiAMMAR11" target="_blank" rel="noreferrer">X</a>
+          <a href="mailto:Hello@iiammar.com">البريد</a>
+          <a href="https://iiammar.com" target="_blank" rel="noreferrer">iiammar.com</a>
+        </nav>
+      </footer>
+
+      {toast && <div className="toast" role="status" aria-live="polite">{toast}<button type="button" onClick={() => setToast('')}>إغلاق</button></div>}
     </>
-  );
-}
-
-function TokenSwatch({ name, token, className }: { name: string; token: string; className: string }) {
-  return <div className={`token ${className}`}><strong>{name}</strong><code dir="ltr">{token}</code></div>;
-}
-
-function WorkspaceSpecimen({
-  symbolMap,
-  projects,
-  view,
-  onViewChange,
-  onNotify,
-}: {
-  symbolMap: typeof symbolSets[SymbolContext];
-  projects: { name: string; meta: string; state: string }[];
-  view: View;
-  onViewChange: (view: View) => void;
-  onNotify: (message: string, tone?: Toast['tone']) => void;
-}) {
-  const [projectQuery, setProjectQuery] = useState('');
-  const visibleProjects = useMemo(() => {
-    const normalizedQuery = normalizeArabic(projectQuery);
-    if (!normalizedQuery) return projects;
-    return projects.filter((project) => normalizeArabic(project.name).includes(normalizedQuery));
-  }, [projectQuery, projects]);
-
-  return (
-    <section className="workspace" aria-labelledby="workspace-title">
-      <header className="workspace__header">
-        <div><span className="workspace__context"><DecorativeSymbol value={symbolMap.workspace} /> مثال: {symbolMap.label}</span><h2 id="workspace-title">المشاريع الحالية</h2></div>
-        <button className="dhad-btn dhad-btn--primary" type="button" onClick={() => onNotify('أُضيف مشروع جديد', 'success')}>مشروع جديد</button>
-      </header>
-      <div className="workspace__tools">
-        <label><span className="dhad-visually-hidden">ابحث في المشاريع</span><input className="dhad-input" type="search" placeholder="ابحث في المشاريع" value={projectQuery} onChange={(event) => setProjectQuery(event.target.value)} /></label>
-        <div className="view-switcher" role="group" aria-label="طريقة العرض">
-          <button type="button" aria-pressed={view === 'cards'} onClick={() => onViewChange('cards')}>بطاقات</button>
-          <button type="button" aria-pressed={view === 'table'} onClick={() => onViewChange('table')}>جدول</button>
-          <button type="button" aria-pressed={view === 'board'} onClick={() => onViewChange('board')}>لوحة</button>
-        </div>
-      </div>
-      {!visibleProjects.length && <p className="workspace__empty" role="status">لا توجد مشاريع مطابقة.</p>}
-      {view === 'cards' && <div className="workspace__cards">{visibleProjects.map((project) => <article key={project.name}><span className="workspace__symbol"><DecorativeSymbol value={symbolMap.collection} /></span><h3>{project.name}</h3><p>{project.state}</p><strong dir="ltr">{project.meta}</strong></article>)}</div>}
-      {view === 'table' && <div className="workspace__table-wrap"><table><thead><tr><th scope="col">المشروع</th><th scope="col">الحالة</th><th scope="col">التقدم</th></tr></thead><tbody>{visibleProjects.map((project) => <tr key={project.name}><th scope="row"><DecorativeSymbol value={symbolMap.collection} /> {project.name}</th><td>{project.state}</td><td dir="ltr">{project.meta}</td></tr>)}</tbody></table></div>}
-      {view === 'board' && <div className="workspace__board">{['قيد التنفيذ', 'مراجعة', 'مكتمل'].map((state) => <section key={state}><header><h3>{state}</h3><span>{visibleProjects.filter((project) => project.state === state).length}</span></header>{visibleProjects.filter((project) => project.state === state).map((project) => <article key={project.name}><DecorativeSymbol value={symbolMap.item} /><strong>{project.name}</strong><span dir="ltr">{project.meta}</span></article>)}</section>)}</div>}
-    </section>
   );
 }

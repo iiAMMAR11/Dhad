@@ -5,7 +5,7 @@
   if (!document) return;
 
   const THEME_KEY = "dhad-theme";
-  const VALID_THEMES = new Set(["dark", "light"]);
+  const VALID_THEMES = new Set(["auto", "dark", "light"]);
   const VALID_SYMBOL_MODES = new Set(["inherit", "emoji", "icon", "none"]);
   const SYNC_LABELS = Object.freeze({
     idle: "جاهز",
@@ -71,12 +71,12 @@
     const saved = safeStorageGet(THEME_KEY);
     if (VALID_THEMES.has(saved)) return saved;
     const declared = root().getAttribute("data-dhad-theme");
-    return VALID_THEMES.has(declared) ? declared : "dark";
+    return VALID_THEMES.has(declared) ? declared : "auto";
   }
 
   function setTheme(theme, options) {
     const opts = options || {};
-    const next = theme === "light" ? "light" : "dark";
+    const next = VALID_THEMES.has(theme) ? theme : "auto";
     root().setAttribute("data-dhad-theme", next);
     if (opts.persist !== false) safeStorageSet(THEME_KEY, next);
 
@@ -1545,7 +1545,7 @@
   }
 
   const api = Object.freeze({
-    version: "2.0.0",
+    version: "3.0.0",
     setTheme,
     toggleTheme,
     configureSymbols,

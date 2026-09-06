@@ -7,7 +7,6 @@ const root = new URL("../src/dhad/assets/starter/", import.meta.url);
 const runtimeUrl = new URL("js/dhad.runtime.js", root);
 const coreUrl = new URL("css/dhad.core.css", root);
 const patternsUrl = new URL("css/dhad.patterns.css", root);
-const recipesUrl = new URL("css/dhad.recipes-production.css", root);
 
 class FakeElement {
   constructor(tagName = "div") {
@@ -132,7 +131,7 @@ test("runtime exposes only the renamed Dhad contract", async () => {
 
 test("theme storage is guarded and uses the dhad root attribute", async () => {
   const { api, html, localValues } = await loadRuntime();
-  assert.equal(html.getAttribute("data-dhad-theme"), "dark");
+  assert.equal(html.getAttribute("data-dhad-theme"), "auto");
   assert.equal(api.setTheme("light"), "light");
   assert.equal(html.getAttribute("data-dhad-theme"), "light");
   assert.equal(localValues.get("dhad-theme"), "light");
@@ -245,7 +244,7 @@ test("read-only preserves original action, field, select and contenteditable sta
   assert.equal(editor.getAttribute("contenteditable"), "true");
 });
 
-test("progress publishes numeric and textual semantics in RTL", async () => {
+test("progress publishes numeric and textual semantics", async () => {
   const { api } = await loadRuntime();
   const progress = new FakeElement();
   const result = api.setProgress(progress, { value: 17, max: 25, label: "تقدم المشاهد" });
@@ -267,13 +266,12 @@ test("dialog source contains queue, focus trap, inert isolation and scroll lock"
 });
 
 test("split CSS keeps the dhad namespace, touch target and required breakpoints", async () => {
-  const [core, patterns, recipes, runtime] = await Promise.all([
+  const [core, patterns, runtime] = await Promise.all([
     readFile(coreUrl, "utf8"),
     readFile(patternsUrl, "utf8"),
-    readFile(recipesUrl, "utf8"),
     readFile(runtimeUrl, "utf8")
   ]);
-  const css = core + patterns + recipes;
+  const css = core + patterns;
   assert.doesNotMatch(css, /\.an-/);
   assert.match(core, /--dhad-size-touch, 44px/);
   assert.match(css, /max-width: 600px/);
@@ -283,5 +281,5 @@ test("split CSS keeps the dhad namespace, touch target and required breakpoints"
   assert.match(core, /--dhad-progress-color:\s*var\(--dhad-color-accent-text\)/);
   assert.match(patterns, /border-inline-end-color:\s*var\(--dhad-color-accent-text\)/);
   assert.match(runtime, /data-dhad-kanban-move/);
-  assert.match(recipes, /dhad-production-teleprompter/);
+  assert.match(core, /:dir\(rtl\) \.dhad-progress__fill/);
 });

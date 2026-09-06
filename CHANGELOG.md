@@ -1,10 +1,14 @@
 # Release notes
 
-## Release 1
+## 3.0.0
 
-- Arabic-first RTL tokens, components, product patterns, and optional domain recipes.
-- One canonical DTCG token source with generated CSS, React Native, Flutter, SwiftUI, and Compose mappings.
-- Adaptive emoji and symbol language that follows the user's request and the host product.
-- Accessible web runtime for themes, dialogs, toast, view switching, menus, disclosure, progress, and resilient states.
-- Four synchronized installation packages for Codex, ChatGPT, Claude Code, and Claude Chat.
-- IBM Plex Sans Arabic as the single bundled typeface, with eight offline webfont weights under OFL-1.1.
+- Reframed Dhad as a white-label UX skill for products, sites, SaaS, apps, presentations, designs, and documents.
+- Reduced the operational entrypoint and reorganized details by task.
+- Added conformance, RTL audit, component, adoption, DTCG, stability, locale, article, entity, search, live-data, cross-device, concealed-value, and series patterns.
+- Separated tolerant Arabic search from record identity and deduplication.
+- Made brand, font, palette, theme, radius, and technology host-owned decisions.
+- Removed product-study attribution from operational skill files and kept acknowledgments in public overview surfaces only.
+
+## 2.0.0
+
+- Added Arabic-first RTL tokens, components, correctness rules, and multi-platform packages.

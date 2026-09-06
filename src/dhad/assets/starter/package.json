@@ -1,8 +1,8 @@
 {
   "name": "dhad",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": false,
-  "description": "Arabic-first RTL design-system foundation for web and cross-platform products",
+  "description": "White-label UX starter with first-class Arabic and RTL support",
   "license": "MIT",
   "repository": "https://github.com/iiAMMAR11/Dhad",
   "homepage": "https://dhad.iiammar.com",
@@ -16,9 +16,6 @@
     "./tokens.css": "./css/dhad.tokens.css",
     "./core.css": "./css/dhad.core.css",
     "./patterns.css": "./css/dhad.patterns.css",
-    "./recipes/production.css": "./css/dhad.recipes-production.css",
-    "./recipes/shared-expenses.css": "./css/dhad.recipes-shared-expenses.css",
-    "./runtime": "./js/dhad.runtime.js",
-    "./recipes/production": "./js/dhad.recipes-production.js"
+    "./runtime": "./js/dhad.runtime.js"
   }
 }

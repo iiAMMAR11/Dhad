@@ -1,5 +1,4 @@
-/* Dhad - Core components
-   Import dhad.tokens.css before this file. RTL is the default direction. */
+/* Dhad core components. Import dhad.tokens.css first; direction is inherited. */
 
 @import "./dhad.fonts.css";
 
@@ -22,7 +21,7 @@ body.dhad-app {
   font-family: var(--dhad-font-body);
   font-size: var(--dhad-font-size-500);
   line-height: var(--dhad-line-body);
-  direction: rtl;
+  direction: inherit;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -705,8 +704,12 @@ body.dhad-app {
   border-radius: inherit;
   background: var(--dhad-progress-color, var(--dhad-progress-fill));
   transform: scaleX(var(--dhad-progress, 0));
-  transform-origin: right center;
+  transform-origin: left center;
   transition: transform var(--dhad-duration-slow) var(--dhad-ease-expo);
+}
+
+:dir(rtl) .dhad-progress__fill {
+  transform-origin: right center;
 }
 
 .dhad-progress--accent {

@@ -1,5 +1,5 @@
 // Generated from dhad.tokens.json. Do not edit directly.
-// IBM Plex Sans Arabic (OFL-1.1) is the Dhad typeface; bundle it from assets/starter/fonts.
+// Host typography takes precedence; map these roles to the product font.
 import 'package:flutter/material.dart';
 
 @immutable
@@ -46,10 +46,6 @@ class DhadColorTokens {
     required this.timecode,
     required this.onTimecode,
     required this.timecodeSoft,
-    required this.productionWorkflowWriting,
-    required this.productionWorkflowReady,
-    required this.productionWorkflowEditing,
-    required this.productionWorkflowDone,
     required this.buttonPrimaryBackground,
     required this.buttonPrimaryForeground,
     required this.buttonDangerBackground,
@@ -104,10 +100,6 @@ class DhadColorTokens {
   final Color timecode;
   final Color onTimecode;
   final Color timecodeSoft;
-  final Color productionWorkflowWriting;
-  final Color productionWorkflowReady;
-  final Color productionWorkflowEditing;
-  final Color productionWorkflowDone;
   final Color buttonPrimaryBackground;
   final Color buttonPrimaryForeground;
   final Color buttonDangerBackground;
@@ -164,10 +156,6 @@ abstract final class DhadThemes {
     timecode: Color(0xFF005B8C),
     onTimecode: Color(0xFFFFFFFF),
     timecodeSoft: Color(0xFF203A45),
-    productionWorkflowWriting: Color(0xFF90ADFF),
-    productionWorkflowReady: Color(0xFFFFC15A),
-    productionWorkflowEditing: Color(0xFFD8A7F0),
-    productionWorkflowDone: Color(0xFF57D976),
     buttonPrimaryBackground: Color(0xFF0068D7),
     buttonPrimaryForeground: Color(0xFFFFFFFF),
     buttonDangerBackground: Color(0xFFC93631),
@@ -222,10 +210,6 @@ abstract final class DhadThemes {
     timecode: Color(0xFF005B8C),
     onTimecode: Color(0xFFFFFFFF),
     timecodeSoft: Color(0xFFE5F6FD),
-    productionWorkflowWriting: Color(0xFF465FC0),
-    productionWorkflowReady: Color(0xFF8A5200),
-    productionWorkflowEditing: Color(0xFF6D359E),
-    productionWorkflowDone: Color(0xFF146B34),
     buttonPrimaryBackground: Color(0xFF0068D7),
     buttonPrimaryForeground: Color(0xFFFFFFFF),
     buttonDangerBackground: Color(0xFFC93631),
@@ -295,9 +279,9 @@ abstract final class DhadFocus {
 }
 
 abstract final class DhadTypography {
-  static const sans = "IBM Plex Sans Arabic";
-  static const display = "IBM Plex Sans Arabic";
-  static const fallback = "IBM Plex Sans Arabic";
+  static const sans = "system-ui";
+  static const display = "system-ui";
+  static const fallback = "system";
   static const mono = "SF Mono";
   static const light = FontWeight.w300;
   static const regular = FontWeight.w400;
@@ -314,7 +298,6 @@ abstract final class DhadTypography {
   static const size800 = 22.0;
   static const size900 = 28.0;
   static const size1000 = 30.0;
-  static const sizeTeleprompter = 52.0;
   static const lineTight = 1.15;
   static const lineHeading = 1.4;
   static const lineBody = 1.55;

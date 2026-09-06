@@ -1,6 +1,4 @@
-/* Dhad - IBM Plex Sans Arabic (OFL-1.1)
-   The skill's fixed typeface. All eight weights bundled in ../fonts/ so the
-   starter works offline with no CDN, no local-font detection, no fallback dance.
+/* Optional offline font profile. The host product's typography wins.
    License: ../fonts/OFL-LICENSE.txt */
 
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 100; font-style: normal; font-display: swap; src: url("../fonts/IBMPlexSansArabic-Thin.woff2") format("woff2"); }
@@ -11,3 +9,8 @@
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/IBMPlexSansArabic-Medium.woff2") format("woff2"); }
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 600; font-style: normal; font-display: swap; src: url("../fonts/IBMPlexSansArabic-SemiBold.woff2") format("woff2"); }
 @font-face { font-family: "IBM Plex Sans Arabic"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/IBMPlexSansArabic-Bold.woff2") format("woff2"); }
+
+[data-dhad-font="plex"] {
+  --dhad-font-body: "IBM Plex Sans Arabic", "Geeza Pro", Arial, sans-serif;
+  --dhad-font-display: "IBM Plex Sans Arabic", "Geeza Pro", Arial, sans-serif;
+}

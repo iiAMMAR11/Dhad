@@ -1,5 +1,5 @@
 // Generated from dhad.tokens.json. Do not edit directly.
-// IBM Plex Sans Arabic (OFL-1.1) is the Dhad typeface; bundle it from assets/starter/fonts.
+// Host typography takes precedence; map these roles to the product font.
 import SwiftUI
 
 struct DhadColorTokens {
@@ -44,10 +44,6 @@ struct DhadColorTokens {
     let timecode: Color
     let onTimecode: Color
     let timecodeSoft: Color
-    let productionWorkflowWriting: Color
-    let productionWorkflowReady: Color
-    let productionWorkflowEditing: Color
-    let productionWorkflowDone: Color
     let buttonPrimaryBackground: Color
     let buttonPrimaryForeground: Color
     let buttonDangerBackground: Color
@@ -104,10 +100,6 @@ enum DhadThemes {
         timecode: Color(.sRGB, red: 0.0000, green: 0.3569, blue: 0.5490, opacity: 1.0000),
         onTimecode: Color(.sRGB, red: 1.0000, green: 1.0000, blue: 1.0000, opacity: 1.0000),
         timecodeSoft: Color(.sRGB, red: 0.1255, green: 0.2275, blue: 0.2706, opacity: 1.0000),
-        productionWorkflowWriting: Color(.sRGB, red: 0.5647, green: 0.6784, blue: 1.0000, opacity: 1.0000),
-        productionWorkflowReady: Color(.sRGB, red: 1.0000, green: 0.7569, blue: 0.3529, opacity: 1.0000),
-        productionWorkflowEditing: Color(.sRGB, red: 0.8471, green: 0.6549, blue: 0.9412, opacity: 1.0000),
-        productionWorkflowDone: Color(.sRGB, red: 0.3412, green: 0.8510, blue: 0.4627, opacity: 1.0000),
         buttonPrimaryBackground: Color(.sRGB, red: 0.0000, green: 0.4078, blue: 0.8431, opacity: 1.0000),
         buttonPrimaryForeground: Color(.sRGB, red: 1.0000, green: 1.0000, blue: 1.0000, opacity: 1.0000),
         buttonDangerBackground: Color(.sRGB, red: 0.7882, green: 0.2118, blue: 0.1922, opacity: 1.0000),
@@ -162,10 +154,6 @@ enum DhadThemes {
         timecode: Color(.sRGB, red: 0.0000, green: 0.3569, blue: 0.5490, opacity: 1.0000),
         onTimecode: Color(.sRGB, red: 1.0000, green: 1.0000, blue: 1.0000, opacity: 1.0000),
         timecodeSoft: Color(.sRGB, red: 0.8980, green: 0.9647, blue: 0.9922, opacity: 1.0000),
-        productionWorkflowWriting: Color(.sRGB, red: 0.2745, green: 0.3725, blue: 0.7529, opacity: 1.0000),
-        productionWorkflowReady: Color(.sRGB, red: 0.5412, green: 0.3216, blue: 0.0000, opacity: 1.0000),
-        productionWorkflowEditing: Color(.sRGB, red: 0.4275, green: 0.2078, blue: 0.6196, opacity: 1.0000),
-        productionWorkflowDone: Color(.sRGB, red: 0.0784, green: 0.4196, blue: 0.2039, opacity: 1.0000),
         buttonPrimaryBackground: Color(.sRGB, red: 0.0000, green: 0.4078, blue: 0.8431, opacity: 1.0000),
         buttonPrimaryForeground: Color(.sRGB, red: 1.0000, green: 1.0000, blue: 1.0000, opacity: 1.0000),
         buttonDangerBackground: Color(.sRGB, red: 0.7882, green: 0.2118, blue: 0.1922, opacity: 1.0000),
@@ -235,9 +223,9 @@ enum DhadFocus {
 }
 
 enum DhadTypography {
-    static let sans = "IBM Plex Sans Arabic"
-    static let display = "IBM Plex Sans Arabic"
-    static let fallback = "IBM Plex Sans Arabic"
+    static let sans = "system-ui"
+    static let display = "system-ui"
+    static let fallback = "system"
     static let mono = "SF Mono"
     static let light: Font.Weight = .light // 300
     static let regular: Font.Weight = .regular // 400
@@ -254,7 +242,6 @@ enum DhadTypography {
     static let size800: CGFloat = 22
     static let size900: CGFloat = 28
     static let size1000: CGFloat = 30
-    static let sizeTeleprompter: CGFloat = 52
     static let lineTight: CGFloat = 1.15
     static let lineHeading: CGFloat = 1.4
     static let lineBody: CGFloat = 1.55

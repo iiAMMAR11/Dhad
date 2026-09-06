@@ -1,11 +1,10 @@
 // Generated from dhad.tokens.json. Do not edit directly.
-// IBM Plex Sans Arabic (OFL-1.1) is the Dhad typeface across platforms.
-// Font binaries are not included; the adopting app must register its chosen files.
+// Host typography takes precedence; map these roles to the product font.
 
 export const dhadFontFamilies = {
-  "sans": "IBM Plex Sans Arabic",
-  "display": "IBM Plex Sans Arabic",
-  "fallback": "IBM Plex Sans Arabic",
+  "sans": "system-ui",
+  "display": "system-ui",
+  "fallback": "system",
   "mono": "SF Mono"
 } as const;
 
@@ -13,9 +12,9 @@ export const dhad = {
   "meta": {
     "name": "Dhad",
     "namespace": "dhad",
-    "version": "2.0.0",
-    "defaultTheme": "dark",
-    "direction": "rtl"
+    "version": "3.0.0",
+    "defaultTheme": "host",
+    "direction": "locale"
   },
   "themes": {
     "dark": {
@@ -60,10 +59,6 @@ export const dhad = {
       "timecode": "#005b8c",
       "onTimecode": "#ffffff",
       "timecodeSoft": "#203a45",
-      "productionWorkflowWriting": "#90adff",
-      "productionWorkflowReady": "#ffc15a",
-      "productionWorkflowEditing": "#d8a7f0",
-      "productionWorkflowDone": "#57d976",
       "buttonPrimaryBackground": "#0068d7",
       "buttonPrimaryForeground": "#ffffff",
       "buttonDangerBackground": "#c93631",
@@ -118,10 +113,6 @@ export const dhad = {
       "timecode": "#005b8c",
       "onTimecode": "#ffffff",
       "timecodeSoft": "#e5f6fd",
-      "productionWorkflowWriting": "#465fc0",
-      "productionWorkflowReady": "#8a5200",
-      "productionWorkflowEditing": "#6d359e",
-      "productionWorkflowDone": "#146b34",
       "buttonPrimaryBackground": "#0068d7",
       "buttonPrimaryForeground": "#ffffff",
       "buttonDangerBackground": "#c93631",
@@ -137,66 +128,60 @@ export const dhad = {
   },
   "typography": {
     "amount": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 28,
       "fontWeight": "700",
       "lineHeight": 1.15,
       "letterSpacing": "0px"
     },
     "body": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 14,
       "fontWeight": "400",
       "lineHeight": 1.55
     },
     "bodyStrong": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 14,
       "fontWeight": "500",
       "lineHeight": 1.55
     },
     "caption": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 12,
       "fontWeight": "400",
       "lineHeight": 1.4
     },
     "display": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 30,
       "fontWeight": "700",
       "lineHeight": 1.15
     },
     "heading": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 22,
       "fontWeight": "700",
       "lineHeight": 1.4
     },
     "label": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 13,
       "fontWeight": "500",
       "lineHeight": 1.4
     },
     "metric": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 30,
       "fontWeight": "700",
       "lineHeight": 1.15,
       "letterSpacing": "0px"
     },
     "micro": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 11,
       "fontWeight": "500",
       "lineHeight": 1.4
-    },
-    "teleprompter": {
-      "fontFamily": "IBM Plex Sans Arabic",
-      "fontSize": 52,
-      "fontWeight": "500",
-      "lineHeight": 1.7
     },
     "timecode": {
       "fontFamily": "SF Mono",
@@ -205,7 +190,7 @@ export const dhad = {
       "lineHeight": 1.15
     },
     "title": {
-      "fontFamily": "IBM Plex Sans Arabic",
+      "fontFamily": "system-ui",
       "fontSize": 18,
       "fontWeight": "700",
       "lineHeight": 1.4
@@ -382,6 +367,6 @@ export const dhad = {
 export type DhadThemeName = keyof typeof dhad.themes;
 export type DhadTheme = (typeof dhad.themes)[DhadThemeName];
 
-export function dhadTheme(name: DhadThemeName = "dark"): DhadTheme {
+export function dhadTheme(name: DhadThemeName): DhadTheme {
   return dhad.themes[name];
 }
