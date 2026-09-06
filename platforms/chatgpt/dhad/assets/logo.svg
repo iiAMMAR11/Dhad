@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Dhad</title>
+  <desc id="desc">A geometric Arabic noon inspired mark</desc>
+  <path d="M44 104v34c0 46 31 74 84 74s84-28 84-74v-34" fill="none" stroke="#0068D7" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="128" cy="60" r="14" fill="#0068D7"/>
+</svg>

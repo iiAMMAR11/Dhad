@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-dhad-theme="dark" data-dhad-symbol-preset="production" data-dhad-symbol-mode="emoji">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RUNNING</title>
+    <link rel="stylesheet" href="../../src/dhad/assets/starter/css/dhad.tokens.css">
+    <link rel="stylesheet" href="../../src/dhad/assets/starter/css/dhad.core.css">
+    <link rel="stylesheet" href="../../src/dhad/assets/starter/css/dhad.patterns.css">
+  </head>
+  <body class="dhad-app">
+    <main class="dhad-shell dhad-stack">
+      <button id="origin" class="dhad-btn dhad-btn--primary" type="button">ابدأ</button>
+      <span id="symbol" data-dhad-symbol="project" data-dhad-symbol-label="مشروع"></span>
+      <span id="sync" class="dhad-sync"><span data-dhad-sync-label></span></span>
+      <div id="progress" class="dhad-progress">
+        <span class="dhad-progress__label">التقدم</span>
+        <span class="dhad-progress__track"><span class="dhad-progress__fill"></span></span>
+        <span class="dhad-progress__count"></span>
+      </div>
+
+      <section class="dhad-disclosure">
+        <button id="disclosure" class="dhad-disclosure__trigger" type="button" data-dhad-disclosure aria-controls="panel" aria-expanded="false">
+          <span>تفاصيل</span><span class="dhad-disclosure__indicator" aria-hidden="true">⌄</span>
+        </button>
+        <div id="panel" class="dhad-disclosure__panel" hidden>محتوى ظاهر</div>
+      </section>
+
+      <div class="dhad-view-switcher" data-dhad-view-switcher>
+        <button class="dhad-view-switcher__item" type="button" data-dhad-view="cards" aria-controls="cards">بطاقات</button>
+        <button id="list-view" class="dhad-view-switcher__item" type="button" data-dhad-view="list" aria-controls="list">قائمة</button>
+      </div>
+      <div id="cards">بطاقات</div>
+      <div id="list" hidden>قائمة</div>
+
+      <section id="board" class="dhad-kanban" data-dhad-kanban aria-label="سير العمل">
+        <div id="column-a" class="dhad-kanban__column" data-dhad-kanban-column data-dhad-column-name="الأول">
+          <div class="dhad-kanban__header">الأول <span data-dhad-kanban-count></span></div>
+          <div class="dhad-kanban__cards" data-dhad-kanban-cards>
+            <article id="card" class="dhad-kanban__card" data-dhad-kanban-card data-dhad-card-name="المشروع">
+              <h3 class="dhad-kanban__card-title">المشروع</h3>
+              <button id="move" class="dhad-btn dhad-btn--secondary" type="button" data-dhad-kanban-move="next">نقل</button>
+            </article>
+          </div>
+        </div>
+        <div id="column-b" class="dhad-kanban__column" data-dhad-kanban-column data-dhad-column-name="الثاني">
+          <div class="dhad-kanban__header">الثاني <span data-dhad-kanban-count></span></div>
+          <div class="dhad-kanban__cards" data-dhad-kanban-cards></div>
+        </div>
+      </section>
+
+      <output id="result" aria-live="polite">RUNNING</output>
+    </main>
+    <script src="../../src/dhad/assets/starter/js/dhad.runtime.js"></script>
+    <script src="../../src/dhad/assets/starter/js/dhad.recipes-production.js"></script>
+    <script>
+      (async function () {
+        const result = document.getElementById("result");
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        const assert = (condition, message) => { if (!condition) throw new Error(message); };
+        try {
+          if (document.readyState === "loading") {
+            await new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve, { once: true }));
+          }
+          assert(window.Dhad, "runtime missing");
+          assert(document.getElementById("symbol").textContent === "🎬", "Production symbol map missing");
+
+          const reversible = document.createElement("span");
+          const originalIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          reversible.dataset.dhadSymbol = "custom";
+          reversible.setAttribute("role", "img");
+          reversible.setAttribute("aria-label", "رمز أصلي");
+          reversible.appendChild(originalIcon);
+          document.body.appendChild(reversible);
+          Dhad.configureSymbols({ mode: "emoji", map: { custom: "🧭" }, root: reversible });
+          assert(reversible.textContent === "🧭", "emoji mode missing");
+          assert(!reversible.hasAttribute("aria-hidden"), "informative symbol was hidden");
+          Dhad.configureSymbols({ mode: "none", root: reversible });
+          assert(reversible.hidden, "none mode did not hide symbol");
+          document.documentElement.dataset.dhadSymbolMode = "inherit";
+          Dhad.configureSymbols({ mode: "inherit", root: reversible });
+          assert(!reversible.hidden && reversible.firstElementChild === originalIcon, "inherit did not restore host symbol");
+          assert(reversible.getAttribute("aria-label") === "رمز أصلي", "inherit did not restore accessible name");
+
+          const fallbackSymbol = document.createElement("span");
+          fallbackSymbol.dataset.dhadSymbol = "unmapped";
+          fallbackSymbol.textContent = "رمز المضيف";
+          document.body.appendChild(fallbackSymbol);
+          Dhad.configureSymbols({ mode: "emoji", map: { custom: "🧭" }, root: fallbackSymbol });
+          assert(fallbackSymbol.textContent === "رمز المضيف", "partial map erased host fallback");
+
+          Dhad.configureSymbols({
+            mode: "icon",
+            map: { custom: { icon: "compass" } },
+            renderIcon(name) {
+              const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+              icon.dataset.name = name;
+              return icon;
+            },
+            root: reversible
+          });
+          assert(reversible.firstElementChild?.dataset.name === "compass", "icon renderer did not render a node");
+          assert(reversible.dataset.dhadIconName === "compass", "icon name hook missing");
+          Dhad.configureSymbols({ mode: "inherit", root: reversible });
+          assert(!reversible.hasAttribute("data-dhad-icon-name"), "stale icon name survived inherit");
+
+          const loadingButton = document.createElement("button");
+          loadingButton.disabled = true;
+          loadingButton.setAttribute("aria-label", "الأصل");
+          Dhad.setButtonLoading(loadingButton, false);
+          assert(loadingButton.disabled && loadingButton.getAttribute("aria-label") === "الأصل", "idle loading call mutated button");
+          Dhad.setButtonLoading(loadingButton, true, { label: "جارٍ التنفيذ" });
+          Dhad.setButtonLoading(loadingButton, false);
+          assert(loadingButton.disabled && loadingButton.getAttribute("aria-label") === "الأصل", "loading did not restore original state");
+
+          const readonlyRegion = document.createElement("section");
+          const lockedAction = document.createElement("button");
+          const lockedInput = document.createElement("input");
+          const lockedSelect = document.createElement("select");
+          const lockedEditor = document.createElement("div");
+          lockedAction.dataset.dhadWriteAction = "";
+          lockedAction.disabled = true;
+          lockedInput.dataset.dhadWriteField = "";
+          lockedInput.readOnly = true;
+          lockedSelect.dataset.dhadWriteField = "";
+          lockedEditor.dataset.dhadWriteField = "";
+          lockedEditor.contentEditable = "true";
+          readonlyRegion.append(lockedAction, lockedInput, lockedSelect, lockedEditor);
+          Dhad.setReadOnly(readonlyRegion, false);
+          assert(lockedAction.disabled && lockedInput.readOnly && !lockedSelect.disabled && lockedEditor.contentEditable === "true", "false readonly mutated originals");
+          Dhad.setReadOnly(readonlyRegion, true);
+          assert(lockedSelect.disabled && lockedEditor.contentEditable === "false", "readonly did not cover select/contenteditable");
+          Dhad.setReadOnly(readonlyRegion, false);
+          assert(lockedAction.disabled && lockedInput.readOnly && !lockedSelect.disabled && lockedEditor.contentEditable === "true", "readonly did not restore originals");
+
+          const sync = document.getElementById("sync");
+          Dhad.setSyncState(sync, "failed");
+          Dhad.setSyncState(sync, "offline");
+          assert(sync.dataset.state === "failed", "failed sync did not persist");
+          Dhad.setSyncState(sync, "reconnecting");
+          assert(sync.dataset.state === "failed", "reconnecting hid a failed sync");
+          Dhad.setSyncState(sync, "synced");
+          assert(sync.dataset.state === "synced", "successful sync did not clear failure");
+
+          const progress = document.getElementById("progress");
+          Dhad.setProgress(progress, { value: 17, max: 25, label: "التقدم" });
+          assert(progress.getAttribute("aria-valuenow") === "17", "progress semantics missing");
+
+          document.getElementById("disclosure").click();
+          assert(!document.getElementById("panel").hidden, "disclosure did not open");
+          document.getElementById("list-view").click();
+          assert(!document.getElementById("list").hidden && document.getElementById("cards").hidden, "view switch failed");
+          document.getElementById("move").click();
+          assert(document.getElementById("card").closest("[data-dhad-kanban-column]").id === "column-b", "kanban alternative failed");
+
+          const origin = document.getElementById("origin");
+          origin.focus();
+          const first = Dhad.confirm("حذف العنصر؟", { destructive: true });
+          const second = Dhad.confirm("المتابعة؟");
+          await wait(80);
+          assert(document.querySelectorAll(".dhad-dialog-overlay").length === 1, "dialog queue opened duplicates");
+          const firstOverlay = document.querySelector(".dhad-dialog-overlay");
+          const firstId = firstOverlay.dataset.dhadDialogId;
+          const firstCancel = firstOverlay.querySelector(".dhad-btn--secondary");
+          const firstConfirm = firstOverlay.querySelector(".dhad-btn--danger");
+          assert(document.activeElement === firstCancel, "destructive dialog did not default to cancel");
+          firstConfirm.focus();
+          firstConfirm.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab", bubbles: true }));
+          assert(document.activeElement === firstCancel, "focus was not trapped");
+          firstCancel.click();
+          assert(await first === false, "first dialog result incorrect");
+          await wait(80);
+          const secondOverlay = document.querySelector(".dhad-dialog-overlay");
+          assert(secondOverlay && secondOverlay.dataset.dhadDialogId !== firstId, "dialog IDs are not unique");
+          secondOverlay.querySelector(".dhad-btn--primary").click();
+          assert(await second === true, "second dialog result incorrect");
+          await wait(20);
+          assert(document.activeElement === origin, "focus was not restored");
+
+          const notice = Dhad.toast("تم", { duration: 100 });
+          notice.element.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+          await wait(160);
+          assert(notice.element.isConnected, "paused toast expired");
+          notice.element.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+          await wait(360);
+          assert(!notice.element.isConnected, "toast did not resume");
+
+          result.textContent = "PASS";
+          result.dataset.state = "pass";
+          document.title = "PASS";
+        } catch (error) {
+          result.textContent = "FAIL: " + error.message;
+          result.dataset.state = "fail";
+          document.title = "FAIL";
+        }
+      })();
+    </script>
+  </body>
+</html>

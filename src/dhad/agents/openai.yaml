@@ -1,0 +1,5 @@
+interface:
+  display_name: "Dhad"
+  short_description: "تصميم وصحّة عربية RTL للمنتجات الرقمية"
+  brand_color: "#0068D7"
+  default_prompt: "استخدم $dhad لتصميم هذه الواجهة العربية وضبط سلوك النص والبيانات العربية حسب طلب المستخدم وهوية المنتج."

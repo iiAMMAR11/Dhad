@@ -1,0 +1,10 @@
+dist/
+__pycache__/
+.DS_Store
+*.pyc
+*.otf
+*.ttf
+*.woff
+*.woff2
+!src/dhad/assets/starter/fonts/IBMPlexSansArabic-*.woff2
+src/dhad-workspace/

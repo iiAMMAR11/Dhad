@@ -1,0 +1,34 @@
+{
+  "name": "dhad",
+  "version": "2.0.0",
+  "description": "Design or fix Arabic-first RTL product interfaces and behavior, including accessibility, plurals, sorting, search, numerals, Hijri dates, and regional week conventions.",
+  "author": {
+    "name": "Ammar",
+    "email": "Hello@iiammar.com",
+    "url": "https://iiammar.com"
+  },
+  "homepage": "https://dhad.iiammar.com",
+  "repository": "https://github.com/iiAMMAR11/Dhad",
+  "license": "MIT",
+  "keywords": ["arabic", "rtl", "design-system", "ui", "ux"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dhad",
+    "shortDescription": "تصميم وصحّة عربية RTL للمنتجات الرقمية.",
+    "longDescription": "صمّم واجهات عربية RTL متكيّفة مع هوية المنتج، واضبط الجمع والترتيب والبحث والأرقام والتواريخ والتقويم الهجري.",
+    "developerName": "Ammar",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://dhad.iiammar.com",
+    "privacyPolicyURL": "https://github.com/iiAMMAR11/Dhad/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/iiAMMAR11/Dhad/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "طبّق Dhad على واجهة هذا المشروع.",
+      "حوّل هذه الشاشة إلى تجربة عربية RTL كاملة.",
+      "راجع الواجهة الحالية مقابل Dhad وأصلحها."
+    ],
+    "brandColor": "#0068D7",
+    "composerIcon": "./assets/composer-icon.svg",
+    "logo": "./assets/logo.svg"
+  }
+}

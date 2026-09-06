@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-dhad-theme="dark" data-dhad-density="comfortable">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1c1c1e">
+  <title>Dhad</title>
+  <link rel="stylesheet" href="./css/dhad.tokens.css">
+  <link rel="stylesheet" href="./css/dhad.core.css">
+  <link rel="stylesheet" href="./css/dhad.patterns.css">
+  <style>
+    .starter-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: var(--dhad-space-6);
+      padding-block: var(--dhad-space-8) var(--dhad-space-6);
+    }
+    .starter-intro h1 {
+      max-inline-size: 18ch;
+      margin: 0;
+      font: 700 clamp(2.25rem, 7vw, 5rem)/1.05 var(--dhad-font-display);
+      text-wrap: balance;
+    }
+    .starter-intro p,
+    .starter-section > p {
+      max-inline-size: 44rem;
+      margin: var(--dhad-space-4) 0 0;
+      color: var(--dhad-color-text-2);
+      font-size: var(--dhad-font-size-500);
+    }
+    .starter-controls { display: grid; justify-items: stretch; gap: var(--dhad-space-3); }
+    .starter-text-action {
+      min-block-size: var(--dhad-size-touch);
+      border: 0;
+      background: transparent;
+      color: var(--dhad-color-text-2);
+      cursor: pointer;
+      font: 600 var(--dhad-font-size-300)/1 var(--dhad-font-body);
+    }
+    .starter-text-action:hover { color: var(--dhad-color-text-1); }
+    .starter-section { display: grid; gap: var(--dhad-space-5); padding-block: var(--dhad-space-7) var(--dhad-space-8); }
+    .starter-section > h2 { margin: 0; font: 700 var(--dhad-font-size-800)/var(--dhad-line-heading) var(--dhad-font-display); }
+    .starter-panel-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, .8fr); gap: var(--dhad-space-4); }
+    .starter-form { max-inline-size: 44rem; display: grid; gap: var(--dhad-space-5); }
+    .starter-choice-block { display: grid; gap: var(--dhad-space-2); }
+    .starter-checks { display: flex; flex-wrap: wrap; gap: var(--dhad-space-3) var(--dhad-space-5); }
+    @media (max-width: 680px) {
+      .starter-intro { grid-template-columns: 1fr; align-items: start; }
+      .starter-controls { justify-items: start; }
+      .starter-panel-grid { grid-template-columns: 1fr; }
+    }
+    @media (forced-colors: active) {
+      .starter-text-action { color: LinkText; }
+    }
+  </style>
+</head>
+<body class="dhad-app">
+  <a class="dhad-skip-link" href="#content">تخطَّ إلى المحتوى</a>
+  <main id="content" class="dhad-shell">
+    <header class="starter-intro">
+      <div>
+        <h1>نواة ضاد</h1>
+        <p>مثال محلي عربي لإصدار <bdi dir="ltr">Dhad 2.0</bdi> يوضح الاختيار المحايد، القيم ثنائية الاتجاه، والتخطيطات الغنية بالبيانات.</p>
+      </div>
+      <div class="starter-controls">
+        <button class="dhad-btn dhad-btn--primary" type="button" id="task-form">اختبار إدخال طويل</button>
+        <button class="starter-text-action" type="button" data-dhad-theme-toggle>تبديل الوضع</button>
+      </div>
+    </header>
+
+    <section class="starter-section" aria-labelledby="patterns-title">
+      <div>
+        <h2 id="patterns-title">أنماط عملية مشتركة</h2>
+        <p>التبويبات تنقل بين لوحات داخل الصفحة، والاختيار المقسّم يحدد قيمة واحدة داخل النموذج. العملة تبقى مقروءة من اليسار إلى اليمين داخل السياق العربي.</p>
+      </div>
+
+      <div class="dhad-tabs" data-dhad-tabs>
+        <div class="dhad-tabs__list" role="tablist" aria-label="أمثلة الأنماط">
+          <button class="dhad-tabs__tab" type="button" data-dhad-tab="overview" aria-selected="true">الملخص</button>
+          <button class="dhad-tabs__tab" type="button" data-dhad-tab="ledger">السجل</button>
+          <button class="dhad-tabs__tab" type="button" data-dhad-tab="entry">الإدخال</button>
+        </div>
+
+        <section class="dhad-tabs__panel" data-dhad-tab-panel="overview">
+          <div class="starter-panel-grid">
+            <div class="dhad-metric-grid" role="group" aria-label="مؤشرات موجزة">
+              <article class="dhad-metric-grid__item">
+                <p class="dhad-metric-grid__label">الإجمالي</p>
+                <bdi class="dhad-metric" dir="ltr">SAR 12,480.00</bdi>
+                <p class="dhad-metric-grid__note">ثماني عمليات مسجلة</p>
+              </article>
+              <article class="dhad-metric-grid__item">
+                <p class="dhad-metric-grid__label">متوسط العملية</p>
+                <bdi class="dhad-metric" dir="ltr">SAR 1,560.00</bdi>
+                <p class="dhad-metric-grid__note">قيمة وصفية، لا منطق حسابي في المكوّن</p>
+              </article>
+            </div>
+
+            <article class="dhad-summary">
+              <header class="dhad-summary__header">
+                <h3 class="dhad-summary__title">القيمة بعملتين</h3>
+              </header>
+              <div class="dhad-summary__rows">
+                <div class="dhad-summary__row">
+                  <span class="dhad-summary__label">العملة الأساسية</span>
+                  <bdi class="dhad-summary__value" dir="ltr">SAR 12,480.00</bdi>
+                </div>
+                <div class="dhad-summary__row">
+                  <span class="dhad-summary__label">تحويل تقريبي</span>
+                  <bdi class="dhad-summary__value" dir="ltr">≈ AED 12,216.64</bdi>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dhad-tabs__panel" data-dhad-tab-panel="ledger" hidden>
+          <ul class="dhad-ledger" aria-label="سجل تجريبي">
+            <li>
+              <div class="dhad-ledger__row">
+                <div class="dhad-ledger__content">
+                  <p class="dhad-ledger__title">حجز مساحة العمل</p>
+                  <div class="dhad-ledger__meta"><span>أضافتها ريم</span><span>31 أغسطس</span></div>
+                </div>
+                <div class="dhad-ledger__amounts">
+                  <div class="dhad-money" data-align="end">
+                    <bdi class="dhad-money__primary" dir="ltr">SAR 2,100.00</bdi>
+                    <bdi class="dhad-money__approx" dir="ltr">≈ AED 2,055.20</bdi>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dhad-ledger__row">
+                <div class="dhad-ledger__content">
+                  <p class="dhad-ledger__title">غداء الفريق</p>
+                  <div class="dhad-ledger__meta"><span>أضافها <bdi dir="auto">Noah</bdi></span><span>31 أغسطس</span></div>
+                </div>
+                <div class="dhad-ledger__amounts">
+                  <div class="dhad-money" data-align="end">
+                    <bdi class="dhad-money__primary" dir="ltr">SAR 684.50</bdi>
+                    <span class="dhad-micro">حصتك <bdi class="dhad-money__share" dir="ltr">SAR 171.13</bdi></span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="dhad-tabs__panel" data-dhad-tab-panel="entry" hidden>
+          <form class="starter-form" id="demo-form">
+            <div class="dhad-field-pair" data-collapse="small">
+              <label class="dhad-field">
+                <span class="dhad-field__label">المبلغ (SAR)</span>
+                <input class="dhad-input" name="amount" type="number" inputmode="decimal" min="0" step="0.01" dir="ltr" required>
+              </label>
+              <label class="dhad-field">
+                <span class="dhad-field__label">التاريخ</span>
+                <input class="dhad-input" name="date" type="date" dir="ltr" required>
+              </label>
+            </div>
+
+            <div class="starter-choice-block">
+              <span class="dhad-field__label" id="split-label">طريقة التقسيم</span>
+              <fieldset class="dhad-segmented" data-dhad-segmented aria-labelledby="split-label">
+                <legend class="dhad-sr-only">طريقة التقسيم</legend>
+                <label class="dhad-segmented__item" data-dhad-segment="equal">
+                  <input type="radio" name="split" value="equal" checked>
+                  بالتساوي
+                </label>
+                <label class="dhad-segmented__item" data-dhad-segment="amounts">
+                  <input type="radio" name="split" value="amounts">
+                  مبالغ
+                </label>
+                <label class="dhad-segmented__item" data-dhad-segment="percent">
+                  <input type="radio" name="split" value="percent">
+                  نسب
+                </label>
+              </fieldset>
+            </div>
+
+            <div class="starter-choice-block">
+              <span class="dhad-field__label" id="participants-label">المشاركون</span>
+              <div class="starter-checks" role="group" aria-labelledby="participants-label">
+                <label class="dhad-check-control"><input class="dhad-check" type="checkbox" checked> ريم</label>
+                <label class="dhad-check-control"><input class="dhad-check" type="checkbox" checked> <bdi dir="auto">Noah</bdi></label>
+              </div>
+            </div>
+
+            <button class="dhad-btn dhad-btn--primary" type="submit">تحقق من النموذج</button>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="./js/dhad.runtime.js"></script>
+  <script>
+    document.querySelector("#task-form").addEventListener("click", async () => {
+      const value = await Dhad.openDialog({
+        type: "prompt",
+        variant: "task-form",
+        title: "إدخال طويل",
+        message: "هذا النمط لمهمة تحتاج تركيزًا ومساحة قابلة للتمرير، وليس لقرار قصير.",
+        inputLabel: "ملاحظات",
+        placeholder: "اكتب التفاصيل هنا",
+        multiline: true,
+        required: true,
+        confirmLabel: "حفظ"
+      });
+      if (value) Dhad.toast("حُفظ الإدخال التجريبي", "success");
+    });
+
+    document.querySelector("#demo-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
+      Dhad.toast("النموذج صالح", "success");
+    });
+  </script>
+</body>
+</html>

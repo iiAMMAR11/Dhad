@@ -1,0 +1,348 @@
+/* Dhad - Shared-expenses recipe compositions
+   Requires dhad.tokens.css, dhad.core.css and dhad.patterns.css.
+   Presentation only: the host product owns accounting, rates and persistence. */
+
+.dhad-shared-expenses {
+  --dhad-shared-value-column: minmax(7.75rem, auto);
+  display: grid;
+  gap: var(--dhad-space-5);
+}
+
+.dhad-shared-expenses__section {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--dhad-space-3);
+}
+
+.dhad-shared-expenses__section-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--dhad-space-3);
+}
+
+.dhad-shared-expenses__section-copy {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--dhad-space-1);
+}
+
+.dhad-shared-expenses__section-copy > :where(h2, h3, p) {
+  margin: 0;
+}
+
+.dhad-shared-expenses__section-copy > :where(h2, h3) {
+  color: var(--dhad-color-text-1);
+  font-family: var(--dhad-font-display);
+  line-height: var(--dhad-line-heading);
+}
+
+.dhad-shared-expenses__section-copy > p {
+  color: var(--dhad-color-text-3);
+  font-size: var(--dhad-font-size-200);
+  line-height: var(--dhad-line-body);
+}
+
+.dhad-shared-expenses__section-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--dhad-space-2);
+}
+
+/* Quick entry composes existing Dhad fields and buttons. */
+.dhad-shared-quick-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(5.75rem, 0.34fr) auto;
+  align-items: end;
+  gap: var(--dhad-space-2);
+}
+
+.dhad-shared-quick-entry > * {
+  min-inline-size: 0;
+}
+
+.dhad-shared-quick-entry__submit {
+  align-self: end;
+}
+
+/* Long expense form. Field, segmented and task-dialog behavior lives in Core/Patterns. */
+.dhad-shared-form {
+  display: grid;
+  gap: var(--dhad-space-5);
+}
+
+.dhad-shared-form__section {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--dhad-space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.dhad-shared-form__legend {
+  margin: 0 0 var(--dhad-space-1);
+  padding: 0;
+  color: var(--dhad-color-text-1);
+  font-family: var(--dhad-font-display);
+  font-size: var(--dhad-font-size-500);
+  font-weight: 700;
+  line-height: var(--dhad-line-heading);
+}
+
+.dhad-shared-form__help,
+.dhad-shared-form__summary {
+  margin: 0;
+  color: var(--dhad-color-text-3);
+  font-size: var(--dhad-font-size-200);
+  line-height: var(--dhad-line-body);
+}
+
+.dhad-shared-form__choices {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--dhad-space-2);
+}
+
+.dhad-shared-form__footer {
+  display: grid;
+  gap: var(--dhad-space-3);
+}
+
+/* Participant allocation rows. */
+.dhad-shared-participants {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block: 1px solid var(--dhad-color-border);
+}
+
+.dhad-shared-participant {
+  min-block-size: var(--dhad-size-touch, 44px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--dhad-shared-value-column);
+  align-items: center;
+  gap: var(--dhad-space-3);
+  padding-block: var(--dhad-space-2);
+}
+
+.dhad-shared-participant + .dhad-shared-participant {
+  border-block-start: 1px solid var(--dhad-color-border);
+}
+
+.dhad-shared-participant__person {
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--dhad-space-2);
+}
+
+.dhad-shared-participant__name {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  color: var(--dhad-color-text-1);
+}
+
+.dhad-shared-participant__allocation {
+  min-inline-size: 0;
+  display: grid;
+  justify-items: end;
+  gap: var(--dhad-space-1);
+}
+
+.dhad-shared-participant[data-included="false"] .dhad-shared-participant__allocation {
+  color: var(--dhad-color-text-disabled);
+}
+
+.dhad-shared-participant[data-state="error"] {
+  color: var(--dhad-color-danger);
+}
+
+/* Balances are derived display rows, never editable fields. */
+.dhad-shared-balance-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block: 1px solid var(--dhad-color-border);
+}
+
+.dhad-shared-balance {
+  min-block-size: calc(var(--dhad-size-touch, 44px) + var(--dhad-space-4));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--dhad-shared-value-column);
+  align-items: center;
+  gap: var(--dhad-space-3);
+  padding-block: var(--dhad-space-3);
+}
+
+.dhad-shared-balance + .dhad-shared-balance {
+  border-block-start: 1px solid var(--dhad-color-border);
+}
+
+.dhad-shared-balance__identity,
+.dhad-shared-balance__amounts {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--dhad-space-1);
+}
+
+.dhad-shared-balance__amounts {
+  justify-items: end;
+}
+
+.dhad-shared-balance__name {
+  overflow-wrap: anywhere;
+  color: var(--dhad-color-text-1);
+  font-family: var(--dhad-font-display);
+  font-size: var(--dhad-font-size-500);
+  font-weight: 700;
+  line-height: var(--dhad-line-heading);
+}
+
+.dhad-shared-balance__status {
+  color: var(--dhad-color-text-3);
+  font-size: var(--dhad-font-size-200);
+  line-height: var(--dhad-line-heading);
+}
+
+.dhad-shared-balance[data-balance="credit"] .dhad-shared-balance__status {
+  color: var(--dhad-color-success);
+}
+
+.dhad-shared-balance[data-balance="debit"] .dhad-shared-balance__status {
+  color: var(--dhad-color-danger);
+}
+
+.dhad-shared-balance[data-balance="settled"] .dhad-shared-balance__status {
+  color: var(--dhad-color-text-2);
+}
+
+/* Settlement rows keep direction and audit copy visible without encoding business logic. */
+.dhad-shared-settlement-list {
+  display: grid;
+  gap: var(--dhad-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dhad-shared-settlement {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--dhad-shared-value-column);
+  align-items: center;
+  gap: var(--dhad-space-3);
+}
+
+.dhad-shared-settlement__route,
+.dhad-shared-settlement__amounts {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--dhad-space-1);
+}
+
+.dhad-shared-settlement__amounts {
+  justify-items: end;
+}
+
+.dhad-shared-settlement__parties {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--dhad-space-2);
+  color: var(--dhad-color-text-1);
+  font-family: var(--dhad-font-display);
+  font-size: var(--dhad-font-size-500);
+  font-weight: 700;
+  line-height: var(--dhad-line-heading);
+}
+
+.dhad-shared-settlement__party {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.dhad-shared-settlement__direction {
+  flex: 0 0 auto;
+  color: var(--dhad-color-text-2);
+}
+
+.dhad-shared-settlement__meta,
+.dhad-shared-settlement__audit {
+  margin: 0;
+  color: var(--dhad-color-text-3);
+  font-size: var(--dhad-font-size-200);
+  line-height: var(--dhad-line-body);
+}
+
+.dhad-shared-settlement[data-state="recording"] {
+  background: var(--dhad-color-surface-2);
+}
+
+.dhad-shared-settlement[data-state="reversed"] {
+  background: var(--dhad-color-surface-2);
+  color: var(--dhad-color-text-2);
+}
+
+.dhad-shared-settlement[data-state="conflict"],
+.dhad-shared-settlement[data-state="duplicate"] {
+  border-color: var(--dhad-color-warning);
+}
+
+.dhad-shared-settlement[data-state="error"] {
+  border-color: var(--dhad-color-danger);
+}
+
+@media (max-width: 600px) {
+  .dhad-shared-expenses {
+    --dhad-shared-value-column: minmax(6.75rem, auto);
+  }
+
+  .dhad-shared-expenses__section-heading {
+    align-items: center;
+  }
+
+}
+
+@media (max-width: 390px) {
+  .dhad-shared-quick-entry {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .dhad-shared-quick-entry > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .dhad-shared-expenses__section-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .dhad-shared-expenses__section-actions {
+    justify-content: flex-start;
+  }
+
+  .dhad-shared-participant,
+  .dhad-shared-balance,
+  .dhad-shared-settlement {
+    grid-template-columns: minmax(0, 1fr) minmax(5.75rem, auto);
+  }
+}
+
+@media (max-width: 320px) {
+  .dhad-shared-participant,
+  .dhad-shared-balance,
+  .dhad-shared-settlement {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (forced-colors: active) {
+  .dhad-shared-participants,
+  .dhad-shared-balance-list,
+  .dhad-shared-settlement {
+    border-color: CanvasText;
+  }
+}

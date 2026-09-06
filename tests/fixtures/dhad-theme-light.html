@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-dhad-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <title>RUNNING</title>
+  </head>
+  <body>
+    <output id="result">RUNNING</output>
+    <script>try { localStorage.removeItem("dhad-theme"); } catch (_error) {}</script>
+    <script src="../../src/dhad/assets/starter/js/dhad.runtime.js"></script>
+    <script>
+      const result = document.getElementById("result");
+      if (document.documentElement.dataset.dhadTheme === "light") {
+        result.textContent = "PASS";
+        document.title = "PASS";
+      } else {
+        result.textContent = "FAIL: declarative light theme was replaced";
+        document.title = "FAIL";
+      }
+    </script>
+  </body>
+</html>
