@@ -90,6 +90,7 @@ h1, h2, h3, p { text-wrap: pretty; }
   padding: .7rem 1rem;
   background: var(--ink);
   color: var(--paper);
+  --focus: var(--paper);
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: translateY(0); }
@@ -120,7 +121,14 @@ h1, h2, h3, p { text-wrap: pretty; }
   font-weight: 700;
   text-decoration: none;
 }
-.brand-mark { block-size: 1.5rem; inline-size: auto; flex: 0 0 auto; }
+.brand-mark {
+  block-size: 1.5rem;
+  inline-size: 4rem;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask: url(/brand-mark.png) center / contain no-repeat;
+  mask: url(/brand-mark.png) center / contain no-repeat;
+}
 .main-nav, .header-actions { display: flex; align-items: center; gap: clamp(.35rem, 2vw, 1.35rem); }
 .main-nav a, .header-actions a, .header-actions button {
   min-block-size: 44px;
@@ -609,4 +617,7 @@ input[type='range'] { inline-size: 100%; min-block-size: 44px; accent-color: var
 @media (forced-colors: active) {
   .output-tabs button[aria-selected='true'], .number-choices button[aria-pressed='true'],
   .region-switch button[aria-checked='true'], .pattern-groups button[aria-selected='true'] { border: 2px solid CanvasText; }
+  /* Both marks are masks painted by background-color, which forced-colors flattens into
+     the page background — repaint them from CanvasText so the wordmark stays visible. */
+  .wordmark-mark, .brand-mark { background-color: CanvasText; }
 }

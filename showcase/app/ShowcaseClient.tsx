@@ -84,7 +84,7 @@ const patternGroups: PatternGroup[] = [
     patterns: [
       { id: 'article', title: 'صفحة مقال واضحة', summary: 'ترتب العنوان والكاتب والتاريخ والمصادر وما تقرؤه بعد ذلك.', example: 'بعد وصفة الخبز تظهر الوصفة التالية من السلسلة، لا موضوع عشوائي.' },
       { id: 'locale', title: 'البلد والتاريخ', summary: 'تضبط الأرقام والتقويم وبداية الأسبوع والعملة حسب البلد.', example: 'في السعودية يبدأ الأسبوع يوم الأحد، وتظهر المواعيد بتوقيت الرياض.' },
-      { id: 'adapter', title: 'شكل مناسب لكل مخرج', summary: 'تقدم الفكرة نفسها بالطريقة الأنسب للموقع أو الجوال أو الملف.', example: 'التنبيه نفسه يظهر كرسالة قصيرة في الجوال وملاحظة واضحة في PDF.' },
+      { id: 'adapter', title: 'شكل مناسب لكل نتيجة', summary: 'تقدم الفكرة نفسها بالطريقة الأنسب للموقع أو الجوال أو الملف.', example: 'التنبيه نفسه يظهر كرسالة قصيرة في الجوال وملاحظة واضحة في PDF.' },
     ],
   },
   {
@@ -134,15 +134,8 @@ function taskLabel(count: number) {
   return forms[plural.select(count)];
 }
 
-function DhadMark({ theme }: { theme: Theme }) {
-  return (
-    <img
-      className="brand-mark"
-      src={theme === 'dark' ? '/brand-mark-dark.png' : '/brand-mark.png'}
-      alt=""
-      aria-hidden="true"
-    />
-  );
+function DhadMark() {
+  return <span className="brand-mark" aria-hidden="true" />;
 }
 
 export default function ShowcaseClient() {
@@ -252,7 +245,7 @@ export default function ShowcaseClient() {
     <>
       <a className="skip-link" href="#main">تخطَّ إلى المحتوى</a>
       <header className="site-header">
-        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark theme={theme === 'light' ? 'dark' : 'light'} /></a>
+        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark /></a>
         <nav className="main-nav" aria-label="أقسام الموقع">
           <a href="#lab">جرّب</a>
           <a href="#patterns">الأفكار</a>
@@ -470,7 +463,7 @@ export default function ShowcaseClient() {
         <nav aria-label="روابط عمّار وضاد">
           <a href="https://github.com/iiAMMAR11" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://x.com/iiAMMAR11" target="_blank" rel="noreferrer">X</a>
-          <a href="mailto:Hello@iiammar.com">البريد</a>
+          <a href="mailto:hi@iiammar.com">البريد</a>
           <a href="https://iiammar.com" target="_blank" rel="noreferrer">iiammar.com</a>
         </nav>
       </footer>

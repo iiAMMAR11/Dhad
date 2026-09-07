@@ -122,7 +122,6 @@ body.dhad-app {
   font-size: clamp(var(--dhad-font-size-900), 3.2vw, 2.5rem);
   font-weight: 700;
   line-height: var(--dhad-line-tight);
-  letter-spacing: -0.02em;
 }
 
 .dhad-title {
