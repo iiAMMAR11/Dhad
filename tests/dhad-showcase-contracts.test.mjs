@@ -6,6 +6,7 @@ const componentUrl = new URL('../showcase/app/ShowcaseClient.tsx', import.meta.u
 const cssUrl = new URL('../showcase/app/globals.css', import.meta.url);
 const layoutUrl = new URL('../showcase/app/layout.tsx', import.meta.url);
 const packageUrl = new URL('../showcase/package.json', import.meta.url);
+const patternsUrl = new URL('../src/dhad/references/patterns.md', import.meta.url);
 
 test('showcase demonstrates Dhad across seven familiar kinds of work', async () => {
   const component = await readFile(componentUrl, 'utf8');
@@ -31,6 +32,18 @@ test('showcase exposes all twenty approved patterns with concrete examples', asy
     assert.match(pattern[0], /summary: '[^']{12,}'/);
     assert.match(pattern[0], /example: '[^']{12,}'/);
   }
+});
+
+test('showcase pattern names match the approved names in the skill reference', async () => {
+  const [component, reference] = await Promise.all([
+    readFile(componentUrl, 'utf8'),
+    readFile(patternsUrl, 'utf8')
+  ]);
+
+  const shown = [...component.matchAll(/\{ id: '[^']+', title: '([^']+)'/g)].map(match => match[1]);
+  const approved = [...reference.matchAll(/^### (.+)$/gm)].map(match => match[1].replace(/\s*`[^`]+`\s*$/, '').trim());
+
+  assert.deepEqual(shown, approved);
 });
 
 test('Arabic lab demonstrates plural, search, locale, and concealment behavior', async () => {
