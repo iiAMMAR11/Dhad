@@ -8,3 +8,6 @@ __pycache__/
 *.woff2
 !src/dhad/assets/starter/fonts/IBMPlexSansArabic-*.woff2
 src/dhad-workspace/
+
+# Local preview config for the Claude Code browser pane
+.claude/
