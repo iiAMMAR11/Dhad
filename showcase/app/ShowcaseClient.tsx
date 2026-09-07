@@ -252,7 +252,7 @@ export default function ShowcaseClient() {
     <>
       <a className="skip-link" href="#main">تخطَّ إلى المحتوى</a>
       <header className="site-header">
-        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark theme={theme} /><span>ضاد</span></a>
+        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark theme={theme} /></a>
         <nav className="main-nav" aria-label="أقسام الموقع">
           <a href="#lab">جرّب</a>
           <a href="#patterns">الأفكار</a>
