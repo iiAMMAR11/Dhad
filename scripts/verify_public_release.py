@@ -50,10 +50,10 @@ def fail(message: str) -> None:
 def validate_skill(text: str, location: str) -> str:
     if not text.startswith("---\n"):
         fail(f"Missing YAML frontmatter: {location}")
-    try:
-        frontmatter = text.split("---\n", 2)[1]
-    except IndexError:
-        fail(f"Invalid YAML frontmatter: {location}")
+    parts = text.split("---\n", 2)
+    if len(parts) < 3:
+        fail(f"Unterminated YAML frontmatter: {location}")
+    frontmatter = parts[1]
 
     fields: dict[str, str] = {}
     for line in frontmatter.splitlines():
@@ -195,6 +195,14 @@ def validate_archives(version: str) -> None:
                     fail(f"Plugin name mismatch in {archive.name}")
                 if manifest.get("skills") != "./skills/":
                     fail(f"Plugin skills path mismatch in {archive.name}")
+                interface = manifest.get("interface", {})
+                for key in ("composerIcon", "logo"):
+                    reference = interface.get(key, "")
+                    if not reference:
+                        fail(f"Plugin manifest is missing interface.{key} in {archive.name}")
+                    asset_name = f"{SKILL_NAME}/{reference.removeprefix('./')}"
+                    if asset_name not in members:
+                        fail(f"Plugin interface.{key} points outside {archive.name}: {reference}")
                 require_install_text(bundle, install_name, ("ChatGPT", "Codex"))
             elif archive.name == AGENT_SKILL_ARCHIVE:
                 skill_name = f"{SKILL_NAME}/SKILL.md"

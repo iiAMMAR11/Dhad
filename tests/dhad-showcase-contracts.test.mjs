@@ -7,6 +7,7 @@ const cssUrl = new URL('../showcase/app/globals.css', import.meta.url);
 const layoutUrl = new URL('../showcase/app/layout.tsx', import.meta.url);
 const packageUrl = new URL('../showcase/package.json', import.meta.url);
 const patternsUrl = new URL('../src/dhad/references/patterns.md', import.meta.url);
+const versionUrl = new URL('../VERSION', import.meta.url);
 
 test('showcase demonstrates Dhad across seven familiar kinds of work', async () => {
   const component = await readFile(componentUrl, 'utf8');
@@ -77,7 +78,7 @@ test('visual system avoids generic slop defaults and keeps content visible', asy
   assert.doesNotMatch(css, /linear-gradient|radial-gradient|background-clip:\s*text/i);
   assert.doesNotMatch(css, /box-shadow|drop-shadow/i);
   assert.doesNotMatch(css, /opacity:\s*0(?:\D|$)/);
-  assert.doesNotMatch(css, /:hover\s*\{[^}]*transform:/s);
+  assert.doesNotMatch(css, /:hover[^{}]*\{[^}]*transform:/s);
   assert.doesNotMatch(css, /border-radius:\s*(?:999|50%)/);
   assert.match(css, /min-block-size:\s*44px/);
   assert.match(css, /\.install-row > div \{[^}]*padding:\s*1\.75rem 2rem/s);
@@ -117,14 +118,15 @@ test('ownership wording and source acknowledgments are confined to the footer', 
   assert.doesNotMatch(body, /شكرًا ل/);
 });
 
-test('metadata, release number, and install archives match Dhad 3.0.2', async () => {
-  const [layout, component, pkg] = await Promise.all([
+test('metadata, release number, and install archives match the released version', async () => {
+  const [layout, component, pkg, version] = await Promise.all([
     readFile(layoutUrl, 'utf8'),
     readFile(componentUrl, 'utf8'),
-    readFile(packageUrl, 'utf8')
+    readFile(packageUrl, 'utf8'),
+    readFile(versionUrl, 'utf8')
   ]);
 
-  assert.equal(JSON.parse(pkg).version, '3.0.2');
+  assert.equal(JSON.parse(pkg).version, version.trim());
   assert.match(layout, /lang="ar" dir="rtl"/);
   assert.match(layout, /عمل أوضح وعربية أفضل/);
   assert.match(component, />حمّل ضاد</);
