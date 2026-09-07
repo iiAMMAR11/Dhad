@@ -118,9 +118,7 @@ h1, h2, h3, p { text-wrap: pretty; }
   font-weight: 700;
   text-decoration: none;
 }
-.brand-mark { inline-size: 1.75rem; block-size: 1.75rem; flex: 0 0 auto; overflow: visible; }
-.brand-mark__body { fill: var(--action); }
-.brand-mark__dot { fill: var(--warning); }
+.brand-mark { block-size: 1.5rem; inline-size: auto; flex: 0 0 auto; }
 .main-nav, .header-actions { display: flex; align-items: center; gap: clamp(.35rem, 2vw, 1.35rem); }
 .main-nav a, .header-actions a, .header-actions button {
   min-block-size: 44px;
@@ -157,13 +155,22 @@ h1, h2, h3, p { text-wrap: pretty; }
   margin: 0;
   padding-block: .22em .28em;
   color: var(--action);
-  font-size: clamp(8rem, 29vw, 25rem);
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: .86;
-  text-align: center;
-  white-space: nowrap;
   transition: color 220ms ease;
+}
+.wordmark-mark {
+  display: block;
+  inline-size: min(70vw, 25rem);
+  block-size: clamp(6rem, 11vw, 9.5rem);
+  margin-inline: auto;
+  background-color: currentColor;
+  -webkit-mask-image: url(/brand-mark.png);
+  mask-image: url(/brand-mark.png);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 .wordmark--site { color: var(--action); }
 .wordmark--saas { color: var(--assistive); }
@@ -539,7 +546,8 @@ input[type='range'] { inline-size: 100%; min-block-size: 44px; accent-color: var
   .opening { min-block-size: calc(100svh - 4.25rem); padding-inline: 1rem; }
   .opening-copy { grid-template-columns: 1fr; gap: .2rem; }
   .opening-copy p:last-child { justify-self: start; text-align: start; }
-  .wordmark { min-block-size: 33svh; display: grid; place-items: center; padding-block: .18em .24em; font-size: clamp(7.5rem, 52vw, 13rem); line-height: .9; }
+  .wordmark { min-block-size: 33svh; display: grid; place-items: center; padding-block: .18em .24em; }
+  .wordmark-mark { inline-size: min(80vw, 22rem); block-size: clamp(4.5rem, 22vw, 7rem); }
   .output-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .output-tabs button:nth-child(n + 4) { border-block-start: 1px solid var(--line); }
   .output-tabs button:nth-child(3n + 1) { border-inline-start: 0; }

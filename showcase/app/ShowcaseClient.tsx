@@ -134,12 +134,14 @@ function taskLabel(count: number) {
   return forms[plural.select(count)];
 }
 
-function DhadMark() {
+function DhadMark({ theme }: { theme: Theme }) {
   return (
-    <svg className="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
-      <path className="brand-mark__body" d="M10 29h24c10 0 17 7 17 16v8H22c-8 0-12-5-12-13V29Z" />
-      <circle className="brand-mark__dot" cx="39" cy="16" r="5" />
-    </svg>
+    <img
+      className="brand-mark"
+      src={theme === 'dark' ? '/brand-mark-dark.png' : '/brand-mark.png'}
+      alt=""
+      aria-hidden="true"
+    />
   );
 }
 
@@ -250,7 +252,7 @@ export default function ShowcaseClient() {
     <>
       <a className="skip-link" href="#main">تخطَّ إلى المحتوى</a>
       <header className="site-header">
-        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark /><span>ضاد</span></a>
+        <a className="brand" href="#main" aria-label="ضاد، البداية"><DhadMark theme={theme} /><span>ضاد</span></a>
         <nav className="main-nav" aria-label="أقسام الموقع">
           <a href="#lab">جرّب</a>
           <a href="#patterns">الأفكار</a>
@@ -270,7 +272,9 @@ export default function ShowcaseClient() {
             <p>مهارة تجعل أي عمل أوضح وأسهل</p>
             <p>تهتم بالعربية وتحافظ على هوية مشروعك.</p>
           </div>
-          <h1 id="opening-title" className={`wordmark wordmark--${output}`} aria-label="ضاد">ضاد</h1>
+          <h1 id="opening-title" className={`wordmark wordmark--${output}`} aria-label="ضاد">
+            <span className="wordmark-mark" role="img" aria-hidden="true" />
+          </h1>
           <div className="output-lab">
             <div className="output-tabs" role="tablist" aria-label="اختر نوع العمل">
               {outputOrder.map((key, index) => (

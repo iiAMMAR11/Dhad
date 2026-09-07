@@ -1,5 +1,10 @@
 <div dir="rtl">
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/dhad-mark-dark.png">
+  <img src="assets/brand/dhad-mark.png" alt="ضاد" width="240">
+</picture>
+
 # ضاد | Dhad
 
 ضاد مهارة تساعدك تجعل عملك أوضح وأسهل، وتهتم بالعربية من البداية. تعمل داخل مشروعك من دون أن تفرض عليه خطًا أو لونًا أو شكلًا واحدًا.

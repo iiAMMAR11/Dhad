@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/dhad-mark-dark.png">
+  <img src="assets/brand/dhad-mark.png" alt="Dhad" width="240">
+</picture>
+
 # Dhad
 
 Dhad is a skill that makes work clearer and easier while taking proper care of Arabic from the start. It works with your project without forcing one font, color, or visual style.
