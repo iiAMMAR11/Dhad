@@ -56,6 +56,6 @@ python3 scripts/verify_public_release.py
 
 ## التواصل
 
-[GitHub](https://github.com/iiAMMAR11) · [X](https://x.com/iiAMMAR11) · [Hello@iiammar.com](mailto:Hello@iiammar.com) · [iiammar.com](https://iiammar.com)
+[GitHub](https://github.com/iiAMMAR11) · [X](https://x.com/iiAMMAR11) · [hi@iiammar.com](mailto:hi@iiammar.com) · [iiammar.com](https://iiammar.com)
 
 </div>
