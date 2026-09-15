@@ -77,7 +77,7 @@ test('the grammar rules name the common form and the correct one in text', async
   const component = await readFile(componentUrl, 'utf8');
   const rules = component.slice(component.indexOf('const grammarRules'), component.indexOf('const listStates'));
 
-  for (const rule of ['جنس المعدود', 'المعدود نكرة', 'المخاطبة', 'الترقيم', 'الترتيب', 'التنوين']) {
+  for (const rule of ['المخاطبة', 'همزة القطع', 'الترقيم', 'ما بعد المئة', 'التاء المربوطة', 'التنوين']) {
     assert.ok(rules.includes(rule), rule);
   }
   assert.equal((rules.match(/wrong:/g) ?? []).length, 6);
