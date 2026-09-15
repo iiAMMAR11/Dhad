@@ -8,22 +8,40 @@ const layoutUrl = new URL('../showcase/app/layout.tsx', import.meta.url);
 const packageUrl = new URL('../showcase/package.json', import.meta.url);
 const versionUrl = new URL('../VERSION', import.meta.url);
 
-test('showcase is the story, the journey, the install, and a compact owner footer', async () => {
+test('showcase is the story, the journey, the abilities, the install, and a compact owner footer', async () => {
   const component = await readFile(componentUrl, 'utf8');
   const main = component.slice(component.indexOf('<main'), component.indexOf('</main>'));
 
-  assert.equal((main.match(/<section\b/g) ?? []).length, 3);
+  assert.equal((main.match(/<section\b/g) ?? []).length, 4);
   assert.match(main, /className="story"/);
   assert.match(main, /className="journey"/);
+  assert.match(main, /className="abilities"/);
   assert.match(main, /className="install"/);
   assert.match(component, /<footer className="owner">/);
+});
+
+test('the abilities section lets the visitor operate three working examples', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+  const abilities = component.slice(component.indexOf('className="abilities"'), component.indexOf('className="install"'));
+
+  assert.equal((abilities.match(/<article className="ability">/g) ?? []).length, 3);
+  // A tolerant Arabic search the visitor types into.
+  assert.match(abilities, /htmlFor="ability-search"/);
+  assert.match(abilities, /id="ability-search"/);
+  // A control that reports waiting, success, and failure.
+  assert.match(abilities, /aria-busy=\{saveState === 'working'\}/);
+  assert.match(abilities, /disabled=\{saveState === 'working'\}/);
+  for (const ending of ['تم الحفظ', 'أعد المحاولة', 'جارٍ الحفظ']) assert.ok(component.includes(ending), ending);
+  // A list that explains every state instead of showing a blank screen.
+  assert.match(abilities, /aria-pressed=\{listState === state\.id\}/);
+  assert.equal((abilities.match(/aria-live="polite"/g) ?? []).length, 3);
 });
 
 test('every journey stage compares a labelled before against a labelled after', async () => {
   const component = await readFile(componentUrl, 'utf8');
   const stages = component.match(/<Stage\b/g) ?? [];
 
-  assert.ok(stages.length >= 5, 'the journey needs at least five stages');
+  assert.ok(stages.length >= 7, 'the journey needs at least seven stages');
   assert.equal((component.match(/بدون ضاد/g) ?? []).length, 1, 'the label belongs to the shared Stage component');
   assert.equal((component.match(/مع ضاد/g) ?? []).length, 1);
   assert.equal((component.match(/without=\{/g) ?? []).length, stages.length);
@@ -33,7 +51,10 @@ test('every journey stage compares a labelled before against a labelled after', 
 test('the corrected side is computed, never typed by hand', async () => {
   const component = await readFile(componentUrl, 'utf8');
 
-  for (const api of ['Intl.PluralRules', 'Intl.Collator', 'Intl.DateTimeFormat', 'Intl.NumberFormat']) {
+  for (const api of [
+    'Intl.PluralRules', 'Intl.Collator', 'Intl.DateTimeFormat',
+    'Intl.NumberFormat', 'Intl.RelativeTimeFormat', 'Intl.ListFormat',
+  ]) {
     assert.ok(component.includes(api), `missing ${api}`);
   }
   assert.match(component, /islamic-umalqura/);
@@ -116,6 +137,9 @@ test('visual system uses a quiet product canvas with meaningful color and readab
   assert.match(css, /\.hero h1\s*\{[^}]*line-height:\s*1\.22/s);
   assert.match(css, /\.hero-lead\s*\{[^}]*line-height:\s*1\.9/s);
   assert.match(css, /\.pane\s*\{[^}]*border:/s);
+  assert.match(css, /\.ability\s*\{[^}]*border:/s);
+  assert.match(css, /\.ability input\s*\{[^}]*min-block-size:\s*48px/s);
+  assert.match(css, /\.ability-tabs button\s*\{[^}]*min-block-size:\s*44px/s);
   assert.match(css, /\.demo--cramped\s*\{[^}]*line-height:\s*\.9/s);
   assert.match(css, /\.demo--roomy\s*\{[^}]*line-height:\s*1\.95/s);
   assert.match(css, /@media \(max-width: 520px\)/);
@@ -129,6 +153,9 @@ test('every visible control has a state', async () => {
   assert.match(css, /\.primary-action:hover\s*\{[^}]*background:/s);
   assert.match(css, /\.downloads a:hover\s*\{[^}]*background:/s);
   assert.match(css, /\.command button:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.ability-button:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.ability-tabs button:hover\s*\{[^}]*color:/s);
+  assert.match(css, /\.ability-tabs button\[aria-pressed="true"\]\s*\{[^}]*background:/s);
 });
 
 test('metadata, release number, and language match the released skill', async () => {

@@ -11,6 +11,17 @@ const hijri = new Intl.DateTimeFormat('ar-SA-u-nu-arab', { calendar: 'islamic-um
 const riyal = new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' });
 const plural = new Intl.PluralRules('ar');
 const collator = new Intl.Collator('ar', { numeric: true, sensitivity: 'base' });
+const relative = new Intl.RelativeTimeFormat('ar-SA-u-nu-arab', { numeric: 'auto' });
+const listFormat = new Intl.ListFormat('ar', { style: 'long', type: 'conjunction' });
+const percent = new Intl.NumberFormat('ar-SA-u-nu-arab', { style: 'percent', maximumFractionDigits: 1 });
+const workKinds = ['موقع', 'تطبيق', 'عرض', 'إعلان'];
+const directory = ['أحمد الغامدي', 'آدم السالم', 'إبراهيم العتيبي', 'عائشة النصر', 'بدر الحربي'];
+const listStates = [
+  { id: 'loading', tab: 'يحمّل', title: 'جارٍ التحميل', body: 'ننتظر النتائج. لا تغلق الصفحة.' },
+  { id: 'empty', tab: 'لا نتائج', title: 'لا توجد نتائج', body: 'غيّر كلمة البحث أو امسح التصفية.' },
+  { id: 'error', tab: 'تعذّر', title: 'تعذّر جلب النتائج', body: 'تحقّق من اتصالك ثم أعد المحاولة.' },
+  { id: 'ready', tab: 'جاهزة', title: 'ثلاث نتائج', body: 'أحمد الغامدي · آدم السالم · بدر الحربي' },
+] as const;
 
 const pluralForms: Record<string, string> = {
   zero: 'لا توجد ملفات',
@@ -23,6 +34,19 @@ const pluralForms: Record<string, string> = {
 
 const counts = [0, 1, 2, 3, 11];
 const names = ['إبراهيم', 'آدم', 'أحمد', 'بدر', 'عائشة'];
+
+const resultForms: Record<string, string> = {
+  zero: 'لا نتائج',
+  one: 'نتيجة واحدة',
+  two: 'نتيجتان',
+  few: '# نتائج',
+  many: '# نتيجة',
+  other: '# نتيجة',
+};
+
+function countedResults(value: number) {
+  return resultForms[plural.select(value)].replace('#', arabicDigits.format(value));
+}
 
 function countedRight(value: number) {
   return pluralForms[plural.select(value)].replace('#', arabicDigits.format(value));
@@ -77,6 +101,28 @@ function Stage({
 
 export default function ShowcaseClient() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [term, setTerm] = useState('احمد');
+  const [saveState, setSaveState] = useState<'idle' | 'working' | 'done' | 'failed'>('idle');
+  const [attempt, setAttempt] = useState(0);
+  const [listState, setListState] = useState<string>('loading');
+
+  const hits = directory.filter((name) => normalize(name).includes(normalize(term)));
+  const shownList = listStates.find((state) => state.id === listState) ?? listStates[0];
+
+  function save() {
+    /* The first press succeeds and the next one fails, so both endings are visible. */
+    const willFail = attempt % 2 === 1;
+    setAttempt(attempt + 1);
+    setSaveState('working');
+    window.setTimeout(() => setSaveState(willFail ? 'failed' : 'done'), 700);
+  }
+
+  const saveLabel = {
+    idle: 'احفظ الملف',
+    working: 'جارٍ الحفظ…',
+    done: 'تم الحفظ',
+    failed: 'أعد المحاولة',
+  }[saveState];
 
   async function copyInstall() {
     try {
@@ -96,6 +142,7 @@ export default function ShowcaseClient() {
         <p>مهارة عربية لكل نوع من العمل</p>
         <nav aria-label="روابط الصفحة">
           <a href="#journey">الفرق</a>
+          <a href="#abilities">جرّبه</a>
           <a href="#install">التثبيت</a>
           <a className="nav-action" href="https://github.com/iiAMMAR11/Dhad">GitHub</a>
         </nav>
@@ -182,10 +229,10 @@ export default function ShowcaseClient() {
 
         <section className="journey" id="journey" aria-labelledby="journey-title">
           <div className="journey-heading">
-            <h2 id="journey-title">هذا هو الفرق. أمامك، الآن.</h2>
+            <h2 id="journey-title">شوف الفرق بنفسك.</h2>
             <p>
-              كل لوح في اليمين مرسوم في متصفحك هذه اللحظة، لا صورة ولا وعد.
-              انزل ببطء، وسترى ما الذي يصلحه ضاد في كل مرحلة من العمل.
+              كل مثال هنا يعمل أمامك الآن، لا صورة ولا كلام.
+              انزل بهدوء، وقارن بين الحالتين في كل خطوة.
             </p>
           </div>
 
@@ -193,7 +240,7 @@ export default function ShowcaseClient() {
             <Stage
               number="١"
               title="المسافة والتشكيل"
-              lead="أول ما يُكسر في العربية: سطر ضيّق تتلامس فيه الحركات والهمزات، ونص ملاصق للإطار."
+              lead="إذا ضاق السطر، تلاصقت الحركات وصعبت القراءة."
               without={
                 <p className="demo demo--cramped" lang="ar">
                   الْعَرَبِيَّةُ لُغَةٌ مُشَكَّلَةٌ، وَالسَّطْرُ الضَّيِّقُ يَجْعَلُ الْحَرَكَاتِ وَالْهَمَزَاتِ تَتَلَامَسُ مَعَ السَّطْرِ الَّذِي فَوْقَهَا، فَيَصْعُبُ عَلَى الْقَارِئِ أَنْ يُتَابِعَ الْكَلِمَاتِ.
@@ -209,7 +256,7 @@ export default function ShowcaseClient() {
             <Stage
               number="٢"
               title="الاتجاه"
-              lead="حين تنسى الأداة اتجاه العربية تبدأ الجملة من اليسار، وتهاجر النقطة والفاصلة إلى الطرف الخطأ."
+              lead="إذا نسيت الأداة أن العربية تبدأ من اليمين، انقلبت الجملة وتاهت النقطة."
               without={
                 <p className="demo demo--ltr" dir="ltr">
                   حمّل ضاد من iiammar.com، ثم ابدأ العمل.
@@ -225,7 +272,7 @@ export default function ShowcaseClient() {
             <Stage
               number="٣"
               title="الجمع العربي"
-              lead="العربية ستّ صيغ لا اثنتان. «١١ ملف» خطأ لغوي يراه قارئك قبل أن يراه المطوّر."
+              lead="نقول: ملف، وملفان، وملفات. ولا نقول: ١١ ملف."
               without={
                 <ul className="demo demo--list">
                   {counts.map((value) => (
@@ -244,8 +291,8 @@ export default function ShowcaseClient() {
 
             <Stage
               number="٤"
-              title="التاريخ والمال والأرقام"
-              lead="التقويم والعملة ونظام الأرقام تتبع بلد جمهورك، لا الإعداد الافتراضي للأداة."
+              title="التاريخ والمبلغ"
+              lead="يظهران بالشكل الذي يعرفه القارئ في بلده."
               without={
                 <dl className="demo demo--pairs">
                   <dt>التاريخ</dt><dd>15/9/2026</dd>
@@ -263,7 +310,7 @@ export default function ShowcaseClient() {
             <Stage
               number="٥"
               title="الترتيب والبحث"
-              lead="الترتيب الافتراضي يخلط الألفات، والبحث عن «احمد» لا يجد «أحمد»."
+              lead="الترتيب المعتاد يخلط الألف والهمزة، والبحث عن «احمد» لا يجد «أحمد»."
               without={
                 <div className="demo">
                   <p className="demo-caption">الترتيب</p>
@@ -285,12 +332,129 @@ export default function ShowcaseClient() {
                 </div>
               }
             />
+            <Stage
+              number="٦"
+              title="الوقت"
+              lead="«قبل ثلاثة أيام» أقرب للقارئ من تاريخ كامل، ولها صيغة عربية صحيحة."
+              without={
+                <ul className="demo demo--list">
+                  <li>آخر تحديث: منذ 3 يوم</li>
+                  <li>الرسالة: منذ 2 ساعة</li>
+                  <li>الملف: منذ 1 يوم</li>
+                </ul>
+              }
+              withDhad={
+                <ul className="demo demo--list">
+                  <li>آخر تحديث: {relative.format(-3, 'day')}</li>
+                  <li>الرسالة: {relative.format(-2, 'hour')}</li>
+                  <li>الملف: {relative.format(-1, 'day')}</li>
+                </ul>
+              }
+            />
+
+            <Stage
+              number="٧"
+              title="الأرقام والقوائم"
+              lead="الرقم الكبير يحتاج فواصل، والقائمة تحتاج واوًا لا فاصلة."
+              without={
+                <dl className="demo demo--pairs">
+                  <dt>المشتركون</dt><dd>1234567</dd>
+                  <dt>نسبة الإنجاز</dt><dd>87.5%</dd>
+                  <dt>يدعم</dt><dd>موقع, تطبيق, عرض, إعلان</dd>
+                </dl>
+              }
+              withDhad={
+                <dl className="demo demo--pairs">
+                  <dt>المشتركون</dt><dd>{arabicDigits.format(1234567)}</dd>
+                  <dt>نسبة الإنجاز</dt><dd>{percent.format(0.875)}</dd>
+                  <dt>يدعم</dt><dd>{listFormat.format(workKinds)}</dd>
+                </dl>
+              }
+            />
           </ol>
 
           <p className="journey-close">
-            خمس مراحل هنا، وضاد يفحص عشرات غيرها في كل عمل: الحالات الفارغة، والخطأ،
-            وانقطاع الاتصال، ولوحة المفاتيح، والتكبير، والهاتف، والملف بعد تصديره.
+            هذه أمثلة قليلة. ويفحص ضاد غيرها كثيرًا في كل عمل: الشاشة الفارغة،
+            ورسالة الخطأ، وانقطاع النت، ولوحة المفاتيح، والهاتف، والملف بعد حفظه.
           </p>
+        </section>
+
+        <section className="abilities" id="abilities" aria-labelledby="abilities-title">
+          <div className="abilities-heading">
+            <h2 id="abilities-title">وهذا ما يصنعه لك.</h2>
+            <p>ثلاثة أمثلة تعمل الآن. جرّبها بنفسك.</p>
+          </div>
+
+          <div className="ability-grid">
+            <article className="ability">
+              <h3>بحث يسامح في الهمزة</h3>
+              <p className="ability-lead">اكتب الاسم كما تنطقه، ويجده ضاد كما هو مكتوب.</p>
+              <label className="ability-field" htmlFor="ability-search">ابحث عن اسم</label>
+              <input
+                id="ability-search"
+                type="search"
+                value={term}
+                onChange={(event) => setTerm(event.target.value)}
+                placeholder="احمد"
+              />
+              <p className="ability-note" aria-live="polite">
+                {term.trim() === ''
+                  ? 'اكتب حرفًا لتبدأ.'
+                  : hits.length === 0
+                    ? 'لا يوجد اسم بهذا الحرف.'
+                    : `${countedResults(hits.length)}`}
+              </p>
+              <ul className="ability-results">
+                {hits.map((name) => (
+                  <li key={name}>{name}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="ability">
+              <h3>زر يقول ما يفعل</h3>
+              <p className="ability-lead">لا يتركك تنتظر بلا خبر، ويشرح لك إن تعذّر.</p>
+              <button
+                type="button"
+                className={`ability-button ability-button--${saveState}`}
+                onClick={save}
+                disabled={saveState === 'working'}
+                aria-busy={saveState === 'working'}
+              >
+                {saveLabel}
+              </button>
+              <p className="ability-note" aria-live="polite">
+                {saveState === 'working'
+                  ? 'ننتظر انتهاء الحفظ.'
+                  : saveState === 'done'
+                    ? 'حُفظ الملف. اضغط مرة أخرى لترى حالة التعذّر.'
+                    : saveState === 'failed'
+                      ? 'تعذّر الحفظ. الزر ما زال يعمل، جرّب مرة أخرى.'
+                      : 'اضغط الزر وتابع ما يقوله.'}
+              </p>
+            </article>
+
+            <article className="ability">
+              <h3>قائمة بكل حالاتها</h3>
+              <p className="ability-lead">لا تُترك الشاشة فارغة بلا تفسير في أي حالة.</p>
+              <div className="ability-tabs">
+                {listStates.map((state) => (
+                  <button
+                    key={state.id}
+                    type="button"
+                    onClick={() => setListState(state.id)}
+                    aria-pressed={listState === state.id}
+                  >
+                    {state.tab}
+                  </button>
+                ))}
+              </div>
+              <div className="ability-panel" aria-live="polite">
+                <strong>{shownList.title}</strong>
+                <span>{shownList.body}</span>
+              </div>
+            </article>
+          </div>
         </section>
 
         <section className="install" id="install" aria-labelledby="install-title">
