@@ -8,14 +8,55 @@ const layoutUrl = new URL('../showcase/app/layout.tsx', import.meta.url);
 const packageUrl = new URL('../showcase/package.json', import.meta.url);
 const versionUrl = new URL('../VERSION', import.meta.url);
 
-test('showcase is exactly two sections and a compact owner footer', async () => {
+test('showcase is the story, the journey, the install, and a compact owner footer', async () => {
   const component = await readFile(componentUrl, 'utf8');
   const main = component.slice(component.indexOf('<main'), component.indexOf('</main>'));
 
-  assert.equal((main.match(/<section\b/g) ?? []).length, 2);
+  assert.equal((main.match(/<section\b/g) ?? []).length, 3);
   assert.match(main, /className="story"/);
+  assert.match(main, /className="journey"/);
   assert.match(main, /className="install"/);
   assert.match(component, /<footer className="owner">/);
+});
+
+test('every journey stage compares a labelled before against a labelled after', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+  const stages = component.match(/<Stage\b/g) ?? [];
+
+  assert.ok(stages.length >= 5, 'the journey needs at least five stages');
+  assert.equal((component.match(/بدون ضاد/g) ?? []).length, 1, 'the label belongs to the shared Stage component');
+  assert.equal((component.match(/مع ضاد/g) ?? []).length, 1);
+  assert.equal((component.match(/without=\{/g) ?? []).length, stages.length);
+  assert.equal((component.match(/withDhad=\{/g) ?? []).length, stages.length);
+});
+
+test('the corrected side is computed, never typed by hand', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  for (const api of ['Intl.PluralRules', 'Intl.Collator', 'Intl.DateTimeFormat', 'Intl.NumberFormat']) {
+    assert.ok(component.includes(api), `missing ${api}`);
+  }
+  assert.match(component, /islamic-umalqura/);
+  assert.match(component, /ar-SA-u-nu-arab/);
+  // A fixed instant keeps the server and the browser agreeing on the date.
+  assert.match(component, /Date\.UTC\(/);
+  assert.doesNotMatch(component, /new Date\(\)/);
+});
+
+test('the direction stage shows a real failure, not a claimed one', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  // Without a direction the Arabic sentence starts from the left and its
+  // punctuation lands on the wrong edge. That difference is observable.
+  assert.match(component, /className="demo demo--ltr" dir="ltr"/);
+  assert.match(component, /<bdi dir="ltr">/);
+});
+
+test('the showcase demonstrates rules, and never invents client work', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  assert.doesNotMatch(component, /إعلان-الدورة\.pdf|example\.com\/arabic-ui|شركة [أا]/);
+  assert.doesNotMatch(component, /عميل سعيد|قال عنّا|دراسة حالة/);
 });
 
 test('first section explains the idea, method, and advantages without a fake example', async () => {
@@ -32,7 +73,6 @@ test('first section explains the idea, method, and advantages without a fake exa
   assert.match(component, /يفهم جمهورك/);
   assert.match(component, /يراجعها بعد التصدير/);
   assert.match(component, /لا ينسى الحالات الصعبة/);
-  assert.doesNotMatch(component, /مثال واقعي|إعلان-الدورة\.pdf|example\.com\/arabic-ui/);
 });
 
 test('installation section uses real archives and gives live copy feedback', async () => {
@@ -75,6 +115,9 @@ test('visual system uses a quiet product canvas with meaningful color and readab
   assert.match(css, /body\s*\{[^}]*font-size:\s*1rem[^}]*line-height:\s*1\.8/s);
   assert.match(css, /\.hero h1\s*\{[^}]*line-height:\s*1\.22/s);
   assert.match(css, /\.hero-lead\s*\{[^}]*line-height:\s*1\.9/s);
+  assert.match(css, /\.pane\s*\{[^}]*border:/s);
+  assert.match(css, /\.demo--cramped\s*\{[^}]*line-height:\s*\.9/s);
+  assert.match(css, /\.demo--roomy\s*\{[^}]*line-height:\s*1\.95/s);
   assert.match(css, /@media \(max-width: 520px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@media \(forced-colors: active\)/);

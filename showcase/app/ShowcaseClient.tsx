@@ -1,8 +1,79 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 const installCommand = '$skill-installer ثبّت dhad من https://github.com/iiAMMAR11/Dhad';
+
+/* A fixed instant keeps the server and the browser rendering the same date. */
+const sampleDate = new Date(Date.UTC(2026, 8, 15));
+const arabicDigits = new Intl.NumberFormat('ar-SA-u-nu-arab');
+const hijri = new Intl.DateTimeFormat('ar-SA-u-nu-arab', { calendar: 'islamic-umalqura', dateStyle: 'long' });
+const riyal = new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' });
+const plural = new Intl.PluralRules('ar');
+const collator = new Intl.Collator('ar', { numeric: true, sensitivity: 'base' });
+
+const pluralForms: Record<string, string> = {
+  zero: 'لا توجد ملفات',
+  one: 'ملف واحد',
+  two: 'ملفان',
+  few: '# ملفات',
+  many: '# ملفًا',
+  other: '# ملف',
+};
+
+const counts = [0, 1, 2, 3, 11];
+const names = ['إبراهيم', 'آدم', 'أحمد', 'بدر', 'عائشة'];
+
+function countedRight(value: number) {
+  return pluralForms[plural.select(value)].replace('#', arabicDigits.format(value));
+}
+
+const normalize = (value: string) =>
+  value
+    .normalize('NFKC')
+    .replace(/[ً-ٰٟـ]/g, '')
+    .replace(/[إأآٱ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .trim()
+    .toLocaleLowerCase('ar');
+
+const query = 'احمد';
+const naiveHits = names.filter((name) => name.includes(query));
+const smartHits = names.filter((name) => normalize(name).includes(normalize(query)));
+
+function Stage({
+  number,
+  title,
+  lead,
+  without,
+  withDhad,
+}: {
+  number: string;
+  title: string;
+  lead: string;
+  without: ReactNode;
+  withDhad: ReactNode;
+}) {
+  return (
+    <li className="stage">
+      <div className="stage-copy">
+        <span className="stage-number" aria-hidden="true">{number}</span>
+        <h3>{title}</h3>
+        <p>{lead}</p>
+      </div>
+      <div className="compare">
+        <div className="pane pane--without">
+          <b className="pane-label">بدون ضاد</b>
+          <div className="pane-body">{without}</div>
+        </div>
+        <div className="pane pane--with">
+          <b className="pane-label">مع ضاد</b>
+          <div className="pane-body">{withDhad}</div>
+        </div>
+      </div>
+    </li>
+  );
+}
 
 export default function ShowcaseClient() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
@@ -24,7 +95,7 @@ export default function ShowcaseClient() {
         <a className="brand" href="#main" aria-label="ضاد، البداية">ضاد</a>
         <p>مهارة عربية لكل نوع من العمل</p>
         <nav aria-label="روابط الصفحة">
-          <a href="#how">كيف يعمل؟</a>
+          <a href="#journey">الفرق</a>
           <a href="#install">التثبيت</a>
           <a className="nav-action" href="https://github.com/iiAMMAR11/Dhad">GitHub</a>
         </nav>
@@ -107,6 +178,119 @@ export default function ShowcaseClient() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="journey" id="journey" aria-labelledby="journey-title">
+          <div className="journey-heading">
+            <h2 id="journey-title">هذا هو الفرق. أمامك، الآن.</h2>
+            <p>
+              كل لوح في اليمين مرسوم في متصفحك هذه اللحظة، لا صورة ولا وعد.
+              انزل ببطء، وسترى ما الذي يصلحه ضاد في كل مرحلة من العمل.
+            </p>
+          </div>
+
+          <ol className="stages">
+            <Stage
+              number="١"
+              title="المسافة والتشكيل"
+              lead="أول ما يُكسر في العربية: سطر ضيّق تتلامس فيه الحركات والهمزات، ونص ملاصق للإطار."
+              without={
+                <p className="demo demo--cramped" lang="ar">
+                  الْعَرَبِيَّةُ لُغَةٌ مُشَكَّلَةٌ، وَالسَّطْرُ الضَّيِّقُ يَجْعَلُ الْحَرَكَاتِ وَالْهَمَزَاتِ تَتَلَامَسُ مَعَ السَّطْرِ الَّذِي فَوْقَهَا، فَيَصْعُبُ عَلَى الْقَارِئِ أَنْ يُتَابِعَ الْكَلِمَاتِ.
+                </p>
+              }
+              withDhad={
+                <p className="demo demo--roomy" lang="ar">
+                  الْعَرَبِيَّةُ لُغَةٌ مُشَكَّلَةٌ، وَالسَّطْرُ الْمُرِيحُ يَتْرُكُ لِلْحَرَكَاتِ وَالْهَمَزَاتِ مَكَانَهَا، فَتَبْقَى كُلُّ كَلِمَةٍ وَاضِحَةً وَالْقِرَاءَةُ مُتَّصِلَةً.
+                </p>
+              }
+            />
+
+            <Stage
+              number="٢"
+              title="الاتجاه"
+              lead="حين تنسى الأداة اتجاه العربية تبدأ الجملة من اليسار، وتهاجر النقطة والفاصلة إلى الطرف الخطأ."
+              without={
+                <p className="demo demo--ltr" dir="ltr">
+                  حمّل ضاد من iiammar.com، ثم ابدأ العمل.
+                </p>
+              }
+              withDhad={
+                <p className="demo" dir="rtl">
+                  حمّل ضاد من <bdi dir="ltr">iiammar.com</bdi>، ثم ابدأ العمل.
+                </p>
+              }
+            />
+
+            <Stage
+              number="٣"
+              title="الجمع العربي"
+              lead="العربية ستّ صيغ لا اثنتان. «١١ ملف» خطأ لغوي يراه قارئك قبل أن يراه المطوّر."
+              without={
+                <ul className="demo demo--list">
+                  {counts.map((value) => (
+                    <li key={value}>{value} ملف</li>
+                  ))}
+                </ul>
+              }
+              withDhad={
+                <ul className="demo demo--list">
+                  {counts.map((value) => (
+                    <li key={value}>{countedRight(value)}</li>
+                  ))}
+                </ul>
+              }
+            />
+
+            <Stage
+              number="٤"
+              title="التاريخ والمال والأرقام"
+              lead="التقويم والعملة ونظام الأرقام تتبع بلد جمهورك، لا الإعداد الافتراضي للأداة."
+              without={
+                <dl className="demo demo--pairs">
+                  <dt>التاريخ</dt><dd>15/9/2026</dd>
+                  <dt>المبلغ</dt><dd>1250.5 ر.س</dd>
+                </dl>
+              }
+              withDhad={
+                <dl className="demo demo--pairs">
+                  <dt>التاريخ</dt><dd>{hijri.format(sampleDate)}</dd>
+                  <dt>المبلغ</dt><dd>{riyal.format(1250.5)}</dd>
+                </dl>
+              }
+            />
+
+            <Stage
+              number="٥"
+              title="الترتيب والبحث"
+              lead="الترتيب الافتراضي يخلط الألفات، والبحث عن «احمد» لا يجد «أحمد»."
+              without={
+                <div className="demo">
+                  <p className="demo-caption">الترتيب</p>
+                  <p className="demo-line">{[...names].sort().join(' · ')}</p>
+                  <p className="demo-caption">البحث عن «احمد»</p>
+                  <p className="demo-line demo-line--empty">
+                    {naiveHits.length ? naiveHits.join(' · ') : 'لا توجد نتائج'}
+                  </p>
+                </div>
+              }
+              withDhad={
+                <div className="demo">
+                  <p className="demo-caption">الترتيب</p>
+                  <p className="demo-line">{[...names].sort(collator.compare).join(' · ')}</p>
+                  <p className="demo-caption">البحث عن «احمد»</p>
+                  <p className="demo-line demo-line--found">
+                    {smartHits.length ? smartHits.join(' · ') : 'لا توجد نتائج'}
+                  </p>
+                </div>
+              }
+            />
+          </ol>
+
+          <p className="journey-close">
+            خمس مراحل هنا، وضاد يفحص عشرات غيرها في كل عمل: الحالات الفارغة، والخطأ،
+            وانقطاع الاتصال، ولوحة المفاتيح، والتكبير، والهاتف، والملف بعد تصديره.
+          </p>
         </section>
 
         <section className="install" id="install" aria-labelledby="install-title">
