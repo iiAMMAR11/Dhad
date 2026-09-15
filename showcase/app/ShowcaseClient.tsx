@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 const installCommand = '$skill-installer ثبّت dhad من https://github.com/iiAMMAR11/Dhad';
+const examplePrompt = 'صمّم لي عرضًا تقديميًا بالعربية عن خطة المبيعات، باستخدام ضاد.';
 
 /* A fixed instant keeps the server and the browser rendering the same date. */
 const sampleDate = new Date(Date.UTC(2026, 8, 15));
@@ -134,6 +135,7 @@ function Stage({
 
 export default function ShowcaseClient() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [copied, setCopied] = useState<'command' | 'prompt' | null>(null);
   const [term, setTerm] = useState('احمد');
   const [saveState, setSaveState] = useState<'idle' | 'working' | 'done' | 'failed'>('idle');
   const [attempt, setAttempt] = useState(0);
@@ -157,14 +159,25 @@ export default function ShowcaseClient() {
     failed: 'أعد المحاولة',
   }[saveState];
 
-  async function copyInstall() {
+  async function copy(text: string, target: 'command' | 'prompt') {
     try {
-      await navigator.clipboard.writeText(installCommand);
+      await navigator.clipboard.writeText(text);
       setCopyState('copied');
     } catch {
       setCopyState('failed');
     }
+    setCopied(target);
   }
+
+  useEffect(() => {
+    if (copyState === 'idle') return;
+    /* Let the control rest again so it never reads as a stuck state. */
+    const timer = window.setTimeout(() => {
+      setCopyState('idle');
+      setCopied(null);
+    }, 4000);
+    return () => window.clearTimeout(timer);
+  }, [copyState, copied]);
 
   return (
     <>
@@ -187,7 +200,7 @@ export default function ShowcaseClient() {
             <div className="hero-copy">
               <p className="plain-intro">مصمَّم للعربية من البداية</p>
               <h1 id="story-title">
-                <span>عملك يستحق</span>
+                <span>عملك يستحق </span>
                 <span>عربية تليق به.</span>
               </h1>
               <p className="hero-lead">
@@ -450,10 +463,11 @@ export default function ShowcaseClient() {
             </ul>
           </div>
 
-          <p className="journey-close">
+          <p className="journey-close" id="journey-close">
             هذه أمثلة قليلة. ويفحص ضاد غيرها كثيرًا في كل عمل: الشاشة الفارغة،
             ورسالة الخطأ، وانقطاع النت، ولوحة المفاتيح، والهاتف، والملف بعد حفظه.
           </p>
+          <a className="primary-action journey-action" href="#install">ثبّت ضاد</a>
         </section>
 
         <section className="abilities" id="abilities" aria-labelledby="abilities-title">
@@ -536,8 +550,14 @@ export default function ShowcaseClient() {
 
         <section className="install" id="install" aria-labelledby="install-title">
           <div className="install-copy">
-            <h2 id="install-title">ثبّت ضاد.<br />وابدأ بالطلب.</h2>
-            <p>اختر الملف المناسب، أضفه إلى أداتك، ثم اطلب منها تنفيذ العمل باستخدام ضاد.</p>
+            <h2 id="install-title">ثبّت ضاد. <br />وابدأ بالطلب.</h2>
+            <p>اختر الملف المناسب، أضفه إلى أداتك، ثم اطلب منها العمل. هكذا يبدو الطلب:</p>
+            <div className="command command--prompt">
+              <code>صمّم لي عرضًا تقديميًا بالعربية عن خطة المبيعات، باستخدام ضاد.</code>
+              <button type="button" onClick={() => copy(examplePrompt, 'prompt')}>
+                {copied === 'prompt' && copyState === 'copied' ? 'نُسخ' : 'نسخ الطلب'}
+              </button>
+            </div>
           </div>
 
           <div className="install-actions">
@@ -554,8 +574,8 @@ export default function ShowcaseClient() {
 
             <div className="command">
               <code><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">github.com/iiAMMAR11/Dhad</bdi></code>
-              <button type="button" onClick={copyInstall}>
-                {copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}
+              <button type="button" onClick={() => copy(installCommand, 'command')}>
+                {copied === 'command' && copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}
               </button>
             </div>
             <p className={`copy-status copy-status--${copyState}`} aria-live="polite">

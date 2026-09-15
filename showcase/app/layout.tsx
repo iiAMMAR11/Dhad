@@ -18,12 +18,14 @@ export const metadata: Metadata = {
     siteName: 'Dhad',
     title: 'Dhad',
     description: 'مواقع وملفات وصور أوضح، مع عربية مريحة واتجاه صحيح.',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'ضاد، عمل أوضح وعربية أفضل' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Dhad',
     description: 'مواقع وملفات وصور أوضح، مع عربية مريحة واتجاه صحيح.',
     creator: '@iiAMMAR11',
+    images: ['/og.png'],
   },
 };
 

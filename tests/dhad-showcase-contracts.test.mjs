@@ -146,7 +146,7 @@ test('visual system uses a quiet product canvas with meaningful color and readab
 
   assert.match(css, /--action:\s*#1557d5/);
   assert.match(css, /--success:\s*#15803d/);
-  assert.match(css, /--warning:\s*#b66a00/);
+  assert.match(css, /--warning:\s*#8a5000/); // clears AA on the light canvas
   assert.match(css, /--assistive:\s*#7446b8/);
   assert.match(css, /--danger:\s*#b4232c/);
   assert.match(css, /\.hero\s*\{[^}]*background-image:[^}]*linear-gradient/s);
@@ -181,6 +181,43 @@ test('every visible control has a state', async () => {
   assert.match(css, /\.ability-tabs button\[aria-pressed="true"\]\s*\{[^}]*background:/s);
 });
 
+test('a visual line break never glues two words for a reader', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  // The headline is split for layout only; the text must still read as words.
+  assert.match(component, /<span>عملك يستحق <\/span>/);
+  assert.match(component, /ثبّت ضاد\. <br \/>/);
+});
+
+test('the install section shows the request, and the copy control returns to rest', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  assert.match(component, /const examplePrompt = /);
+  assert.match(component, /نسخ الطلب/);
+  assert.match(component, /نسخ الأمر/);
+  assert.match(component, /setCopyState\('idle'\)/);
+  assert.match(component, /clearTimeout/);
+});
+
+test('the journey repeats the invitation instead of sending the reader back up', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+  const journey = component.slice(component.indexOf('className="journey"'), component.indexOf('className="abilities"'));
+
+  assert.match(journey, /className="primary-action journey-action" href="#install"/);
+});
+
+test('the page carries a share card and a square icon', async () => {
+  const [layout, favicon] = await Promise.all([
+    readFile(layoutUrl, 'utf8'),
+    readFile(new URL('../showcase/public/favicon.svg', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(layout, /images: \[\{ url: '\/og\.png', width: 1200, height: 630/);
+  assert.match(layout, /card: 'summary_large_image'/);
+  const [, w, h] = favicon.match(/viewBox="0 0 (\d+) (\d+)"/) ?? [];
+  assert.equal(w, h, 'the tab icon must be square');
+});
+
 test('metadata, release number, and language match the released skill', async () => {
   const [layout, pkg, version] = await Promise.all([
     readFile(layoutUrl, 'utf8'),
@@ -192,4 +229,7 @@ test('metadata, release number, and language match the released skill', async ()
   assert.match(layout, /lang="ar" dir="rtl"/);
   assert.match(layout, /عمل أوضح وعربية أفضل/);
   assert.match(layout, /#1557d5/);
+
+  const sitemap = await readFile(new URL('../showcase/app/sitemap.ts', import.meta.url), 'utf8');
+  assert.doesNotMatch(sitemap, /new Date\('/, 'a frozen date goes stale the day it ships');
 });

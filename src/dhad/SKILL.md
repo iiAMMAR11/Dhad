@@ -13,7 +13,7 @@ description: Make websites, apps, PDFs, presentations, images, ads, and other wo
 2. حافظ على هوية المشروع وخطه وألوانه وما يعمل فيه جيدًا.
 3. حمّل فقط ما تحتاجه:
    - واجهة أو تجربة استخدام: [الأساس](references/foundation.md).
-   - نص أو أرقام أو تاريخ عربي: [العربية والمنطقة](references/arabic.md).
+   - نص أو أرقام أو تاريخ، أو عمل بالإنجليزية أو بلغتين: [اللغة والمنطقة](references/arabic.md).
    - موقع أو تطبيق أو عرض أو PDF أو صورة: [أنواع النتائج](references/outputs.md).
    - بحث أو محتوى أو خطوات استخدام متقدمة: [أفكار جاهزة](references/patterns.md).
    - مراجعة العمل قبل تسليمه: [الفحص](references/quality.md).
