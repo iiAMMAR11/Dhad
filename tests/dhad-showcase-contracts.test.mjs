@@ -199,6 +199,26 @@ test('the install section shows the request, and the copy control returns to res
   assert.match(component, /clearTimeout/);
 });
 
+test('the install runs download, then install, then ask', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+  const install = component.slice(component.indexOf('className="install"'));
+
+  const order = [...install.matchAll(/className="step-label"><b aria-hidden="true">(.)<\/b> ([^<]+)/g)].map((m) => m[1]);
+  assert.deepEqual(order, ['١', '٢', '٣'], 'the steps must read in the order they are performed');
+  // The request is asked of a tool; the command is run in a terminal. They must not look alike.
+  assert.ok(install.indexOf('className="downloads"') < install.indexOf('className="prompt"'));
+  assert.ok(install.indexOf('className="command"') < install.indexOf('className="prompt"'));
+  assert.doesNotMatch(install, /command--prompt/);
+});
+
+test('one heading pattern carries every light section', async () => {
+  const css = await readFile(cssUrl, 'utf8');
+
+  assert.match(css, /\.how-heading,\s*\n\.journey-heading,\s*\n\.abilities-heading \{/);
+  assert.match(css, /\.prompt \{[^}]*background: var\(--action-soft\)/s);
+  assert.match(css, /\.downloads a b \{[^}]*min-block-size:\s*44px/s);
+});
+
 test('the journey repeats the invitation instead of sending the reader back up', async () => {
   const component = await readFile(componentUrl, 'utf8');
   const journey = component.slice(component.indexOf('className="journey"'), component.indexOf('className="abilities"'));

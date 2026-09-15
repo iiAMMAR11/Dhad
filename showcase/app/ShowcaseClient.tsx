@@ -551,42 +551,53 @@ export default function ShowcaseClient() {
         <section className="install" id="install" aria-labelledby="install-title">
           <div className="install-copy">
             <h2 id="install-title">ثبّت ضاد. <br />وابدأ بالطلب.</h2>
-            <p>اختر الملف المناسب، أضفه إلى أداتك، ثم اطلب منها العمل. هكذا يبدو الطلب:</p>
-            <div className="command command--prompt">
-              <code>صمّم لي عرضًا تقديميًا بالعربية عن خطة المبيعات، باستخدام ضاد.</code>
-              <button type="button" onClick={() => copy(examplePrompt, 'prompt')}>
-                {copied === 'prompt' && copyState === 'copied' ? 'نُسخ' : 'نسخ الطلب'}
-              </button>
-            </div>
+            <p>ثلاث خطوات: حمّل الملف، ثبّته في أداتك، ثم اطلب منها العمل.</p>
           </div>
 
-          <div className="install-actions">
-            <div className="downloads">
-              <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-openai-plugin.zip">
-                <span><strong>ChatGPT وCodex</strong><small>Dhad-openai-plugin.zip</small></span>
-                <b>تحميل</b>
-              </a>
-              <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-agent-skill.zip">
-                <span><strong>Claude</strong><small>Dhad-agent-skill.zip</small></span>
-                <b>تحميل</b>
-              </a>
-            </div>
+          <ol className="install-steps">
+            <li>
+              <p className="step-label"><b aria-hidden="true">١</b> حمّل الملف المناسب لأداتك</p>
+              <div className="downloads">
+                <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-openai-plugin.zip">
+                  <span><strong>ChatGPT وCodex</strong><small>Dhad-openai-plugin.zip</small></span>
+                  <b>تحميل</b>
+                </a>
+                <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-agent-skill.zip">
+                  <span><strong>Claude</strong><small>Dhad-agent-skill.zip</small></span>
+                  <b>تحميل</b>
+                </a>
+              </div>
+            </li>
 
-            <div className="command">
-              <code><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">github.com/iiAMMAR11/Dhad</bdi></code>
-              <button type="button" onClick={() => copy(installCommand, 'command')}>
-                {copied === 'command' && copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}
-              </button>
-            </div>
-            <p className={`copy-status copy-status--${copyState}`} aria-live="polite">
-              {copyState === 'failed'
-                ? 'تعذّر النسخ. انسخ الأمر يدويًا.'
-                : copyState === 'copied'
-                  ? 'الأمر جاهز للصق.'
-                  : ''}
-            </p>
-          </div>
+            <li>
+              <p className="step-label"><b aria-hidden="true">٢</b> أو ثبّته بأمر واحد</p>
+              <div className="command">
+                <code><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">github.com/iiAMMAR11/Dhad</bdi></code>
+                <button type="button" onClick={() => copy(installCommand, 'command')}>
+                  {copied === 'command' && copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}
+                </button>
+              </div>
+              <p className={`copy-status copy-status--${copyState}`} aria-live="polite">
+                {copyState === 'failed'
+                  ? 'تعذّر النسخ. انسخ الأمر يدويًا.'
+                  : copyState === 'copied'
+                    ? 'جاهز للصق.'
+                    : ''}
+              </p>
+            </li>
+
+            <li>
+              <p className="step-label"><b aria-hidden="true">٣</b> ثم اطلب منها العمل</p>
+              <div className="prompt">
+                <p className="prompt-text">{examplePrompt}</p>
+                <button type="button" onClick={() => copy(examplePrompt, 'prompt')}>
+                  {copied === 'prompt' && copyState === 'copied' ? 'نُسخ' : 'نسخ الطلب'}
+                </button>
+              </div>
+            </li>
+          </ol>
         </section>
+
       </main>
 
       <footer className="owner">
