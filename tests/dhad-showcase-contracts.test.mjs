@@ -18,17 +18,21 @@ test('showcase is exactly two sections and a compact owner footer', async () => 
   assert.match(component, /<footer className="owner">/);
 });
 
-test('first section explains the idea, method, advantages, and a concrete result', async () => {
+test('first section explains the idea, method, and advantages without a fake example', async () => {
   const component = await readFile(componentUrl, 'utf8');
 
-  assert.match(component, /العربية أولًا/);
+  assert.match(component, /عملك يستحق/);
+  assert.match(component, /عربية تليق به/);
   assert.match(component, /يفهم المطلوب/);
-  assert.match(component, /يضبط التفاصيل/);
-  assert.match(component, /يختبر النتيجة/);
-  assert.match(component, /أبرز ما يضيفه ضاد/);
-  assert.match(component, /مثال واقعي: إعلان دورة/);
-  assert.match(component, /الأحد، ٢٠ سبتمبر/);
-  assert.match(component, /example\.com\/arabic-ui/);
+  assert.match(component, /يضبطه/);
+  assert.match(component, /يفحص النتيجة/);
+  assert.match(component, /العربية أولًا/);
+  assert.match(component, /هويتك تبقى لك/);
+  assert.match(component, /كل أنواع العمل/);
+  assert.match(component, /يفهم جمهورك/);
+  assert.match(component, /يراجعها بعد التصدير/);
+  assert.match(component, /لا ينسى الحالات الصعبة/);
+  assert.doesNotMatch(component, /مثال واقعي|إعلان-الدورة\.pdf|example\.com\/arabic-ui/);
 });
 
 test('installation section uses real archives and gives live copy feedback', async () => {
@@ -53,25 +57,35 @@ test('ownership and acknowledgments stay in the footer', async () => {
   assert.doesNotMatch(body, /مرصاد|ثمانية|رياضة ثمانية/);
 });
 
-test('visual system is vivid, role-based, readable, and avoids generic effects', async () => {
+test('visual system uses a quiet product canvas with meaningful color and readable Arabic', async () => {
   const css = await readFile(cssUrl, 'utf8');
 
-  assert.match(css, /--blue:\s*#1557d5/);
-  assert.match(css, /--yellow:\s*#ffd43b/);
-  assert.match(css, /--green:\s*#167739/);
-  assert.match(css, /--red:\s*#b4232c/);
-  assert.doesNotMatch(css, /linear-gradient|radial-gradient|background-clip:\s*text/i);
-  assert.doesNotMatch(css, /box-shadow|drop-shadow|backdrop-filter/i);
+  assert.match(css, /--action:\s*#1557d5/);
+  assert.match(css, /--success:\s*#15803d/);
+  assert.match(css, /--warning:\s*#b66a00/);
+  assert.match(css, /--assistive:\s*#7446b8/);
+  assert.match(css, /--danger:\s*#b4232c/);
+  assert.match(css, /\.hero\s*\{[^}]*background-image:[^}]*linear-gradient/s);
+  assert.match(css, /\.quality-report\s*\{[^}]*background-image:[^}]*linear-gradient/s);
+  assert.doesNotMatch(css, /radial-gradient|background-clip:\s*text|drop-shadow/i);
   assert.doesNotMatch(css, /opacity:\s*0(?:\D|$)/);
   assert.doesNotMatch(css, /:hover[^{}]*\{[^}]*transform:/s);
-  assert.doesNotMatch(css, /border-radius:\s*(?:999|50%)/);
+  assert.doesNotMatch(css, /border-radius:\s*999/);
   assert.match(css, /min-block-size:\s*44px/);
   assert.match(css, /body\s*\{[^}]*font-size:\s*1rem[^}]*line-height:\s*1\.8/s);
-  assert.match(css, /\.hero h1\s*\{[^}]*line-height:\s*1\.12/s);
-  assert.match(css, /\.brief p\s*\{[^}]*line-height:\s*1\.8/s);
-  assert.match(css, /@media \(max-width: 620px\)/);
+  assert.match(css, /\.hero h1\s*\{[^}]*line-height:\s*1\.22/s);
+  assert.match(css, /\.hero-lead\s*\{[^}]*line-height:\s*1\.9/s);
+  assert.match(css, /@media \(max-width: 520px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /@media \(forced-colors: active\)/);
+});
+
+test('every visible control has a state', async () => {
+  const css = await readFile(cssUrl, 'utf8');
+
+  assert.match(css, /\.primary-action:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.downloads a:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.command button:hover\s*\{[^}]*background:/s);
 });
 
 test('metadata, release number, and language match the released skill', async () => {

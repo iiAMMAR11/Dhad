@@ -1,37 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
-type Theme = 'light' | 'dark';
+import { useState } from 'react';
 
 const installCommand = '$skill-installer ثبّت dhad من https://github.com/iiAMMAR11/Dhad';
 
 export default function ShowcaseClient() {
-  const [theme, setTheme] = useState<Theme>('light');
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      try {
-        const saved = window.localStorage.getItem('dhad-showcase-theme');
-        setTheme(saved === 'dark' || saved === 'light' ? saved : preferred);
-      } catch {
-        setTheme(preferred);
-      }
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try {
-      window.localStorage.setItem('dhad-showcase-theme', theme);
-    } catch {
-      // The visible theme still works when storage is unavailable.
-    }
-  }, [theme]);
 
   async function copyInstall() {
     try {
@@ -47,69 +21,90 @@ export default function ShowcaseClient() {
       <a className="skip-link" href="#main">تخطَّ إلى المحتوى</a>
 
       <header className="masthead">
-        <a className="brand" href="#main" aria-label="ضاد، البداية">
-          ضاد
-        </a>
+        <a className="brand" href="#main" aria-label="ضاد، البداية">ضاد</a>
         <p>مهارة عربية لكل نوع من العمل</p>
         <nav aria-label="روابط الصفحة">
+          <a href="#how">كيف يعمل؟</a>
           <a href="#install">التثبيت</a>
-          <button type="button" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-            {theme === 'light' ? 'داكن' : 'فاتح'}
-          </button>
+          <a className="nav-action" href="https://github.com/iiAMMAR11/Dhad">GitHub</a>
         </nav>
       </header>
 
       <main id="main">
         <section className="story" aria-labelledby="story-title">
           <div className="hero">
-            <span className="hero-letter" aria-hidden="true">ض</span>
             <div className="hero-copy">
-              <h1 id="story-title">العربية أولًا.</h1>
-              <p>ضاد مهارة تساعد أدوات الذكاء الاصطناعي على صنع مواقع وملفات وعروض وصور أوضح، بعربية صحيحة وهوية لا تضيع.</p>
+              <p className="plain-intro">مصمَّم للعربية من البداية</p>
+              <h1 id="story-title">
+                <span>عملك يستحق</span>
+                <span>عربية تليق به.</span>
+              </h1>
+              <p className="hero-lead">
+                ضاد مهارة تساعد أدوات الذكاء الاصطناعي على صنع مواقع وملفات وعروض وصور
+                أوضح، مع عربية صحيحة وهوية تبقى كما اخترتها.
+              </p>
+              <a className="primary-action" href="#install">ثبّت ضاد</a>
+              <p className="work-types">موقع · تطبيق · عرض · PDF · صورة · إعلان</p>
             </div>
           </div>
 
-          <div className="method" aria-label="آلية عمل ضاد">
-            <p><strong>يفهم المطلوب</strong><span>من سيستخدم العمل؟ وماذا يجب أن يفهم أو يفعل؟</span></p>
-            <p><strong>يضبط التفاصيل</strong><span>الاتجاه، والمسافات، والأرقام، والألوان، وحالات الأزرار.</span></p>
-            <p><strong>يختبر النتيجة</strong><span>على الهاتف، وفي المتصفح، وداخل PDF أو الصورة نفسها.</span></p>
+          <div className="how" id="how">
+            <div className="how-heading">
+              <h2>من الطلب إلى نتيجة جاهزة.</h2>
+              <p>لا تحتاج أن تعرف مصطلحات التصميم. قل ما تريده، وضاد يهتم بالتفاصيل.</p>
+            </div>
+
+            <ol className="steps">
+              <li>
+                <span>١</span>
+                <div><h3>يفهم المطلوب</h3><p>من سيستخدم العمل؟ وما الذي يجب أن يفهمه؟</p></div>
+              </li>
+              <li>
+                <span>٢</span>
+                <div><h3>يضبطه</h3><p>العربية، والاتجاه، والمسافات، والألوان، والأرقام.</p></div>
+              </li>
+              <li>
+                <span>٣</span>
+                <div><h3>يفحص النتيجة</h3><p>على الهاتف، وفي المتصفح، وداخل الملف النهائي.</p></div>
+              </li>
+            </ol>
           </div>
 
-          <div className="advantages">
-            <h2>أبرز ما يضيفه ضاد</h2>
-            <p>عربية سليمة، قراءة مريحة، خطوات مفهومة، بحث أذكى، تواريخ وأرقام مناسبة للبلد، وهوية المشروع كما هي.</p>
-          </div>
-
-          <div className="example" aria-labelledby="example-title">
-            <header>
-              <h2 id="example-title">مثال واقعي: إعلان دورة</h2>
-              <p>طلب بسيط يدخل، ونتيجة واضحة تخرج.</p>
-            </header>
-
-            <div className="example-flow">
-              <article className="brief">
-                <h3>المطلوب</h3>
-                <p>أنشئ إعلانًا عربيًا لدورة مباشرة عن تصميم الواجهات. الأحد 20 سبتمبر، الساعة 8 مساءً بتوقيت الرياض، والتسجيل عبر رابط إنجليزي.</p>
-              </article>
-
-              <div className="transform" aria-label="يعالجه ضاد">
-                <strong>ضاد</strong>
-                <span>يضبطه</span>
+          <div className="quality-report" id="features">
+            <div className="report-heading">
+              <h2>ما الذي يميّز ضاد؟</h2>
+            </div>
+            <div className="report-rows">
+              <div>
+                <strong>العربية أولًا</strong>
+                <span>يبني العمل بالعربية ويحفظ الرابط والرقم في اتجاههما.</span>
+                <b className="status status--success">من البداية</b>
               </div>
-
-              <figure className="result">
-                <figcaption>النتيجة</figcaption>
-                <div className="poster" role="img" aria-label="إعلان عربي واضح لدورة مباشرة">
-                  <p className="poster-type">دورة مباشرة</p>
-                  <h3>صمّم بالعربية</h3>
-                  <p className="poster-copy">من الفكرة إلى شاشة سهلة القراءة والاستخدام.</p>
-                  <dl>
-                    <div><dt>الموعد</dt><dd>الأحد، ٢٠ سبتمبر</dd></div>
-                    <div><dt>الوقت</dt><dd>٨:٠٠ مساءً - بتوقيت الرياض</dd></div>
-                  </dl>
-                  <p className="poster-action">التسجيل: <bdi dir="ltr">example.com/arabic-ui</bdi></p>
-                </div>
-              </figure>
+              <div>
+                <strong>هويتك تبقى لك</strong>
+                <span>يحسّن مشروعك من دون تغيير ألوانه وخطه وشكله.</span>
+                <b className="status status--assistive">محفوظة</b>
+              </div>
+              <div>
+                <strong>كل أنواع العمل</strong>
+                <span>موقع أو تطبيق أو عرض أو PDF أو صورة أو إعلان.</span>
+                <b className="status status--action">بمهارة واحدة</b>
+              </div>
+              <div>
+                <strong>يفهم جمهورك</strong>
+                <span>يضبط التاريخ والوقت والعملة والأرقام حسب البلد.</span>
+                <b className="status status--warning">محلي</b>
+              </div>
+              <div>
+                <strong>يفحص النتيجة</strong>
+                <span>يراجعها بعد التصدير وعلى الهاتف، لا داخل المحرر فقط.</span>
+                <b className="status status--success">فحص فعلي</b>
+              </div>
+              <div>
+                <strong>لا ينسى الحالات الصعبة</strong>
+                <span>يجهّز التحميل والفراغ والخطأ وانقطاع الاتصال.</span>
+                <b className="status status--assistive">تجربة مكتملة</b>
+              </div>
             </div>
           </div>
         </section>
@@ -117,29 +112,33 @@ export default function ShowcaseClient() {
         <section className="install" id="install" aria-labelledby="install-title">
           <div className="install-copy">
             <h2 id="install-title">ثبّت ضاد.<br />وابدأ بالطلب.</h2>
-            <p>حمّل الملف المناسب، أضفه إلى أداتك، ثم اطلب منها تنفيذ العمل بمهارة ضاد.</p>
+            <p>اختر الملف المناسب، أضفه إلى أداتك، ثم اطلب منها تنفيذ العمل باستخدام ضاد.</p>
           </div>
 
           <div className="install-actions">
             <div className="downloads">
               <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-openai-plugin.zip">
-                <strong>ChatGPT وCodex</strong>
-                <span>Dhad-openai-plugin.zip</span>
+                <span><strong>ChatGPT وCodex</strong><small>Dhad-openai-plugin.zip</small></span>
                 <b>تحميل</b>
               </a>
               <a href="https://github.com/iiAMMAR11/Dhad/releases/latest/download/Dhad-agent-skill.zip">
-                <strong>Claude</strong>
-                <span>Dhad-agent-skill.zip</span>
+                <span><strong>Claude</strong><small>Dhad-agent-skill.zip</small></span>
                 <b>تحميل</b>
               </a>
             </div>
 
             <div className="command">
               <code><bdi dir="ltr">$skill-installer</bdi> ثبّت <bdi dir="ltr">dhad</bdi> من <bdi dir="ltr">github.com/iiAMMAR11/Dhad</bdi></code>
-              <button type="button" onClick={copyInstall}>{copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}</button>
+              <button type="button" onClick={copyInstall}>
+                {copyState === 'copied' ? 'نُسخ' : 'نسخ الأمر'}
+              </button>
             </div>
             <p className={`copy-status copy-status--${copyState}`} aria-live="polite">
-              {copyState === 'failed' ? 'تعذّر النسخ. انسخ الأمر يدويًا.' : copyState === 'copied' ? 'الأمر جاهز للصق.' : ''}
+              {copyState === 'failed'
+                ? 'تعذّر النسخ. انسخ الأمر يدويًا.'
+                : copyState === 'copied'
+                  ? 'الأمر جاهز للصق.'
+                  : ''}
             </p>
           </div>
         </section>
@@ -150,7 +149,10 @@ export default function ShowcaseClient() {
           <p>صاحبها ومطوّرها</p>
           <h2>عمَّار</h2>
         </div>
-        <p>ضاد عمل مستقل طوّره عمَّار بعد أسابيع من الدراسة والتجربة والتحسين. شكرًا لمرصاد، وثمانية، ورياضة ثمانية، وللمهارات والمنتجات العربية التي وسّعت الدراسة.</p>
+        <p>
+          ضاد عمل مستقل طوّره عمَّار بعد أسابيع من الدراسة والتجربة والتحسين.
+          شكرًا لمرصاد، وثمانية، ورياضة ثمانية، وللمهارات والمنتجات العربية التي وسّعت الدراسة.
+        </p>
         <nav aria-label="روابط عمّار وضاد">
           <a href="https://github.com/iiAMMAR11">GitHub</a>
           <a href="https://x.com/iiAMMAR11">X</a>
