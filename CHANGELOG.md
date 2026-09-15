@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.1.1
+
+- Rebuilt the showcase around a journey of before-and-after comparisons that render in the visitor's own browser, three working examples they can operate, and a compact grid of Arabic writing rules.
+- Added a share card, a square tab icon, an ordered install section, and a request a visitor can copy.
+- No change to the skill itself; the 3.1.0 archives already carried it.
+
 ## 3.1.0
 
 - Raised the Arabic display line height so large headlines stop clipping diacritics and hamzas.
