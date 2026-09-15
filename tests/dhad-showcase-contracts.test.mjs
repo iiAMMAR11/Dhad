@@ -41,7 +41,7 @@ test('every journey stage compares a labelled before against a labelled after', 
   const component = await readFile(componentUrl, 'utf8');
   const stages = component.match(/<Stage\b/g) ?? [];
 
-  assert.ok(stages.length >= 7, 'the journey needs at least seven stages');
+  assert.ok(stages.length >= 8, 'the journey needs at least eight stages');
   assert.equal((component.match(/بدون ضاد/g) ?? []).length, 1, 'the label belongs to the shared Stage component');
   assert.equal((component.match(/مع ضاد/g) ?? []).length, 1);
   assert.equal((component.match(/without=\{/g) ?? []).length, stages.length);
@@ -62,6 +62,15 @@ test('the corrected side is computed, never typed by hand', async () => {
   // A fixed instant keeps the server and the browser agreeing on the date.
   assert.match(component, /Date\.UTC\(/);
   assert.doesNotMatch(component, /new Date\(\)/);
+});
+
+test('the dual carries both cases, because plural rules do not know grammar', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+
+  // Intl settles the count; the position in the sentence settles the dual.
+  assert.match(component, /two:\s*\{\s*raf:\s*'ملفان',\s*nasbJarr:\s*'ملفين'\s*\}/);
+  assert.match(component, /function countedByCase\(value: number, grammaticalCase: 'raf' \| 'nasbJarr'\)/);
+  assert.match(component, /countedByCase\(2, position\.grammaticalCase\)/);
 });
 
 test('the direction stage shows a real failure, not a claimed one', async () => {

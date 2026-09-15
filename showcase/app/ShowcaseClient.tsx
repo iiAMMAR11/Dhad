@@ -48,6 +48,24 @@ function countedResults(value: number) {
   return resultForms[plural.select(value)].replace('#', arabicDigits.format(value));
 }
 
+/* The category settles the count. The position in the sentence settles the dual. */
+const caseAwareForms: Record<string, string | { raf: string; nasbJarr: string }> = {
+  ...pluralForms,
+  two: { raf: 'ملفان', nasbJarr: 'ملفين' },
+};
+
+const positions = [
+  { prefix: 'لديك', grammaticalCase: 'raf' as const },
+  { prefix: 'في', grammaticalCase: 'nasbJarr' as const },
+  { prefix: 'حذفتُ', grammaticalCase: 'nasbJarr' as const },
+];
+
+function countedByCase(value: number, grammaticalCase: 'raf' | 'nasbJarr') {
+  const form = caseAwareForms[plural.select(value)];
+  const text = typeof form === 'string' ? form : form[grammaticalCase];
+  return text.replace('#', arabicDigits.format(value));
+}
+
 function countedRight(value: number) {
   return pluralForms[plural.select(value)].replace('#', arabicDigits.format(value));
 }
@@ -369,6 +387,29 @@ export default function ShowcaseClient() {
                   <dt>نسبة الإنجاز</dt><dd>{percent.format(0.875)}</dd>
                   <dt>يدعم</dt><dd>{listFormat.format(workKinds)}</dd>
                 </dl>
+              }
+            />
+            <Stage
+              number="٨"
+              title="إعراب المثنى"
+              lead="«ملفان» في الرفع، و«ملفين» بعد حرف جر أو ناصب. صيغة واحدة لا تكفي."
+              without={
+                <ul className="demo demo--list">
+                  {positions.map((position) => (
+                    <li key={position.prefix}>
+                      {position.prefix} {countedRight(2)}
+                    </li>
+                  ))}
+                </ul>
+              }
+              withDhad={
+                <ul className="demo demo--list">
+                  {positions.map((position) => (
+                    <li key={position.prefix}>
+                      {position.prefix} {countedByCase(2, position.grammaticalCase)}
+                    </li>
+                  ))}
+                </ul>
               }
             />
           </ol>
