@@ -246,7 +246,7 @@ object DhadTypography {
     val Size800 = 22.sp
     val Size900 = 28.sp
     val Size1000 = 30.sp
-    const val LineTight = 1.15f
+    const val LineTight = 1.2f
     const val LineHeading = 1.4f
     const val LineBody = 1.55f
     const val LineReading = 1.7f

@@ -5,7 +5,7 @@
     "com.dhad": {
       "name": "Dhad",
       "namespace": "dhad",
-      "version": "3.0.2",
+      "version": "3.1.0",
       "defaultTheme": "host",
       "direction": "locale"
     }
@@ -130,11 +130,12 @@
         "800": { "$type": "dimension", "$value": "22px" },
         "900": { "$type": "dimension", "$value": "28px" },
         "1000": { "$type": "dimension", "$value": "30px" },
+        "1100": { "$type": "dimension", "$value": "40px" },
         "amount": { "$type": "dimension", "$value": "28px" },
         "metric": { "$type": "dimension", "$value": "30px" }
       },
       "lineHeight": {
-        "tight": { "$type": "number", "$value": 1.15 },
+        "tight": { "$type": "number", "$value": 1.2 },
         "heading": { "$type": "number", "$value": 1.4 },
         "body": { "$type": "number", "$value": 1.55 },
         "reading": { "$type": "number", "$value": 1.7 }
@@ -421,6 +422,10 @@
       "display": {
         "$type": "typography",
         "$value": { "fontFamily": "{primitive.font.family.display}", "fontSize": "{primitive.font.size.1000}", "fontWeight": "{primitive.font.weight.bold}", "lineHeight": "{primitive.font.lineHeight.tight}" }
+      },
+      "hero": {
+        "$type": "typography",
+        "$value": { "fontFamily": "{primitive.font.family.display}", "fontSize": "{primitive.font.size.1100}", "fontWeight": "{primitive.font.weight.bold}", "lineHeight": "{primitive.font.lineHeight.tight}" }
       },
       "amount": {
         "$type": "typography",

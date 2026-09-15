@@ -298,7 +298,7 @@ abstract final class DhadTypography {
   static const size800 = 22.0;
   static const size900 = 28.0;
   static const size1000 = 30.0;
-  static const lineTight = 1.15;
+  static const lineTight = 1.2;
   static const lineHeading = 1.4;
   static const lineBody = 1.55;
   static const lineReading = 1.7;

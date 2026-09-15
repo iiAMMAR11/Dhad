@@ -242,7 +242,7 @@ enum DhadTypography {
     static let size800: CGFloat = 22
     static let size900: CGFloat = 28
     static let size1000: CGFloat = 30
-    static let lineTight: CGFloat = 1.15
+    static let lineTight: CGFloat = 1.2
     static let lineHeading: CGFloat = 1.4
     static let lineBody: CGFloat = 1.55
     static let lineReading: CGFloat = 1.7

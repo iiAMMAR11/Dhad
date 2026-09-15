@@ -443,7 +443,7 @@ def render_css(document: dict[str, Any], resolver: Resolver) -> str:
     for name, path in GLOBAL_CSS.items():
         lines.append(f"  --dhad-{name}: {css_value(resolver.resolve(path), resolver.type_of(path))};")
 
-    for role in ("micro", "caption", "label", "body", "bodyStrong", "title", "heading", "display", "timecode"):
+    for role in ("micro", "caption", "label", "body", "bodyStrong", "title", "heading", "display", "hero", "timecode"):
         typography = resolver.resolve(f"semantic.typography.{role}")
         css_role = re.sub(r"(?<!^)(?=[A-Z])", "-", role).lower()
         lines.extend(

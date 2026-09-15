@@ -1,5 +1,14 @@
 # Release notes
 
+## 3.1.0
+
+- Raised the Arabic display line height so large headlines stop clipping diacritics and hamzas.
+- Added an editorial headline role above the product UI scale for landing and introduction pages.
+- Added rules for readable line length, layout transformation instead of proportional shrinking, reserved image dimensions, font weight loading, and a font substitution ladder.
+- Added Arabic typesetting rules against justified text, plus balanced headlines and optional OpenType features.
+- Added copy length budgets per role and a call-to-action wording rule.
+- Aligned the documented breakpoints with the ones defined in the tokens.
+
 ## 3.0.2
 
 - Restored semantic color as a core part of Dhad: blue for action, green for success, gold for warning, red for problems, violet for assistance, and cyan for information.

@@ -12,7 +12,7 @@ export const dhad = {
   "meta": {
     "name": "Dhad",
     "namespace": "dhad",
-    "version": "3.0.2",
+    "version": "3.1.0",
     "defaultTheme": "host",
     "direction": "locale"
   },
@@ -131,7 +131,7 @@ export const dhad = {
       "fontFamily": "system-ui",
       "fontSize": 28,
       "fontWeight": "700",
-      "lineHeight": 1.15,
+      "lineHeight": 1.2,
       "letterSpacing": "0px"
     },
     "body": {
@@ -156,13 +156,19 @@ export const dhad = {
       "fontFamily": "system-ui",
       "fontSize": 30,
       "fontWeight": "700",
-      "lineHeight": 1.15
+      "lineHeight": 1.2
     },
     "heading": {
       "fontFamily": "system-ui",
       "fontSize": 22,
       "fontWeight": "700",
       "lineHeight": 1.4
+    },
+    "hero": {
+      "fontFamily": "system-ui",
+      "fontSize": 40,
+      "fontWeight": "700",
+      "lineHeight": 1.2
     },
     "label": {
       "fontFamily": "system-ui",
@@ -174,7 +180,7 @@ export const dhad = {
       "fontFamily": "system-ui",
       "fontSize": 30,
       "fontWeight": "700",
-      "lineHeight": 1.15,
+      "lineHeight": 1.2,
       "letterSpacing": "0px"
     },
     "micro": {
@@ -187,7 +193,7 @@ export const dhad = {
       "fontFamily": "SF Mono",
       "fontSize": 22,
       "fontWeight": "500",
-      "lineHeight": 1.15
+      "lineHeight": 1.2
     },
     "title": {
       "fontFamily": "system-ui",
