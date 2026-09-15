@@ -16,6 +16,21 @@ const listFormat = new Intl.ListFormat('ar', { style: 'long', type: 'conjunction
 const percent = new Intl.NumberFormat('ar-SA-u-nu-arab', { style: 'percent', maximumFractionDigits: 1 });
 const workKinds = ['موقع', 'تطبيق', 'عرض', 'إعلان'];
 const directory = ['أحمد الغامدي', 'آدم السالم', 'إبراهيم العتيبي', 'عائشة النصر', 'بدر الحربي'];
+const grammarRules = [
+  { id: 'gender', title: 'جنس المعدود', wrong: '٣ رسالات', right: '٣ رسائل',
+    why: 'لكل اسم صيغه. لا توجد دالة جمع واحدة تصلح لكل الكلمات.' },
+  { id: 'definite', title: 'المعدود نكرة', wrong: '٣ الملفات', right: '٣ ملفات',
+    why: 'دمج العدد مع اسم معرّف يكسر التركيب، وهو أشيع خطأ في الواجهات.' },
+  { id: 'address', title: 'المخاطبة', wrong: 'احفظ ملفك', right: 'حفظ الملف',
+    why: 'المصدر يخاطب الجميع. وفعل الأمر يخاطب مذكرًا وحده.' },
+  { id: 'punctuation', title: 'الترقيم', wrong: 'نعم, لماذا?', right: 'نعم، لماذا؟',
+    why: 'للعربية فاصلتها وعلامة استفهامها، وشكلهما مختلف.' },
+  { id: 'ordinal', title: 'الترتيب', wrong: 'الخطوة الثالث', right: 'الخطوة الثالثة',
+    why: 'الترتيب يتبع جنس المعدود، ولا يعطيك إياه المتصفح.' },
+  { id: 'tanween', title: 'التنوين', wrong: 'شكراً', right: 'شكرًا',
+    why: 'تنوين الفتح يوضع على الحرف قبل الألف لا عليها.' },
+] as const;
+
 const listStates = [
   { id: 'loading', tab: 'يحمّل', title: 'جارٍ التحميل', body: 'ننتظر النتائج. لا تغلق الصفحة.' },
   { id: 'empty', tab: 'لا نتائج', title: 'لا توجد نتائج', body: 'غيّر كلمة البحث أو امسح التصفية.' },
@@ -237,6 +252,11 @@ export default function ShowcaseClient() {
                 <b className="status status--success">فحص فعلي</b>
               </div>
               <div>
+                <strong>نحو عربي سليم</strong>
+                <span>يراعي جنس المعدود، والتعريف، والترقيم، والمخاطبة المحايدة.</span>
+                <b className="status status--action">مضبوط</b>
+              </div>
+              <div>
                 <strong>لا ينسى الحالات الصعبة</strong>
                 <span>يجهّز التحميل والفراغ والخطأ وانقطاع الاتصال.</span>
                 <b className="status status--assistive">تجربة مكتملة</b>
@@ -413,6 +433,22 @@ export default function ShowcaseClient() {
               }
             />
           </ol>
+
+          <div className="rules">
+            <h3 className="rules-title">وتفاصيل أدقّ يلتقطها ضاد</h3>
+            <ul className="rule-grid">
+              {grammarRules.map((rule) => (
+                <li key={rule.id} className="rule">
+                  <b className="rule-name">{rule.title}</b>
+                  <p className="rule-pair">
+                    <span className="rule-wrong"><i>الشائع</i>{rule.wrong}</span>
+                    <span className="rule-right"><i>الصحيح</i>{rule.right}</span>
+                  </p>
+                  <span className="rule-why">{rule.why}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <p className="journey-close">
             هذه أمثلة قليلة. ويفحص ضاد غيرها كثيرًا في كل عمل: الشاشة الفارغة،

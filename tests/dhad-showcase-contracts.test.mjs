@@ -73,6 +73,20 @@ test('the dual carries both cases, because plural rules do not know grammar', as
   assert.match(component, /countedByCase\(2, position\.grammaticalCase\)/);
 });
 
+test('the grammar rules name the common form and the correct one in text', async () => {
+  const component = await readFile(componentUrl, 'utf8');
+  const rules = component.slice(component.indexOf('const grammarRules'), component.indexOf('const listStates'));
+
+  for (const rule of ['جنس المعدود', 'المعدود نكرة', 'المخاطبة', 'الترقيم', 'الترتيب', 'التنوين']) {
+    assert.ok(rules.includes(rule), rule);
+  }
+  assert.equal((rules.match(/wrong:/g) ?? []).length, 6);
+  assert.equal((rules.match(/right:/g) ?? []).length, 6);
+  // Colour alone must not carry which side is which.
+  assert.match(component, /<i>الشائع<\/i>/);
+  assert.match(component, /<i>الصحيح<\/i>/);
+});
+
 test('the direction stage shows a real failure, not a claimed one', async () => {
   const component = await readFile(componentUrl, 'utf8');
 
