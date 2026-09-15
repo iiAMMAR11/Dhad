@@ -2,8 +2,8 @@
 // Host typography takes precedence; map these roles to the product font.
 
 export const dhadFontFamilies = {
-  "sans": "system-ui",
-  "display": "system-ui",
+  "sans": "IBM Plex Sans Arabic",
+  "display": "IBM Plex Sans Arabic",
   "fallback": "system",
   "mono": "SF Mono"
 } as const;
@@ -128,63 +128,63 @@ export const dhad = {
   },
   "typography": {
     "amount": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 28,
       "fontWeight": "700",
       "lineHeight": 1.2,
       "letterSpacing": "0px"
     },
     "body": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 14,
       "fontWeight": "400",
       "lineHeight": 1.55
     },
     "bodyStrong": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 14,
       "fontWeight": "500",
       "lineHeight": 1.55
     },
     "caption": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 12,
       "fontWeight": "400",
       "lineHeight": 1.4
     },
     "display": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 30,
       "fontWeight": "700",
       "lineHeight": 1.2
     },
     "heading": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 22,
       "fontWeight": "700",
       "lineHeight": 1.4
     },
     "hero": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 40,
       "fontWeight": "700",
       "lineHeight": 1.2
     },
     "label": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 13,
       "fontWeight": "500",
       "lineHeight": 1.4
     },
     "metric": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 30,
       "fontWeight": "700",
       "lineHeight": 1.2,
       "letterSpacing": "0px"
     },
     "micro": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 11,
       "fontWeight": "500",
       "lineHeight": 1.4
@@ -196,7 +196,7 @@ export const dhad = {
       "lineHeight": 1.2
     },
     "title": {
-      "fontFamily": "system-ui",
+      "fontFamily": "IBM Plex Sans Arabic",
       "fontSize": 18,
       "fontWeight": "700",
       "lineHeight": 1.4

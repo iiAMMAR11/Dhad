@@ -30,7 +30,8 @@ test("operational files contain no study attribution or imposed identity", async
   const combined = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");
   assert.doesNotMatch(combined, /only typeface|single typeface|الخط الوحيد|dark is the default|الوضع الداكن هو الافتراضي/i);
   assert.match(combined, /اختيار المستخدم وهوية المشروع أولًا/);
-  assert.match(combined, /لا تفرض خطًا أو لونًا أو شكلًا أو أداة/);
+  assert.match(combined, /لا تفرض لونًا أو شكلًا أو أداة/);
+  assert.match(combined, /خط ضاد الافتراضي هو IBM Plex Sans Arabic/);
 });
 
 test("approved patterns and output adapters are present", async () => {
@@ -68,7 +69,16 @@ test("package names, versions, tokens and exports stay synchronized", async () =
   assert.equal(tokens.$extensions["com.dhad"].version, version);
   assert.equal(tokens.$extensions["com.dhad"].defaultTheme, "host");
   assert.equal(tokens.$extensions["com.dhad"].direction, "locale");
-  assert.equal(tokens.primitive.font.family.sans.$value[0], "system-ui");
+  // The bundled face leads, and no named system face follows it: naming one
+  // intercepts the platform's own Arabic fallback with something worse.
+  for (const role of ["sans", "display"]) {
+    const stack = tokens.primitive.font.family[role].$value;
+    assert.equal(stack[0], "IBM Plex Sans Arabic", role);
+    assert.equal(stack[1], "system-ui", role);
+    for (const face of ["Geeza Pro", "Arabic UI Text", "Traditional Arabic", "Al Nile", "Arial", "Tahoma"]) {
+      assert.ok(!stack.includes(face), `${role} must not name ${face}`);
+    }
+  }
   assert.match(runtime, new RegExp(`version:\\s*["']${version.replaceAll(".", "\\.")}["']`));
   for (const target of Object.values(starter.exports)) {
     assert.equal((await stat(path.resolve(starterRoot, target))).isFile(), true, target);
@@ -110,13 +120,16 @@ test("semantic color stays meaningful, vivid, and portable", async () => {
   }
 });
 
-test("optional offline font profile remains complete and opt-in", async () => {
+test("the bundled Arabic face is complete, loaded, and overridable", async () => {
   const starterRoot = path.join(skillRoot, "assets/starter");
   const weights = ["Thin", "ExtraLight", "Light", "Regular", "Text", "Medium", "SemiBold", "Bold"];
   for (const weight of weights) await access(path.join(starterRoot, `fonts/IBMPlexSansArabic-${weight}.woff2`));
   await access(path.join(starterRoot, "fonts/OFL-LICENSE.txt"));
   const fontsCss = await readFile(path.join(starterRoot, "css/dhad.fonts.css"), "utf8");
   assert.equal([...fontsCss.matchAll(/@font-face/g)].length, 8);
-  assert.match(fontsCss, /\[data-dhad-font="plex"\]/);
+  assert.match(fontsCss, /\[data-dhad-font="system"\]/);
+  // Shipping the face without loading it is how it went unused for so long.
+  const starterHtml = await readFile(path.join(starterRoot, "index.html"), "utf8");
+  assert.match(starterHtml, /href="\.\/css\/dhad\.fonts\.css"/);
   assert.doesNotMatch(fontsCss, /https?:\/\//);
 });

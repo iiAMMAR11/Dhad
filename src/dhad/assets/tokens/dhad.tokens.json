@@ -101,11 +101,11 @@
       "family": {
         "sans": {
           "$type": "fontFamily",
-          "$value": ["system-ui", "-apple-system", "BlinkMacSystemFont", "Geeza Pro", "Arabic UI Text", "Traditional Arabic", "Al Nile", "Arial", "sans-serif"]
+          "$value": ["IBM Plex Sans Arabic", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"]
         },
         "display": {
           "$type": "fontFamily",
-          "$value": ["system-ui", "-apple-system", "Geeza Pro", "Arabic UI Text", "Arial", "sans-serif"]
+          "$value": ["IBM Plex Sans Arabic", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"]
         },
         "mono": {
           "$type": "fontFamily",

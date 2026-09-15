@@ -223,8 +223,8 @@ enum DhadFocus {
 }
 
 enum DhadTypography {
-    static let sans = "system-ui"
-    static let display = "system-ui"
+    static let sans = "IBM Plex Sans Arabic"
+    static let display = "IBM Plex Sans Arabic"
     static let fallback = "system"
     static let mono = "SF Mono"
     static let light: Font.Weight = .light // 300

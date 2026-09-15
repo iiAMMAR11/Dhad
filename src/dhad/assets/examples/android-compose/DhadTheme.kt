@@ -227,8 +227,8 @@ object DhadFocus {
 }
 
 object DhadTypography {
-    const val Sans = "system-ui"
-    const val Display = "system-ui"
+    const val Sans = "IBM Plex Sans Arabic"
+    const val Display = "IBM Plex Sans Arabic"
     const val Fallback = "system"
     const val Mono = "SF Mono"
     const val Light = 300

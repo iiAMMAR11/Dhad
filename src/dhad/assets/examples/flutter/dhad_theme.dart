@@ -279,8 +279,8 @@ abstract final class DhadFocus {
 }
 
 abstract final class DhadTypography {
-  static const sans = "system-ui";
-  static const display = "system-ui";
+  static const sans = "IBM Plex Sans Arabic";
+  static const display = "IBM Plex Sans Arabic";
   static const fallback = "system";
   static const mono = "SF Mono";
   static const light = FontWeight.w300;
