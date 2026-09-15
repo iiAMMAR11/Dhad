@@ -13,6 +13,11 @@
     src: url("../src/dhad/assets/starter/fonts/IBMPlexSansArabic-Regular.woff2") format("woff2");
     font-weight: 400;
   }
+  @font-face {
+    font-family: "Plex Arabic";
+    src: url("../src/dhad/assets/starter/fonts/IBMPlexSansArabic-Medium.woff2") format("woff2");
+    font-weight: 500;
+  }
 
   :root {
     --paper: #ffffff;
@@ -30,8 +35,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 40px;
-    padding: 0 80px;
+    padding: 0 76px;
     background-color: #fbfcfd;
     background-image:
       linear-gradient(var(--grid) 1px, transparent 1px),
@@ -42,13 +46,26 @@
   }
 
   .mark {
-    font-size: 40px;
-    font-weight: 700;
-    line-height: 1;
+    inline-size: 200px;
+    margin-block-end: 28px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    margin-block-end: 22px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 500;
   }
 
   h1 {
-    font-size: 96px;
+    font-size: 100px;
     font-weight: 700;
     line-height: 1.22;
   }
@@ -56,26 +73,29 @@
   h1 span { display: block; }
   h1 span:last-child { color: var(--action); }
 
-  p {
-    max-inline-size: 820px;
+  .lead {
+    max-inline-size: 1000px;
+    margin-block-start: 26px;
     color: var(--muted);
-    font-size: 30px;
-    text-wrap: balance;
+    font-size: 29px;
     font-weight: 400;
     line-height: 1.6;
+    text-wrap: balance;
   }
 
   .kinds {
+    margin-block-start: 18px;
     color: var(--muted);
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 400;
   }
 </style>
 </head>
 <body>
-  <div class="mark">ضاد</div>
+  <img class="mark" src="../showcase/public/brand-mark.png" alt="ضاد">
+  <p class="eyebrow">مهارة للذكاء الاصطناعي · <bdi dir="ltr">AI Skill</bdi></p>
   <h1><span>عملك يستحق</span><span>عربية تليق به.</span></h1>
-  <p>مهارة عربية تجعل مواقعك وتطبيقاتك وعروضك وملفاتك أوضح.</p>
-  <div class="kinds">موقع · تطبيق · عرض · PDF · صورة · إعلان</div>
+  <p class="lead">أضِفها إلى <bdi dir="ltr">Claude</bdi> أو <bdi dir="ltr">ChatGPT</bdi>، فتصنع أعمالك بعربية صحيحة واتجاه سليم.</p>
+  <p class="kinds">موقع · تطبيق · عرض · PDF · صورة · إعلان</p>
 </body>
 </html>
