@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.2.0
+
+- Made IBM Plex Sans Arabic the default face, used unless the user asks for another or the project already has one in its identity.
+- Removed the named Arabic faces from the fallback stack. Listing them intercepted the platform's own Arabic fallback and handed the text to a worse face than the system would have chosen.
+- Linked the bundled font profile from the starter, which shipped eight weights that nothing ever loaded, and turned the opt-in class into an opt-out for products that bring their own face.
+
 ## 3.1.1
 
 - Rebuilt the showcase around a journey of before-and-after comparisons that render in the visitor's own browser, three working examples they can operate, and a compact grid of Arabic writing rules.
