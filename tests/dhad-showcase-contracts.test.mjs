@@ -176,8 +176,13 @@ test('every visible control has a state', async () => {
   assert.match(css, /\.primary-action:hover\s*\{[^}]*background:/s);
   assert.match(css, /\.downloads a:hover\s*\{[^}]*background:/s);
   assert.match(css, /\.command button:hover\s*\{[^}]*background:/s);
-  assert.match(css, /\.ability-button:hover\s*\{[^}]*background:/s);
-  assert.match(css, /\.ability-tabs button:hover\s*\{[^}]*color:/s);
+  // A bare :hover outranks a state class and would freeze the colour under the
+  // pointer that just pressed the control, so every hover is scoped to a state.
+  assert.doesNotMatch(css, /\.ability-button:hover/);
+  assert.doesNotMatch(css, /\.ability-tabs button:hover/);
+  assert.match(css, /\.ability-button--idle:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.ability-button--done:hover\s*\{[^}]*background:/s);
+  assert.match(css, /\.ability-tabs button\[aria-pressed="false"\]:hover/);
   assert.match(css, /\.ability-tabs button\[aria-pressed="true"\]\s*\{[^}]*background:/s);
 });
 

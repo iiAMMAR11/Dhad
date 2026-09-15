@@ -629,10 +629,14 @@ p { text-wrap: pretty; }
   transition: background-color 160ms ease;
 }
 
-.ability-button:hover { background: var(--action-dark); }
+/* Scope hover to the resting button: a bare :hover outranks the state class
+   and would hold the old colour under the pointer that just pressed it. */
+.ability-button--idle:hover { background: var(--action-dark); }
 .ability-button--working { background: var(--muted); cursor: progress; }
 .ability-button--done { background: var(--success); }
+.ability-button--done:hover { background: #106630; }
 .ability-button--failed { background: var(--danger); }
+.ability-button--failed:hover { background: #8e1b23; }
 
 .ability-tabs { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ability-tabs button {
@@ -647,7 +651,8 @@ p { text-wrap: pretty; }
   transition: background-color 160ms ease, color 160ms ease;
 }
 
-.ability-tabs button:hover { color: var(--ink); }
+.ability-tabs button[aria-pressed="false"]:hover { color: var(--ink); }
+.ability-tabs button[aria-pressed="true"]:hover { background: #000; }
 .ability-tabs button[aria-pressed="true"] {
   border-color: var(--ink);
   background: var(--ink);
