@@ -241,6 +241,11 @@ test('the page carries a share card and a square icon', async () => {
   assert.match(layout, /card: 'summary_large_image'/);
   const [, w, h] = favicon.match(/viewBox="0 0 (\d+) (\d+)"/) ?? [];
   assert.equal(w, h, 'the tab icon must be square');
+
+  // A declared share card that is missing degrades every link the site is shared through.
+  const card = await readFile(new URL('../showcase/public/og.png', import.meta.url));
+  const [width, height] = [card.readUInt32BE(16), card.readUInt32BE(20)];
+  assert.deepEqual([width, height], [1200, 630]);
 });
 
 test('metadata, release number, and language match the released skill', async () => {

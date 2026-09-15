@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Plex Arabic";
+    src: url("../src/dhad/assets/starter/fonts/IBMPlexSansArabic-Bold.woff2") format("woff2");
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: "Plex Arabic";
+    src: url("../src/dhad/assets/starter/fonts/IBMPlexSansArabic-Regular.woff2") format("woff2");
+    font-weight: 400;
+  }
+
+  :root {
+    --paper: #ffffff;
+    --ink: #17181b;
+    --muted: #646b76;
+    --action: #1557d5;
+    --grid: rgba(23, 24, 27, .055);
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+
+  body {
+    inline-size: 1200px;
+    block-size: 630px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+    padding: 0 80px;
+    background-color: #fbfcfd;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    color: var(--ink);
+    font-family: "Plex Arabic", sans-serif;
+  }
+
+  .mark {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  h1 {
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 1.22;
+  }
+
+  h1 span { display: block; }
+  h1 span:last-child { color: var(--action); }
+
+  p {
+    max-inline-size: 820px;
+    color: var(--muted);
+    font-size: 30px;
+    text-wrap: balance;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .kinds {
+    color: var(--muted);
+    font-size: 26px;
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+  <div class="mark">ضاد</div>
+  <h1><span>عملك يستحق</span><span>عربية تليق به.</span></h1>
+  <p>مهارة عربية تجعل مواقعك وتطبيقاتك وعروضك وملفاتك أوضح.</p>
+  <div class="kinds">موقع · تطبيق · عرض · PDF · صورة · إعلان</div>
+</body>
+</html>
